@@ -324,6 +324,79 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+            <!-- JaCoCo: code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals><goal>prepare-agent</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals><goal>report</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/erp/test/**</exclude>
+                        <exclude>**/builders/**</exclude>
+                        <exclude>**/arbitraries/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- SpotBugs: static bug detection -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.8.6.4</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Medium</threshold>
+                    <failOnError>false</failOnError>
+                    <xmlOutput>true</xmlOutput>
+                    <excludeFilterFile>${maven.multiModuleProjectDirectory}/.config/spotbugs-exclude.xml</excludeFilterFile>
+                </configuration>
+            </plugin>
+            <!-- PMD: code quality rules -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.25.0</version>
+                <configuration>
+                    <targetJdk>21</targetJdk>
+                    <failOnViolation>false</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
+                    <rulesets>
+                        <ruleset>${maven.multiModuleProjectDirectory}/.config/pmd-rules.xml</ruleset>
+                    </rulesets>
+                    <excludeRoots>
+                        <excludeRoot>target/generated-sources</excludeRoot>
+                    </excludeRoots>
+                </configuration>
+            </plugin>
+            <!-- Checkstyle: code conventions -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <configLocation>${maven.multiModuleProjectDirectory}/.config/checkstyle.xml</configLocation>
+                    <failOnViolation>false</failOnViolation>
+                    <consoleOutput>true</consoleOutput>
+                    <includeTestSourceRoots>false</includeTestSourceRoots>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>10.20.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 

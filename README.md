@@ -1,5 +1,20 @@
 # ERP Loja de Roupas
 
+[![CI Pipeline](https://github.com/moreiracruz/erp/actions/workflows/ci.yml/badge.svg)](https://github.com/moreiracruz/erp/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=moreiracruz_erp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=moreiracruz_erp)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=moreiracruz_erp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=moreiracruz_erp)
+[![codecov](https://codecov.io/gh/moreiracruz/erp/graph/badge.svg)](https://codecov.io/gh/moreiracruz/erp)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=moreiracruz_erp&metric=bugs)](https://sonarcloud.io/summary/new_code?id=moreiracruz_erp)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=moreiracruz_erp&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=moreiracruz_erp)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=moreiracruz_erp&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=moreiracruz_erp)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/moreiracruz/erp/badge)](https://scorecard.dev/viewer/?uri=github.com/moreiracruz/erp)
+
+![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4-6DB33F?logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-Proprietary-red)
+
 Sistema ERP para loja de roupas, construído como um **modular monolith** em Java 21 com Spring Boot 3.4, seguindo arquitetura hexagonal (Ports & Adapters) e princípios de Domain-Driven Design.
 
 ## Visão Geral

@@ -1,0 +1,157 @@
+name: Code Quality & Coverage
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+env:
+  JAVA_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────
+  # JaCoCo Coverage + SonarCloud Analysis
+  # ─────────────────────────────────────────────────────────────────────
+  sonar:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    env:
+      TESTCONTAINERS_REUSE_ENABLE: 'false'
+      CI: 'true'
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: 'maven'
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build, Test & Analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./mvnw verify -Pintegration \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=moreiracruz_erp \
+            -Dsonar.organization=moreiracruz \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.java.coveragePlugin=jacoco \
+            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
+            -Dsonar.java.spotbugs.reportPaths=**/target/spotbugsXml.xml \
+            -Dsonar.java.pmd.reportPaths=**/target/pmd.xml \
+            -Dsonar.java.checkstyle.reportPaths=**/target/checkstyle-result.xml \
+            -B
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: '**/target/site/jacoco/jacoco.xml'
+          flags: unittests
+          fail_ci_if_error: false
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Static Analysis: SpotBugs + PMD + Checkstyle
+  # ─────────────────────────────────────────────────────────────────────
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: 'maven'
+
+      - name: Run SpotBugs
+        run: ./mvnw compile spotbugs:check -B || true
+
+      - name: Run PMD
+        run: ./mvnw pmd:check -B || true
+
+      - name: Run Checkstyle
+        run: ./mvnw checkstyle:check -B || true
+
+      - name: Upload analysis reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-analysis-reports
+          path: |
+            **/target/spotbugsXml.xml
+            **/target/pmd.xml
+            **/target/checkstyle-result.xml
+          retention-days: 14
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Gitleaks: Secret Detection in Code
+  # ─────────────────────────────────────────────────────────────────────
+  gitleaks:
+    name: Secret Detection (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Trivy: Docker Image Vulnerability Scan
+  # ─────────────────────────────────────────────────────────────────────
+  trivy:
+    name: Container Security (Trivy)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: 'maven'
+
+      - name: Build JAR
+        run: ./mvnw package -DskipTests -B -q
+
+      - name: Build Docker image
+        run: docker build -t erp-loja-roupas:scan .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'erp-loja-roupas:scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
