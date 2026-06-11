@@ -83,11 +83,13 @@ jobs:
 
   # ─────────────────────────────────────────────────────────────────────
   # Stage 3: Integration + E2E Tests (Docker + Testcontainers)
+  # Skip for Dependabot PRs (no access to JWT_SECRET / DB_PASSWORD secrets)
   # ─────────────────────────────────────────────────────────────────────
   integration-tests:
     name: Integration & E2E Tests
     needs: unit-tests
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     env:
       TESTCONTAINERS_REUSE_ENABLE: 'false'
       CI: 'true'
