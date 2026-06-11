@@ -1,0 +1,90 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <span class="hero__badge">Nova Coleção 2026</span>
+    <h1 class="hero__title">Elegância que<br>conta histórias</h1>
+    <p class="hero__subtitle">Peças exclusivas que celebram a feminilidade com sofisticação e conforto</p>
+    <div class="hero__actions">
+      <a routerLink="/catalogo" class="hero__cta hero__cta--primary">Explorar Coleção</a>
+      <a routerLink="/sobre" class="hero__cta hero__cta--secondary">Nossa História</a>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories">
+  <div class="categories__container">
+    <div class="categories__header">
+      <h2 class="categories__title">Categorias</h2>
+      <p class="categories__subtitle">Encontre peças para cada momento</p>
+    </div>
+    <div class="categories__grid">
+      @for (cat of categories; track cat.slug) {
+        <a [routerLink]="['/catalogo']" [queryParams]="{categoria: cat.slug}" class="categories__card">
+          <div class="categories__card-image" [style.background-image]="'url(' + cat.image + ')'">
+            <div class="categories__card-placeholder"></div>
+          </div>
+          <span class="categories__card-name">{{ cat.name }}</span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured">
+  <div class="featured__container">
+    <div class="featured__header">
+      <h2 class="featured__title">Destaques</h2>
+      <a routerLink="/catalogo" class="featured__view-all">Ver tudo →</a>
+    </div>
+    <div class="featured__grid">
+      @for (product of featuredProducts; track product.uuid) {
+        <a [routerLink]="['/produto', product.uuid]" class="product-card">
+          <div class="product-card__image" [style.background-image]="'url(' + product.image + ')'">
+            <div class="product-card__placeholder"></div>
+          </div>
+          <div class="product-card__info">
+            <h3 class="product-card__name">{{ product.name }}</h3>
+            <span class="product-card__price">{{ product.price | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Value Proposition -->
+<section class="values">
+  <div class="values__container">
+    <div class="values__item">
+      <svg class="values__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+      </svg>
+      <h4 class="values__title">Frete Grátis</h4>
+      <p class="values__text">Compras acima de R$ 299</p>
+    </div>
+    <div class="values__item">
+      <svg class="values__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <h4 class="values__title">Pagamento Seguro</h4>
+      <p class="values__text">Ambiente 100% protegido</p>
+    </div>
+    <div class="values__item">
+      <svg class="values__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+      </svg>
+      <h4 class="values__title">Troca Fácil</h4>
+      <p class="values__text">30 dias para trocar</p>
+    </div>
+    <div class="values__item">
+      <svg class="values__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <h4 class="values__title">Feito com Amor</h4>
+      <p class="values__text">Peças exclusivas e artesanais</p>
+    </div>
+  </div>
+</section>
