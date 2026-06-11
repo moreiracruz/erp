@@ -1,0 +1,107 @@
+@use '../../../../styles/variables' as *;
+
+.footer {
+  background: $brown-dark;
+  color: $beige-light;
+  margin-top: $space-24;
+
+  &__container {
+    max-width: $container-max;
+    margin: 0 auto;
+    padding: $space-16 $container-padding $space-8;
+  }
+
+  // --- Brand ---
+  &__brand {
+    margin-bottom: $space-12;
+  }
+
+  &__logo {
+    font-family: $font-display;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    color: $gold;
+    text-decoration: none;
+  }
+
+  &__tagline {
+    font-size: $font-size-sm;
+    color: $gray-400;
+    margin-top: $space-2;
+  }
+
+  // --- Links Grid ---
+  &__links {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-8;
+    margin-bottom: $space-12;
+    padding-bottom: $space-8;
+    border-bottom: 1px solid rgba($white, 0.1);
+
+    @media (min-width: $breakpoint-md) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__col-title {
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $gold;
+    margin-bottom: $space-4;
+  }
+
+  &__link {
+    display: block;
+    font-size: $font-size-sm;
+    color: $gray-400;
+    text-decoration: none;
+    padding: $space-1 0;
+    transition: color $transition-fast;
+
+    &:hover { color: $white; }
+  }
+
+  // --- Bottom ---
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-4;
+
+    @media (min-width: $breakpoint-md) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &__copyright {
+    font-size: $font-size-xs;
+    color: $gray-500;
+  }
+
+  &__social {
+    display: flex;
+    gap: $space-3;
+  }
+
+  &__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    color: $gray-400;
+    border: 1px solid rgba($white, 0.1);
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $gold;
+      border-color: $gold;
+    }
+  }
+}
