@@ -1,0 +1,182 @@
+name: Release & Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Triggered by semantic version tags: v1.0.0, v1.2.3, etc.
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  JAVA_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+  DOCKER_IMAGE: moreiracruz/erp-loja-roupas
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────
+  # Stage 1: Validate & Test (ensure tag is safe to release)
+  # ─────────────────────────────────────────────────────────────────────
+  validate:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Releasing version: $VERSION"
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: 'maven'
+
+      - name: Run full test suite
+        env:
+          TESTCONTAINERS_REUSE_ENABLE: 'false'
+          CI: 'true'
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: ./mvnw verify -Pintegration -B
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Stage 2: Build & Push Docker Image
+  # ─────────────────────────────────────────────────────────────────────
+  docker:
+    name: Build & Push Docker Image
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: 'maven'
+
+      - name: Build JAR
+        run: ./mvnw package -DskipTests -B
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.DOCKER_IMAGE }}
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Stage 3: Create GitHub Release
+  # ─────────────────────────────────────────────────────────────────────
+  github-release:
+    name: Create GitHub Release
+    needs: [validate, docker]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            echo "First release — including all commits"
+            COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            echo "Changes since $PREV_TAG"
+            COMMITS=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          
+          # Categorize commits
+          FEATS=$(echo "$COMMITS" | grep "^- feat" || true)
+          FIXES=$(echo "$COMMITS" | grep "^- fix" || true)
+          TESTS=$(echo "$COMMITS" | grep "^- test" || true)
+          OTHERS=$(echo "$COMMITS" | grep -v "^- feat\|^- fix\|^- test" || true)
+          
+          {
+            echo "changelog<<EOF"
+            echo "## What's Changed"
+            echo ""
+            if [ -n "$FEATS" ]; then
+              echo "### 🚀 Features"
+              echo "$FEATS"
+              echo ""
+            fi
+            if [ -n "$FIXES" ]; then
+              echo "### 🐛 Bug Fixes"
+              echo "$FIXES"
+              echo ""
+            fi
+            if [ -n "$TESTS" ]; then
+              echo "### 🧪 Tests"
+              echo "$TESTS"
+              echo ""
+            fi
+            if [ -n "$OTHERS" ]; then
+              echo "### 🔧 Other Changes"
+              echo "$OTHERS"
+              echo ""
+            fi
+            echo "### 🐳 Docker Images"
+            echo ""
+            echo '```bash'
+            echo "docker pull ${{ env.DOCKER_IMAGE }}:${{ needs.validate.outputs.version }}"
+            echo "docker pull ghcr.io/${{ github.repository }}:${{ needs.validate.outputs.version }}"
+            echo '```'
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "v${{ needs.validate.outputs.version }}"
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-alpha') }}
+          generate_release_notes: true

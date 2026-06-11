@@ -329,6 +329,55 @@ erp/
 
 ---
 
+## CI/CD Pipeline
+
+### GitHub Actions Workflows
+
+| Workflow | Trigger | Descrição |
+|----------|---------|-----------|
+| `ci.yml` | Push/PR em `main`, `develop` | Compile → Unit tests → Integration tests → ArchUnit → Docker build |
+| `pr-checks.yml` | Pull Requests | Lint de commits, size check, validação de migrations |
+| `security.yml` | Toda segunda + push em `pom.xml` | OWASP dependency check, secret scanning |
+| `release.yml` | Push de tag `v*.*.*` | Tests → Docker build+push → GitHub Release |
+
+### Criando uma Release
+
+```bash
+# Tag + push dispara o workflow automaticamente
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Isso automaticamente:
+1. Roda todos os testes (unit + integration + E2E)
+2. Builda a imagem Docker multi-arch (amd64 + arm64)
+3. Publica no Docker Hub (`moreiracruz/erp-loja-roupas:1.0.0`)
+4. Publica no GitHub Container Registry (`ghcr.io/moreiracruz/erp:1.0.0`)
+5. Cria uma GitHub Release com changelog categorizado
+
+### Tags de Imagem Docker
+
+| Tag | Descrição |
+|-----|-----------|
+| `latest` | Última release estável |
+| `1.0.0` | Versão exata |
+| `1.0` | Latest patch da minor |
+| `1` | Latest minor da major |
+
+### Secrets Necessários no GitHub
+
+Configure em **Settings → Secrets and variables → Actions**:
+
+| Secret | Descrição |
+|--------|-----------|
+| `DB_PASSWORD` | ✅ Configurado |
+| `JWT_SECRET` | ✅ Configurado |
+| `GRAFANA_PASSWORD` | ✅ Configurado |
+| `DOCKERHUB_USERNAME` | ✅ Configurado |
+| `DOCKERHUB_TOKEN` | ⚠️ Configurar manualmente (Docker Hub → Security → Access Token) |
+
+---
+
 ## Licença
 
 Paulo André Moreira Cruz — Todos os direitos reservados.

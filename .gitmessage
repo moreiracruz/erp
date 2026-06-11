@@ -1,0 +1,12 @@
+# <type>(<scope>): <subject> (max 70 chars)
+#
+# Types: feat, fix, refactor, test, docs, chore, perf, ci, style
+# Scopes: auth, product, inventory, sales, customer, finance, pricing,
+#          infrastructure, bootstrap, shared, test-support
+#
+# Body: explain WHAT and WHY (not HOW). Wrap at 72 chars.
+#
+#
+# Footer: reference issues, breaking changes
+# Fixes #123
+# BREAKING CHANGE: <description>
