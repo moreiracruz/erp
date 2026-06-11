@@ -1,0 +1,52 @@
+// ============================================================================
+// Reino & Flor — Global Styles
+// ============================================================================
+@use 'styles/reset';
+@use 'styles/variables' as *;
+
+// --- Google Fonts ---
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+// --- Base ---
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: $font-body;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-normal;
+  color: $text-primary;
+  background-color: $surface-primary;
+}
+
+// --- Selection ---
+::selection {
+  background: rgba($gold, 0.2);
+  color: $brown-dark;
+}
+
+// --- Focus visible ---
+:focus-visible {
+  outline: 2px solid $gold;
+  outline-offset: 2px;
+}
+
+// --- Scrollbar (subtle) ---
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $gray-300;
+  border-radius: $radius-full;
+
+  &:hover {
+    background: $gray-400;
+  }
+}

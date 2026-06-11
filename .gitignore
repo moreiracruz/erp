@@ -80,3 +80,6 @@ logs/
 # --- CI/Test Reports (local only) ---
 .ci-report.txt
 .test-report.txt
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/

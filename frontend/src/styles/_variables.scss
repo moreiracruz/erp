@@ -1,0 +1,126 @@
+// ============================================================================
+// Reino & Flor — Design Tokens
+// ============================================================================
+
+// --- Primary Palette ---
+$gold: #C6A052;
+$brown-dark: #3B2A1A;
+$beige-light: #F5E6C8;
+
+// --- Secondary Palette ---
+$beige-warm: #E9D6B0;
+$olive-green: #5C6B3C;
+
+// --- Neutrals ---
+$white: #FFFFFF;
+$off-white: #FDFBF7;
+$gray-50: #FAF8F5;
+$gray-100: #F8F6F2;
+$gray-200: #EDE8E0;
+$gray-300: #D4CFC7;
+$gray-400: #B0A89D;
+$gray-500: #8C8278;
+$gray-600: #7A7268;
+$gray-700: #5C5347;
+$gray-800: #3D3530;
+$gray-900: #2D2620;
+$black: #1A1510;
+
+// --- Semantic ---
+$success: $olive-green;
+$error: #C04040;
+$warning: $gold;
+$info: #4A7A9B;
+
+// --- Surfaces ---
+$surface-primary: $off-white;
+$surface-card: $white;
+$surface-elevated: $white;
+$surface-overlay: rgba($brown-dark, 0.6);
+
+// --- Text ---
+$text-primary: $brown-dark;
+$text-secondary: $gray-600;
+$text-muted: $gray-400;
+$text-inverse: $white;
+$text-accent: $gold;
+
+// --- Borders ---
+$border-subtle: $gray-200;
+$border-default: $gray-300;
+$border-strong: $gold;
+
+// --- Typography ---
+$font-display: 'Playfair Display', serif;
+$font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-mono: 'JetBrains Mono', monospace;
+
+$font-size-xs: 0.75rem;   // 12px
+$font-size-sm: 0.875rem;  // 14px
+$font-size-base: 1rem;    // 16px
+$font-size-lg: 1.125rem;  // 18px
+$font-size-xl: 1.25rem;   // 20px
+$font-size-2xl: 1.5rem;   // 24px
+$font-size-3xl: 2rem;     // 32px
+$font-size-4xl: 2.5rem;   // 40px
+$font-size-5xl: 3.5rem;   // 56px
+
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// --- Spacing ---
+$space-1: 0.25rem;  // 4px
+$space-2: 0.5rem;   // 8px
+$space-3: 0.75rem;  // 12px
+$space-4: 1rem;     // 16px
+$space-5: 1.25rem;  // 20px
+$space-6: 1.5rem;   // 24px
+$space-8: 2rem;     // 32px
+$space-10: 2.5rem;  // 40px
+$space-12: 3rem;    // 48px
+$space-16: 4rem;    // 64px
+$space-20: 5rem;    // 80px
+$space-24: 6rem;    // 96px
+
+// --- Shadows ---
+$shadow-sm: 0 1px 2px rgba($brown-dark, 0.05);
+$shadow-md: 0 4px 12px rgba($brown-dark, 0.08);
+$shadow-lg: 0 8px 24px rgba($brown-dark, 0.12);
+$shadow-xl: 0 16px 48px rgba($brown-dark, 0.16);
+
+// --- Border Radius ---
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 9999px;
+
+// --- Transitions ---
+$transition-fast: 150ms ease;
+$transition-base: 300ms ease;
+$transition-slow: 500ms ease;
+
+// --- Breakpoints ---
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1440px;
+
+// --- Z-Index ---
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-overlay: 300;
+$z-modal: 400;
+$z-toast: 500;
+
+// --- Container ---
+$container-max: 1280px;
+$container-padding: $space-6;
