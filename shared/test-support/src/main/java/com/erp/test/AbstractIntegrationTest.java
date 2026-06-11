@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @SpringBootTest
 @ExtendWith(DatabaseCleanerExtension.class)
 @Testcontainers
+@org.springframework.test.context.ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
     // Singleton container — shared across ALL test classes in the same JVM
