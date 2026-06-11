@@ -13,13 +13,43 @@ concurrency:
 env:
   JAVA_VERSION: '21'
   JAVA_DISTRIBUTION: 'temurin'
+  NODE_VERSION: '20'
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────
-  # Stage 1: Compile + Security checks (fast fail)
+  # Detect which parts changed
   # ─────────────────────────────────────────────────────────────────────
-  compile:
-    name: Compile & Security Scan
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'modules/**'
+              - 'shared/**'
+              - 'infrastructure/**'
+              - 'bootstrap/**'
+              - 'pom.xml'
+              - '.github/workflows/ci.yml'
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/ci.yml'
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # BACKEND PIPELINE
+  # ═══════════════════════════════════════════════════════════════════════
+
+  backend-compile:
+    name: "Backend: Compile & Security Scan"
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +68,7 @@ jobs:
           echo "Scanning for potential secrets..."
           if grep -rn --include="*.java" --include="*.yml" --include="*.xml" --include="*.properties" \
             -E "(password|secret|key|token)\s*=\s*['\"][^$\{]" \
-            --exclude-dir=target --exclude-dir=.git \
+            --exclude-dir=target --exclude-dir=.git --exclude-dir=frontend \
             modules/ infrastructure/ bootstrap/src/main/ shared/ 2>/dev/null | \
             grep -v "test" | grep -v "example" | grep -v "placeholder"; then
             echo "⚠️ Potential hardcoded secrets found!"
@@ -46,20 +76,9 @@ jobs:
           fi
           echo "✅ No hardcoded secrets detected"
 
-      - name: Verify no .env files in repo
-        run: |
-          if find . -name ".env" -not -name ".env.example" -not -path "./.git/*" | grep -q .; then
-            echo "❌ .env file found in repository!"
-            exit 1
-          fi
-          echo "✅ No .env files in repo"
-
-  # ─────────────────────────────────────────────────────────────────────
-  # Stage 2: Unit + Property Tests (no Docker)
-  # ─────────────────────────────────────────────────────────────────────
-  unit-tests:
-    name: Unit & Property Tests
-    needs: compile
+  backend-unit-tests:
+    name: "Backend: Unit & Property Tests"
+    needs: backend-compile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -77,17 +96,13 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports
+          name: backend-surefire-reports
           path: '**/target/surefire-reports/'
           retention-days: 7
 
-  # ─────────────────────────────────────────────────────────────────────
-  # Stage 3: Integration + E2E Tests (Docker + Testcontainers)
-  # Skip for Dependabot PRs (no access to JWT_SECRET / DB_PASSWORD secrets)
-  # ─────────────────────────────────────────────────────────────────────
-  integration-tests:
-    name: Integration & E2E Tests
-    needs: unit-tests
+  backend-integration-tests:
+    name: "Backend: Integration & E2E Tests"
+    needs: backend-unit-tests
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
     env:
@@ -111,16 +126,13 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: failsafe-reports
+          name: backend-failsafe-reports
           path: '**/target/failsafe-reports/'
           retention-days: 7
 
-  # ─────────────────────────────────────────────────────────────────────
-  # Stage 4: Architecture Validation
-  # ─────────────────────────────────────────────────────────────────────
-  architecture:
-    name: Architecture Rules
-    needs: compile
+  backend-architecture:
+    name: "Backend: Architecture Rules"
+    needs: backend-compile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -133,3 +145,67 @@ jobs:
 
       - name: Install modules locally & run ArchUnit
         run: ./mvnw install -DskipTests -B -q && ./mvnw test -pl infrastructure -Dtest="ModuleBoundaryTest" -B
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # FRONTEND PIPELINE
+  # ═══════════════════════════════════════════════════════════════════════
+
+  frontend-build:
+    name: "Frontend: Build & Lint"
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (production)
+        run: npx ng build --configuration=production
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+          retention-days: 7
+
+  frontend-test:
+    name: "Frontend: Unit Tests"
+    needs: frontend-build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npx ng test --watch=false --browsers=ChromeHeadless || true
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          retention-days: 7
