@@ -1,0 +1,18 @@
+package com.erp.modules.product.domain.port.out;
+
+import com.erp.modules.product.domain.model.Produto;
+
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Outbound port for persisting and querying {@link Produto} aggregates.
+ */
+public interface ProdutoRepository {
+
+    Optional<Produto> findByUuid(UUID uuid);
+
+    boolean existsByNameIgnoreCaseAndActiveTrue(String name);
+
+    Produto save(Produto produto);
+}

@@ -1,0 +1,147 @@
+package com.erp.modules.product.adapter.in.web;
+
+import com.erp.modules.product.domain.port.in.DeactivateProductUseCase;
+import com.erp.modules.product.domain.port.in.GetProductUseCase;
+import com.erp.modules.product.domain.port.in.ProdutoResponse;
+import com.erp.modules.product.domain.port.in.RegisterProductCommand;
+import com.erp.modules.product.domain.port.in.RegisterProductUseCase;
+import com.erp.modules.product.domain.port.in.RegisterVariantCommand;
+import com.erp.modules.product.domain.port.in.RegisterVariantUseCase;
+import com.erp.modules.product.domain.port.in.SearchVariantUseCase;
+import com.erp.modules.product.domain.port.in.UpdateProductCommand;
+import com.erp.modules.product.domain.port.in.UpdateProductUseCase;
+import com.erp.modules.product.domain.port.in.VarianteResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+
+/**
+ * REST adapter exposing product catalog operations under {@code /api/v1/products}.
+ *
+ * <p>Endpoints are secured with method-level {@code @PreAuthorize} annotations.
+ * Managers may perform all operations; cashiers and stock personnel can search variants.
+ */
+@RestController
+@RequestMapping("/api/v1/products")
+public class ProductController {
+
+    private final RegisterProductUseCase registerProductUseCase;
+    private final GetProductUseCase getProductUseCase;
+    private final UpdateProductUseCase updateProductUseCase;
+    private final DeactivateProductUseCase deactivateProductUseCase;
+    private final RegisterVariantUseCase registerVariantUseCase;
+    private final SearchVariantUseCase searchVariantUseCase;
+
+    public ProductController(RegisterProductUseCase registerProductUseCase,
+                             GetProductUseCase getProductUseCase,
+                             UpdateProductUseCase updateProductUseCase,
+                             DeactivateProductUseCase deactivateProductUseCase,
+                             RegisterVariantUseCase registerVariantUseCase,
+                             SearchVariantUseCase searchVariantUseCase) {
+        this.registerProductUseCase = registerProductUseCase;
+        this.getProductUseCase = getProductUseCase;
+        this.updateProductUseCase = updateProductUseCase;
+        this.deactivateProductUseCase = deactivateProductUseCase;
+        this.registerVariantUseCase = registerVariantUseCase;
+        this.searchVariantUseCase = searchVariantUseCase;
+    }
+
+    /**
+     * Creates a new product in the catalog.
+     *
+     * @param cmd name, brand and category of the product
+     * @return the created product
+     */
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ProdutoResponse create(@RequestBody RegisterProductCommand cmd) {
+        return registerProductUseCase.register(cmd);
+    }
+
+    /**
+     * Retrieves a product by its public UUID.
+     *
+     * @param uuid the product's UUID
+     * @return the product, or 404 if not found
+     */
+    @GetMapping("/{uuid}")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_STOCK')")
+    public ProdutoResponse findByUuid(@PathVariable UUID uuid) {
+        return getProductUseCase.findByUuid(uuid);
+    }
+
+    /**
+     * Updates the mutable attributes of an existing product.
+     *
+     * @param uuid the product's UUID
+     * @param cmd  new name, brand and category
+     * @return the updated product
+     */
+    @PutMapping("/{uuid}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ProdutoResponse update(@PathVariable UUID uuid, @RequestBody UpdateProductCommand cmd) {
+        return updateProductUseCase.update(uuid, cmd);
+    }
+
+    /**
+     * Deactivates a product and all its variants.
+     *
+     * @param uuid the product's UUID
+     */
+    @DeleteMapping("/{uuid}/deactivate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public void deactivate(@PathVariable UUID uuid) {
+        deactivateProductUseCase.deactivate(uuid);
+    }
+
+    /**
+     * Registers a new variant under an existing product.
+     *
+     * @param uuid the owning product's UUID
+     * @param cmd  variant attributes (SKU, size, colour, barcode, price, cost)
+     * @return the created variant
+     */
+    @PostMapping("/{uuid}/variants")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public VarianteResponse createVariant(@PathVariable UUID uuid,
+                                          @RequestBody RegisterVariantCommand cmd) {
+        return registerVariantUseCase.register(uuid, cmd);
+    }
+
+    /**
+     * Looks up a variant by its SKU.
+     *
+     * @param sku the variant's SKU
+     * @return the matching variant, or 404 if not found
+     */
+    @GetMapping("/variants/by-sku/{sku}")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_STOCK')")
+    public VarianteResponse findBySku(@PathVariable String sku) {
+        return searchVariantUseCase.findBySku(sku);
+    }
+
+    /**
+     * Looks up a variant by its barcode.
+     *
+     * @param barcode the variant's barcode
+     * @return the matching variant, or 404 if not found
+     */
+    @GetMapping("/variants/by-barcode/{barcode}")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_STOCK')")
+    public VarianteResponse findByBarcode(@PathVariable String barcode) {
+        return searchVariantUseCase.findByBarcode(barcode);
+    }
+}
