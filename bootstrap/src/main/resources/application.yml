@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/erp}
+    username: ${SPRING_DATASOURCE_USERNAME:erp_user}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,info
+  endpoint:
+    health:
+      show-details: always
+      group:
+        readiness:
+          include: db,diskSpace
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+inventory:
+  expiry:
+    reservation-ttl-minutes: ${INVENTORY_EXPIRY_TTL_MINUTES:30}
+    check-interval-ms: 60000
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-seconds: 900
+  refresh-expiration-days: 7
