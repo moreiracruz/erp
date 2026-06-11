@@ -18,12 +18,14 @@ env:
 jobs:
   # ─────────────────────────────────────────────────────────────────────
   # JaCoCo Coverage + SonarCloud Analysis
+  # Runs on push to main/develop (has secrets).
+  # For PRs (including Dependabot), SonarCloud runs via sonar-pr.yml
+  # triggered by workflow_run to access secrets safely.
   # ─────────────────────────────────────────────────────────────────────
   sonar:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    # Skip for Dependabot PRs (no access to secrets)
-    if: github.actor != 'dependabot[bot]'
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
         with:
