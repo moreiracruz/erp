@@ -129,5 +129,5 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: 'maven'
 
-      - name: Run ArchUnit tests
-        run: ./mvnw test -pl infrastructure -Dtest="ModuleBoundaryTest" -B
+      - name: Install modules locally & run ArchUnit
+        run: ./mvnw install -DskipTests -B -q && ./mvnw test -pl infrastructure -Dtest="ModuleBoundaryTest" -B

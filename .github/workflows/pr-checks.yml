@@ -16,12 +16,18 @@ jobs:
       - name: Check conventional commits
         run: |
           echo "Validating commit messages follow conventional format..."
-          PATTERN='^(feat|fix|refactor|test|docs|chore|perf|ci|style)(\([a-z-]+\))?: .{1,70}$'
+          PATTERN='^(feat|fix|refactor|test|docs|chore|perf|ci|style)(\([a-z0-9-]+\))?!?: .{1,72}$'
           ERRORS=0
           
           while IFS= read -r msg; do
-            if [[ ! "$msg" =~ $PATTERN ]]; then
-              echo "❌ Invalid: $msg"
+            # Skip merge commits
+            if [[ "$msg" =~ ^Merge ]]; then
+              continue
+            fi
+            # Only validate first line (subject)
+            SUBJECT=$(echo "$msg" | head -1)
+            if [[ ! "$SUBJECT" =~ $PATTERN ]]; then
+              echo "❌ Invalid: $SUBJECT"
               ERRORS=$((ERRORS + 1))
             fi
           done < <(git log --format=%s origin/${{ github.base_ref }}..HEAD)

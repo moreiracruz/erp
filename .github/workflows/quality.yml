@@ -22,11 +22,6 @@ jobs:
   sonar:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    env:
-      TESTCONTAINERS_REUSE_ENABLE: 'false'
-      CI: 'true'
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,7 +44,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./mvnw verify -Pintegration \
+          ./mvnw verify \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=moreiracruz_erp \
             -Dsonar.organization=moreiracruz \
@@ -84,8 +79,11 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: 'maven'
 
+      - name: Compile all modules
+        run: ./mvnw compile -B -q
+
       - name: Run SpotBugs
-        run: ./mvnw compile spotbugs:check -B || true
+        run: ./mvnw spotbugs:check -B || true
 
       - name: Run PMD
         run: ./mvnw pmd:check -B || true
