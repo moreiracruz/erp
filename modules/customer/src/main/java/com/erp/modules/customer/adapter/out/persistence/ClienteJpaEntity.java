@@ -26,7 +26,7 @@ public class ClienteJpaEntity {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true, length = 11, columnDefinition = "CHAR(11)")
+    @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
     private String email;

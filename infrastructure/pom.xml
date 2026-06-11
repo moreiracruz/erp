@@ -126,11 +126,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Observability: OpenTelemetry auto-instrumentation -->
+        <!-- TODO: OpenTelemetry re-enable after upgrading to Spring Boot 3.4+
+             (OTel 2.11 requires SDK 1.45+ but Spring Boot 3.3.x provides 1.37)
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-spring-boot-starter</artifactId>
         </dependency>
+        -->
 
         <!-- Observability: Prometheus metrics -->
         <dependency>
