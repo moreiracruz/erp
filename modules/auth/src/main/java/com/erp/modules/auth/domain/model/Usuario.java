@@ -51,6 +51,7 @@ public class Usuario extends AggregateRoot {
      */
     public static Usuario create(String username, String passwordHash, Role role) {
         Usuario u = new Usuario();
+        u.uuid = UUID.randomUUID();
         u.username = username;
         u.passwordHash = passwordHash;
         u.role = role;

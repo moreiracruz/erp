@@ -30,6 +30,7 @@ public class Cupom extends AggregateRoot {
 
     private Cupom(String code, CampaignType type, BigDecimal discountValue,
                   Instant startsAt, Instant endsAt, int maxUsages) {
+        this.uuid = UUID.randomUUID();
         this.code = code;
         this.type = type;
         this.discountValue = discountValue;
