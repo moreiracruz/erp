@@ -2,7 +2,8 @@ name: Auto Release & Publish
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
     inputs:
       bump:
