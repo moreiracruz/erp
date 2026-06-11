@@ -1,9 +1,9 @@
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 COPY . .
 RUN ./mvnw -pl bootstrap -am package -DskipTests
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 COPY --from=build /app/bootstrap/target/bootstrap-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
