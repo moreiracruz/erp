@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.erp</groupId>
+        <artifactId>erp-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>test-support</artifactId>
+    <name>ERP - Test Support</name>
+    <description>Shared test utilities, builders, arbitraries, and base classes</description>
+
+    <dependencies>
+        <!-- JUnit Jupiter (compile scope — this module provides test utilities) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Internal modules (compile scope — builders need domain models) -->
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>shared-kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>shared-events</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>shared-exceptions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-auth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-product</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-inventory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-sales</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-customer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-finance</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.erp</groupId>
+            <artifactId>module-pricing</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- PostgreSQL driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <!-- jqwik (compile scope here since test-support is a library) -->
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- JWT for TestJwtGenerator (compile scope since this is a library) -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- AssertJ (compile scope here since test-support is a library) -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
