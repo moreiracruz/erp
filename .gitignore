@@ -76,3 +76,7 @@ logs/
 *.swp
 *.swo
 *~
+
+# --- CI/Test Reports (local only) ---
+.ci-report.txt
+.test-report.txt
