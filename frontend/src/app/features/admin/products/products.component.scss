@@ -1,0 +1,334 @@
+@use '../../../../styles/variables' as *;
+
+.admin-products {
+  padding: $space-6;
+  max-width: $container-max;
+  margin: 0 auto;
+  font-family: $font-body;
+}
+
+// --- Header ---
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-6;
+
+  h1 {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    color: $brown-dark;
+    margin: 0;
+  }
+
+  .btn-new {
+    padding: $space-3 $space-6;
+    background: $gold;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: background $transition-fast;
+
+    &:hover {
+      background: darken($gold, 8%);
+    }
+  }
+}
+
+// --- Filter Bar ---
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  margin-bottom: $space-4;
+
+  .search-input {
+    flex: 1;
+    padding: $space-3 $space-4;
+    border: 1px solid $border-default;
+    border-radius: $radius-md;
+    font-size: $font-size-base;
+    font-family: $font-body;
+    transition: border-color $transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: $gold;
+    }
+  }
+
+  .results-count {
+    font-size: $font-size-sm;
+    color: $text-muted;
+    white-space: nowrap;
+  }
+}
+
+// --- Table ---
+.table-container {
+  background: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-subtle;
+  overflow: hidden;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: $space-3 $space-4;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    font-weight: $font-weight-semibold;
+    background: $gray-50;
+    border-bottom: 2px solid $border-default;
+  }
+
+  td {
+    padding: $space-3 $space-4;
+    font-size: $font-size-sm;
+    border-bottom: 1px solid $border-subtle;
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    transition: background $transition-fast;
+
+    &:nth-child(even) {
+      background: $gray-50;
+    }
+
+    &:hover {
+      background: rgba($gold, 0.04);
+    }
+
+    &.inactive {
+      opacity: 0.6;
+    }
+  }
+
+  .product-name {
+    font-weight: $font-weight-medium;
+    color: $brown-dark;
+  }
+
+  .price {
+    font-weight: $font-weight-semibold;
+    color: $brown-dark;
+  }
+
+  .cost {
+    color: $text-muted;
+  }
+}
+
+.category-badge {
+  display: inline-block;
+  padding: $space-1 $space-2;
+  background: rgba($gold, 0.1);
+  color: darken($gold, 15%);
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+// --- Toggle Button ---
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  .toggle-track {
+    display: block;
+    width: 36px;
+    height: 20px;
+    background: $gray-300;
+    border-radius: $radius-full;
+    position: relative;
+    transition: background $transition-fast;
+  }
+
+  .toggle-thumb {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: $white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform $transition-fast;
+    box-shadow: $shadow-sm;
+  }
+
+  &.active .toggle-track {
+    background: $success;
+  }
+
+  &.active .toggle-thumb {
+    transform: translateX(16px);
+  }
+}
+
+// --- Action Buttons ---
+.action-btn {
+  background: none;
+  border: 1px solid $border-default;
+  border-radius: $radius-sm;
+  padding: $space-1 $space-2;
+  cursor: pointer;
+  font-size: $font-size-base;
+  transition: all $transition-fast;
+
+  &.edit:hover {
+    border-color: $gold;
+    background: rgba($gold, 0.1);
+  }
+}
+
+// --- Modal ---
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: $surface-overlay;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  animation: fadeIn 150ms ease;
+}
+
+.modal {
+  background: $white;
+  border-radius: $radius-lg;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: $shadow-xl;
+  animation: slideUp 200ms ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-5 $space-6;
+  border-bottom: 1px solid $border-subtle;
+
+  h2 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    color: $brown-dark;
+    margin: 0;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: $font-size-xl;
+    color: $text-muted;
+    cursor: pointer;
+    padding: $space-1;
+    border-radius: $radius-sm;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $text-primary;
+    }
+  }
+}
+
+.modal-body {
+  padding: $space-6;
+
+  .form-group {
+    margin-bottom: $space-4;
+
+    label {
+      display: block;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $text-secondary;
+      margin-bottom: $space-2;
+    }
+
+    input {
+      width: 100%;
+      padding: $space-3 $space-4;
+      border: 1px solid $border-default;
+      border-radius: $radius-md;
+      font-size: $font-size-base;
+      font-family: $font-body;
+      transition: border-color $transition-fast;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: $gold;
+      }
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-3;
+  padding: $space-4 $space-6;
+  border-top: 1px solid $border-subtle;
+
+  .btn-cancel {
+    padding: $space-3 $space-5;
+    background: transparent;
+    border: 1px solid $border-default;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $gray-500;
+      color: $text-primary;
+    }
+  }
+
+  .btn-save {
+    padding: $space-3 $space-5;
+    background: $gold;
+    color: $white;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: background $transition-fast;
+
+    &:hover {
+      background: darken($gold, 8%);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

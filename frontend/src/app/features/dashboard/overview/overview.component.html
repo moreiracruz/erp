@@ -1,0 +1,107 @@
+<div class="dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <h1>Painel de Controle</h1>
+    <div class="date-range">
+      <button
+        class="range-btn"
+        [class.active]="selectedRange() === 'today'"
+        (click)="selectRange('today')"
+      >Hoje</button>
+      <button
+        class="range-btn"
+        [class.active]="selectedRange() === 'week'"
+        (click)="selectRange('week')"
+      >Semana</button>
+      <button
+        class="range-btn"
+        [class.active]="selectedRange() === 'month'"
+        (click)="selectRange('month')"
+      >Mês</button>
+    </div>
+  </header>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid">
+    @for (kpi of kpis(); track kpi.label) {
+      <div class="kpi-card">
+        <div class="kpi-icon">{{ kpi.icon }}</div>
+        <div class="kpi-content">
+          <span class="kpi-label">{{ kpi.label }}</span>
+          <span class="kpi-value">{{ kpi.value }}</span>
+          @if (kpi.trend) {
+            <span class="kpi-trend">{{ kpi.trend }}</span>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- Chart + Alerts Row -->
+  <div class="content-row">
+    <!-- Sales Chart -->
+    <section class="chart-section">
+      <h2>Vendas da Semana</h2>
+      <div class="chart-container">
+        @for (bar of chartData(); track bar.label) {
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar" [style.height.%]="getBarHeight(bar.value)">
+              <span class="bar-value">{{ bar.value }}</span>
+            </div>
+            <span class="bar-label">{{ bar.label }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Low Stock Alerts -->
+    <section class="alerts-section">
+      <h2>Estoque Baixo</h2>
+      <div class="alerts-list">
+        @for (alert of lowStockAlerts(); track alert.name) {
+          <div class="alert-item" [class.critical]="alert.currentStock === 0">
+            <div class="alert-info">
+              <span class="alert-name">{{ alert.name }}</span>
+              <span class="alert-stock">{{ alert.currentStock }} / {{ alert.threshold }} un.</span>
+            </div>
+            <div class="alert-bar">
+              <div
+                class="alert-bar-fill"
+                [style.width.%]="(alert.currentStock / alert.threshold) * 100"
+              ></div>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Recent Sales Table -->
+  <section class="recent-sales">
+    <h2>Vendas Recentes</h2>
+    <table class="sales-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sale of recentSales(); track sale.id) {
+          <tr>
+            <td class="sale-id">{{ sale.id }}</td>
+            <td>{{ sale.customer }}</td>
+            <td class="sale-total">R$ {{ sale.total.toFixed(2) }}</td>
+            <td>
+              <span class="status-badge" [attr.data-status]="sale.status">{{ sale.status }}</span>
+            </td>
+            <td class="sale-date">{{ sale.date }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>

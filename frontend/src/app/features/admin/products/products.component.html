@@ -1,0 +1,142 @@
+<div class="admin-products">
+  <!-- Header -->
+  <header class="page-header">
+    <h1>Gestão de Produtos</h1>
+    <button class="btn-new" (click)="openNewForm()">+ Novo Produto</button>
+  </header>
+
+  <!-- Search/Filter Bar -->
+  <div class="filter-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar por nome, marca ou categoria..."
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    />
+    <span class="results-count">{{ filteredProducts().length }} produtos</span>
+  </div>
+
+  <!-- Products Table -->
+  <div class="table-container">
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Marca</th>
+          <th>Categoria</th>
+          <th>Preço</th>
+          <th>Custo</th>
+          <th>Ativo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of filteredProducts(); track product.id) {
+          <tr [class.inactive]="!product.active">
+            <td class="product-name">{{ product.name }}</td>
+            <td>{{ product.brand }}</td>
+            <td>
+              <span class="category-badge">{{ product.category }}</span>
+            </td>
+            <td class="price">R$ {{ product.price.toFixed(2) }}</td>
+            <td class="cost">R$ {{ product.cost.toFixed(2) }}</td>
+            <td>
+              <button
+                class="toggle-btn"
+                [class.active]="product.active"
+                (click)="toggleActive(product)"
+                [attr.aria-label]="product.active ? 'Desativar produto' : 'Ativar produto'"
+              >
+                <span class="toggle-track">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </button>
+            </td>
+            <td>
+              <button class="action-btn edit" (click)="openEditForm(product)" aria-label="Editar produto">✎</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Form -->
+  @if (showForm()) {
+    <div class="modal-overlay" (click)="closeForm()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h2>{{ editingProduct() ? 'Editar Produto' : 'Novo Produto' }}</h2>
+          <button class="modal-close" (click)="closeForm()">✕</button>
+        </header>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="prod-name">Nome</label>
+            <input
+              id="prod-name"
+              type="text"
+              [ngModel]="formData().name"
+              (ngModelChange)="updateFormField('name', $event)"
+              placeholder="Nome do produto"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prod-brand">Marca</label>
+              <input
+                id="prod-brand"
+                type="text"
+                [ngModel]="formData().brand"
+                (ngModelChange)="updateFormField('brand', $event)"
+                placeholder="Marca"
+              />
+            </div>
+            <div class="form-group">
+              <label for="prod-category">Categoria</label>
+              <input
+                id="prod-category"
+                type="text"
+                [ngModel]="formData().category"
+                (ngModelChange)="updateFormField('category', $event)"
+                placeholder="Categoria"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prod-price">Preço (R$)</label>
+              <input
+                id="prod-price"
+                type="number"
+                [ngModel]="formData().price"
+                (ngModelChange)="updateFormField('price', $event)"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div class="form-group">
+              <label for="prod-cost">Custo (R$)</label>
+              <input
+                id="prod-cost"
+                type="number"
+                [ngModel]="formData().cost"
+                (ngModelChange)="updateFormField('cost', $event)"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="btn-cancel" (click)="closeForm()">Cancelar</button>
+          <button class="btn-save" (click)="saveProduct()">Salvar</button>
+        </footer>
+      </div>
+    </div>
+  }
+</div>

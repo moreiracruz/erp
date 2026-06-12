@@ -1,0 +1,319 @@
+@use '../../../../styles/variables' as *;
+
+.dashboard {
+  padding: $space-6;
+  max-width: $container-max;
+  margin: 0 auto;
+  font-family: $font-body;
+}
+
+// --- Header ---
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-6;
+
+  h1 {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    color: $brown-dark;
+    margin: 0;
+  }
+}
+
+.date-range {
+  display: flex;
+  gap: $space-1;
+  background: $gray-100;
+  padding: $space-1;
+  border-radius: $radius-md;
+
+  .range-btn {
+    padding: $space-2 $space-4;
+    border: none;
+    border-radius: $radius-sm;
+    background: transparent;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      color: $text-primary;
+    }
+
+    &.active {
+      background: $white;
+      color: $brown-dark;
+      font-weight: $font-weight-semibold;
+      box-shadow: $shadow-sm;
+    }
+  }
+}
+
+// --- KPI Cards ---
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $space-4;
+  margin-bottom: $space-6;
+}
+
+.kpi-card {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-5;
+  background: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-subtle;
+  transition: box-shadow $transition-fast;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+
+  .kpi-icon {
+    font-size: $font-size-3xl;
+  }
+
+  .kpi-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kpi-label {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin-bottom: $space-1;
+  }
+
+  .kpi-value {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $gold;
+  }
+
+  .kpi-trend {
+    font-size: $font-size-xs;
+    color: $success;
+    font-weight: $font-weight-medium;
+    margin-top: $space-1;
+  }
+}
+
+// --- Content Row ---
+.content-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: $space-4;
+  margin-bottom: $space-6;
+
+  @media (max-width: $breakpoint-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// --- Chart ---
+.chart-section {
+  background: $white;
+  border-radius: $radius-lg;
+  padding: $space-5;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-subtle;
+
+  h2 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    color: $brown-dark;
+    margin: 0 0 $space-4 0;
+  }
+}
+
+.chart-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 200px;
+  padding-top: $space-4;
+}
+
+.chart-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.chart-bar {
+  width: 36px;
+  background: linear-gradient(to top, $gold, lighten($gold, 15%));
+  border-radius: $radius-sm $radius-sm 0 0;
+  position: relative;
+  transition: height $transition-base;
+  min-height: 4px;
+
+  .bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: $font-size-xs;
+    color: $text-secondary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.bar-label {
+  margin-top: $space-2;
+  font-size: $font-size-xs;
+  color: $text-muted;
+}
+
+// --- Alerts ---
+.alerts-section {
+  background: $white;
+  border-radius: $radius-lg;
+  padding: $space-5;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-subtle;
+
+  h2 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    color: $brown-dark;
+    margin: 0 0 $space-4 0;
+  }
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.alert-item {
+  padding: $space-3;
+  border-radius: $radius-md;
+  background: $gray-50;
+
+  &.critical {
+    background: rgba($error, 0.05);
+    border: 1px solid rgba($error, 0.2);
+  }
+
+  .alert-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: $space-2;
+  }
+
+  .alert-name {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+  }
+
+  .alert-stock {
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+}
+
+.alert-bar {
+  height: 4px;
+  background: $gray-200;
+  border-radius: $radius-full;
+  overflow: hidden;
+
+  .alert-bar-fill {
+    height: 100%;
+    background: $warning;
+    border-radius: $radius-full;
+    transition: width $transition-base;
+  }
+}
+
+// --- Recent Sales ---
+.recent-sales {
+  background: $white;
+  border-radius: $radius-lg;
+  padding: $space-5;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border-subtle;
+
+  h2 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    color: $brown-dark;
+    margin: 0 0 $space-4 0;
+  }
+}
+
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: $space-3;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    font-weight: $font-weight-semibold;
+    border-bottom: 2px solid $border-default;
+  }
+
+  td {
+    padding: $space-3;
+    font-size: $font-size-sm;
+    border-bottom: 1px solid $border-subtle;
+  }
+
+  tr:hover td {
+    background: $gray-50;
+  }
+
+  .sale-id {
+    font-family: $font-mono;
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+
+  .sale-total {
+    font-weight: $font-weight-semibold;
+    color: $brown-dark;
+  }
+
+  .sale-date {
+    color: $text-muted;
+    font-size: $font-size-xs;
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: $space-1 $space-2;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &[data-status='Finalizada'] {
+    background: rgba($success, 0.1);
+    color: $success;
+  }
+
+  &[data-status='Pendente'] {
+    background: rgba($gold, 0.15);
+    color: darken($gold, 10%);
+  }
+
+  &[data-status='Cancelada'] {
+    background: rgba($error, 0.1);
+    color: $error;
+  }
+}

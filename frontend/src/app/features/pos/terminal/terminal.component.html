@@ -1,0 +1,122 @@
+<div class="pos-terminal">
+  <!-- Top Bar -->
+  <header class="pos-header">
+    <div class="header-left">
+      <span class="terminal-id">{{ terminalId() }}</span>
+      <span class="operator">{{ operatorName() }}</span>
+    </div>
+    <div class="header-right">
+      <span class="clock">{{ currentTime() }}</span>
+    </div>
+  </header>
+
+  <div class="pos-body">
+    <!-- Left Panel: Search + Items -->
+    <section class="pos-left">
+      <div class="search-bar">
+        <input
+          id="pos-search"
+          type="text"
+          class="search-input"
+          placeholder="Buscar por código de barras ou nome (F2)"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          (keydown.enter)="searchProduct()"
+          autocomplete="off"
+        />
+        <button class="search-btn" (click)="searchProduct()">Buscar</button>
+      </div>
+
+      <div class="items-list">
+        @if (items().length === 0) {
+          <div class="empty-state">
+            <p>Nenhum item adicionado</p>
+            <p class="hint">Use F2 para buscar produtos</p>
+          </div>
+        } @else {
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Qtd</th>
+                <th>Preço</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of items(); track item.id) {
+                <tr>
+                  <td class="item-name">{{ item.name }}</td>
+                  <td class="item-qty">
+                    <input
+                      type="number"
+                      [ngModel]="item.qty"
+                      (ngModelChange)="updateQty(item.id, $event)"
+                      min="1"
+                      class="qty-input"
+                    />
+                  </td>
+                  <td class="item-price">R$ {{ item.price.toFixed(2) }}</td>
+                  <td class="item-total">R$ {{ (item.price * item.qty).toFixed(2) }}</td>
+                  <td>
+                    <button class="remove-btn" (click)="removeItem(item.id)" aria-label="Remover item">✕</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    </section>
+
+    <!-- Right Panel: Summary + Actions -->
+    <aside class="pos-right">
+      <div class="sale-summary">
+        <h3>Resumo da Venda</h3>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>R$ {{ subtotal().toFixed(2) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Desconto</span>
+          <span>- R$ {{ discount().toFixed(2) }}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>R$ {{ total().toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <div class="payment-methods">
+        <h4>Forma de Pagamento</h4>
+        <div class="payment-buttons">
+          <button
+            class="payment-btn"
+            [class.active]="selectedPayment() === 'PIX'"
+            (click)="selectPayment('PIX')"
+          >PIX</button>
+          <button
+            class="payment-btn"
+            [class.active]="selectedPayment() === 'Dinheiro'"
+            (click)="selectPayment('Dinheiro')"
+          >Dinheiro</button>
+          <button
+            class="payment-btn"
+            [class.active]="selectedPayment() === 'Cartão'"
+            (click)="selectPayment('Cartão')"
+          >Cartão</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-finalize" (click)="finalizeSale()">Finalizar Venda (F5)</button>
+        <button class="btn-cancel" (click)="cancelSale()">Cancelar (Esc)</button>
+      </div>
+
+      <div class="shortcuts-hint">
+        <small>F2 = Buscar &nbsp;|&nbsp; F5 = Finalizar &nbsp;|&nbsp; Esc = Cancelar</small>
+      </div>
+    </aside>
+  </div>
+</div>
