@@ -1,0 +1,33 @@
+<section class="product-grid" aria-label="Grade de produtos">
+  <h2 class="product-grid__heading visually-hidden">Produtos</h2>
+
+  @if (products().length > 0) {
+    <div class="product-grid__grid">
+      @for (product of products(); track product.uuid) {
+        <app-product-card
+          [product]="product"
+          (navigate)="onProductNavigate($event)"
+        />
+      }
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="product-grid__loading" aria-live="polite" aria-label="Carregando produtos">
+      <div class="product-grid__shimmer-grid">
+        @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+          <app-shimmer-placeholder width="100%" height="320px" />
+        }
+      </div>
+    </div>
+  }
+
+  @if (!hasMore() && !loading() && products().length > 0) {
+    <p class="product-grid__end-message" aria-live="polite">
+      Fim do catálogo
+    </p>
+  }
+
+  <!-- Sentinel element for IntersectionObserver -->
+  <div #sentinel class="product-grid__sentinel" aria-hidden="true"></div>
+</section>

@@ -1,0 +1,40 @@
+@use '../../../../../../styles/variables' as *;
+
+.sort-dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+
+  &__label {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    white-space: nowrap;
+  }
+
+  &__select {
+    appearance: none;
+    padding: $space-2 $space-8 $space-2 $space-3;
+    border: 1px solid $border-default;
+    border-radius: $radius-sm;
+    background-color: $surface-card;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235C5347' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right $space-2 center;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $text-primary;
+    cursor: pointer;
+    transition: border-color $transition-fast;
+    min-width: 180px;
+
+    &:hover {
+      border-color: $gold;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+  }
+}

@@ -1,0 +1,139 @@
+@use '../../../../../../styles/variables' as *;
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  border-radius: $radius-md;
+  overflow: hidden;
+  background: $surface-card;
+  transition: transform $transition-base, box-shadow $transition-base;
+  min-width: 0;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 2px;
+  }
+
+  // Minimum touch target
+  min-height: 44px;
+
+  &__image-wrapper {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: $gray-100;
+  }
+
+  &__shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      $gray-100 25%,
+      $gray-200 50%,
+      $gray-100 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity $transition-base;
+
+    &--loaded {
+      opacity: 1;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($brown-dark, 0.4);
+    animation: fadeIn $transition-fast;
+  }
+
+  &__quick-view-btn {
+    padding: $space-3 $space-6;
+    min-width: 44px;
+    min-height: 44px;
+    background: $white;
+    color: $text-primary;
+    border: none;
+    border-radius: $radius-sm;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: background $transition-fast, color $transition-fast;
+
+    &:hover {
+      background: $gold;
+      color: $white;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+  }
+
+  &__info {
+    padding: $space-4;
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  &__name {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    margin: 0;
+    line-height: $line-height-normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__price {
+    font-family: $font-body;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $gold;
+    margin: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

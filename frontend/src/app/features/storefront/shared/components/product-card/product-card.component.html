@@ -1,0 +1,43 @@
+<article
+  class="product-card"
+  [attr.aria-label]="product().name + ' - ' + (product().minPrice | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR')"
+  tabindex="0"
+  role="button"
+  (click)="onCardClick()"
+  (keydown.enter)="onCardClick()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+  <div class="product-card__image-wrapper">
+    @if (!imageLoaded()) {
+      <div class="product-card__shimmer" aria-hidden="true"></div>
+    }
+    <img
+      class="product-card__image"
+      [class.product-card__image--loaded]="imageLoaded()"
+      [src]="product().imageUrl || 'assets/images/product-placeholder.webp'"
+      [alt]="product().name"
+      loading="lazy"
+      (load)="onImageLoad()"
+    />
+
+    @if (showOverlay()) {
+      <div class="product-card__overlay">
+        <button
+          class="product-card__quick-view-btn"
+          (click)="onQuickView($event)"
+          aria-label="Ver detalhes de {{ product().name }}"
+        >
+          Ver detalhes
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="product-card__info">
+    <h3 class="product-card__name">{{ product().name }}</h3>
+    <p class="product-card__price">
+      {{ product().minPrice | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+    </p>
+  </div>
+</article>

@@ -1,0 +1,10 @@
+@if (products().length) {
+  <section class="related-products" aria-labelledby="related-heading">
+    <h2 id="related-heading" class="related-products__heading">Produtos relacionados</h2>
+    <div class="related-products__grid">
+      @for (product of products(); track product.uuid) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  </section>
+}

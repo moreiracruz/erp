@@ -1,0 +1,47 @@
+<div class="variant-selector">
+  <div class="variant-selector__group">
+    <span class="variant-selector__label">Tamanho</span>
+    <div class="variant-selector__sizes" role="radiogroup" aria-label="Selecionar tamanho">
+      @for (size of availableSizes(); track size) {
+        <button
+          class="variant-selector__size-btn"
+          [class.variant-selector__size-btn--active]="selected().size === size"
+          [class.variant-selector__size-btn--disabled]="isSizeDisabled(size)"
+          [disabled]="isSizeDisabled(size)"
+          (click)="selectSize(size)"
+          [attr.aria-pressed]="selected().size === size"
+          [attr.aria-label]="'Tamanho ' + size"
+          role="radio"
+          [attr.aria-checked]="selected().size === size"
+        >
+          {{ size }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="variant-selector__group">
+    <span class="variant-selector__label">Cor</span>
+    <div class="variant-selector__colors" role="radiogroup" aria-label="Selecionar cor">
+      @for (color of availableColors(); track color) {
+        <button
+          class="variant-selector__color-btn"
+          [class.variant-selector__color-btn--active]="selected().color === color"
+          [class.variant-selector__color-btn--disabled]="isColorDisabled(color)"
+          [disabled]="isColorDisabled(color)"
+          (click)="selectColor(color)"
+          [attr.aria-pressed]="selected().color === color"
+          [attr.aria-label]="'Cor ' + color"
+          role="radio"
+          [attr.aria-checked]="selected().color === color"
+        >
+          {{ color }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div aria-live="polite" aria-atomic="true" class="variant-selector__announcement">
+    {{ announcementText() }}
+  </div>
+</div>

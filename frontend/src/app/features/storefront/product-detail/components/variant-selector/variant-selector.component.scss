@@ -1,0 +1,77 @@
+@use '../../../../../../styles/variables' as *;
+
+.variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+  }
+
+  &__label {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__sizes,
+  &__colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  &__size-btn,
+  &__color-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: $space-2 $space-4;
+    border: 1px solid $border-default;
+    border-radius: $radius-md;
+    background: $surface-card;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover:not(&--disabled) {
+      border-color: $gold;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+
+    &--active {
+      background: $gold;
+      color: $white;
+      border-color: $gold;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__announcement {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}

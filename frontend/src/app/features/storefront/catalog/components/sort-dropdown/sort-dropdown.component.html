@@ -1,0 +1,14 @@
+<div class="sort-dropdown">
+  <label class="sort-dropdown__label" for="sort-select">Ordenar por</label>
+  <select
+    id="sort-select"
+    class="sort-dropdown__select"
+    [value]="currentSort()"
+    (change)="onSortChange($event)"
+    aria-label="Ordenar produtos"
+  >
+    @for (option of sortOptions; track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+</div>

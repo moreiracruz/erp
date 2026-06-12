@@ -1,0 +1,38 @@
+<div
+  class="image-gallery"
+  tabindex="0"
+  (keydown)="onKeyDown($event)"
+  role="region"
+  aria-label="Galeria de imagens do produto"
+>
+  <div
+    class="image-gallery__primary"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)"
+  >
+    @if (images().length) {
+      <img
+        class="image-gallery__primary-img"
+        [src]="images()[activeIndex]"
+        [alt]="getAltText(activeIndex)"
+      />
+    }
+  </div>
+
+  @if (images().length > 1) {
+    <div class="image-gallery__thumbnails" role="list" aria-label="Miniaturas">
+      @for (img of images(); track img; let i = $index) {
+        <button
+          class="image-gallery__thumbnail"
+          [class.image-gallery__thumbnail--active]="i === activeIndex"
+          (click)="selectImage(i)"
+          role="listitem"
+          [attr.aria-label]="getAltText(i)"
+          [attr.aria-current]="i === activeIndex ? 'true' : null"
+        >
+          <img [src]="img" [alt]="getAltText(i)" />
+        </button>
+      }
+    </div>
+  }
+</div>

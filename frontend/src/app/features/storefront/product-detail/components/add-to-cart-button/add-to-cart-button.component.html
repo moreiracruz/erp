@@ -1,0 +1,16 @@
+<div class="add-to-cart-button">
+  <button
+    class="add-to-cart-button__btn"
+    [disabled]="disabled() || loading()"
+    (click)="onClick()"
+    [attr.aria-busy]="loading()"
+    aria-label="Adicionar ao Carrinho"
+  >
+    @if (loading()) {
+      <span class="add-to-cart-button__spinner" aria-hidden="true"></span>
+      <span>Adicionando...</span>
+    } @else {
+      <span>Adicionar ao Carrinho</span>
+    }
+  </button>
+</div>

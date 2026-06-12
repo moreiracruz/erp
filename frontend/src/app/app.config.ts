@@ -4,8 +4,9 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { jwtInterceptor } from './infrastructure/auth/jwt.interceptor';
-import { AuthPort } from './core/ports';
+import { AuthPort, ProductPort } from './core/ports';
 import { AuthHttpAdapter } from './infrastructure/http/auth-http.adapter';
+import { ProductHttpAdapter } from './infrastructure/http/product-http.adapter';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,5 +16,6 @@ export const appConfig: ApplicationConfig = {
 
     // Hexagonal: bind ports to adapters
     { provide: AuthPort, useClass: AuthHttpAdapter },
+    { provide: ProductPort, useClass: ProductHttpAdapter },
   ],
 };

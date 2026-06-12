@@ -1,0 +1,48 @@
+@if (open()) {
+  <div
+    class="size-guide-modal__overlay"
+    (click)="onOverlayClick($event)"
+    (keydown)="onKeyDown($event)"
+  >
+    <div
+      #dialog
+      class="size-guide-modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="size-guide-title"
+    >
+      <div class="size-guide-modal__header">
+        <h2 id="size-guide-title" class="size-guide-modal__title">Guia de Tamanhos</h2>
+        <button
+          #closeBtn
+          class="size-guide-modal__close-btn"
+          (click)="onCloseClick()"
+          aria-label="Fechar guia de tamanhos"
+        >
+          ✕
+        </button>
+      </div>
+
+      <table class="size-guide-modal__table">
+        <thead>
+          <tr>
+            <th scope="col">Tamanho</th>
+            <th scope="col">Busto</th>
+            <th scope="col">Cintura</th>
+            <th scope="col">Quadril</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of sizes(); track entry.size) {
+            <tr>
+              <td>{{ entry.size }}</td>
+              <td>{{ entry.bust }}</td>
+              <td>{{ entry.waist }}</td>
+              <td>{{ entry.hips }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

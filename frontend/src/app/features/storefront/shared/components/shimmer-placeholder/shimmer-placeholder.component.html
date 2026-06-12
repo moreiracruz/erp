@@ -1,0 +1,10 @@
+<div
+  *ngFor="let item of placeholders"
+  class="shimmer-placeholder"
+  [style.width]="width()"
+  [style.height]="height()"
+  role="status"
+  aria-label="Carregando conteúdo"
+>
+  <span class="shimmer-placeholder__animation"></span>
+</div>

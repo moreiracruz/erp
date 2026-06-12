@@ -1,0 +1,65 @@
+@if (loading()) {
+  <div class="product-detail-page product-detail-page--loading">
+    <div class="product-detail-page__shimmer product-detail-page__shimmer--breadcrumb"></div>
+    <div class="product-detail-page__content">
+      <div class="product-detail-page__shimmer product-detail-page__shimmer--image"></div>
+      <div class="product-detail-page__info-shimmer">
+        <div class="product-detail-page__shimmer product-detail-page__shimmer--title"></div>
+        <div class="product-detail-page__shimmer product-detail-page__shimmer--price"></div>
+        <div class="product-detail-page__shimmer product-detail-page__shimmer--variants"></div>
+      </div>
+    </div>
+  </div>
+} @else if (error()) {
+  <div class="product-detail-page product-detail-page--error">
+    <p class="product-detail-page__error-text">{{ error() }}</p>
+    <a routerLink="/catalog" class="product-detail-page__back-link">Voltar ao catálogo</a>
+  </div>
+} @else if (product(); as prod) {
+  <div class="product-detail-page">
+    <app-breadcrumb [segments]="breadcrumbs()" />
+
+    <div class="product-detail-page__content">
+      <div class="product-detail-page__gallery">
+        <app-image-gallery
+          [images]="productImages()"
+          [currentIndex]="currentImageIndex()"
+          (imageSelect)="onImageSelect($event)"
+        />
+      </div>
+
+      <div class="product-detail-page__info">
+        <h1 class="product-detail-page__title">{{ prod.name }}</h1>
+        <p class="product-detail-page__brand">{{ prod.brand }}</p>
+
+        @if (currentPrice(); as price) {
+          <p class="product-detail-page__price">{{ price | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+        }
+
+        <app-variant-selector
+          [variants]="prod.variants"
+          [selected]="selectedVariant()"
+          (variantChange)="onVariantChange($event)"
+        />
+
+        <button class="product-detail-page__size-guide-btn" (click)="openSizeGuide()">
+          Guia de Tamanhos
+        </button>
+
+        <app-add-to-cart-button
+          [disabled]="addToCartDisabled()"
+          [loading]="addingToCart()"
+          (addToCart)="onAddToCart()"
+        />
+      </div>
+    </div>
+
+    <app-size-guide-modal
+      [sizes]="[]"
+      [open]="sizeGuideOpen()"
+      (close)="closeSizeGuide()"
+    />
+
+    <app-related-products [products]="relatedProducts()" />
+  </div>
+}

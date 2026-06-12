@@ -1,0 +1,46 @@
+@use '../../../../../../styles/variables' as *;
+
+.breadcrumb {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $text-muted;
+
+    span[aria-current='page'] {
+      color: $text-primary;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  &__link {
+    color: $text-muted;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $gold;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+      border-radius: $radius-sm;
+    }
+  }
+
+  &__separator {
+    color: $text-muted;
+    user-select: none;
+  }
+}

@@ -1,0 +1,30 @@
+@use '../../../../../../styles/variables' as *;
+
+.shimmer-placeholder {
+  position: relative;
+  overflow: hidden;
+  border-radius: $radius-md;
+  background-color: $gray-200;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba($white, 0.4) 50%,
+      transparent 100%
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

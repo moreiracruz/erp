@@ -1,0 +1,14 @@
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    @for (segment of segments(); track segment.label; let i = $index) {
+      <li class="breadcrumb__item">
+        @if (isLast(i)) {
+          <span aria-current="page">{{ segment.label }}</span>
+        } @else {
+          <a [routerLink]="segment.path" class="breadcrumb__link">{{ segment.label }}</a>
+          <span class="breadcrumb__separator" aria-hidden="true">›</span>
+        }
+      </li>
+    }
+  </ol>
+</nav>

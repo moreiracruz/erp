@@ -1,0 +1,85 @@
+<div class="catalog-page">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [segments]="breadcrumbs()" />
+
+  <!-- Toolbar -->
+  <div class="catalog-page__toolbar">
+    <div class="catalog-page__toolbar-left">
+      <button
+        class="catalog-page__filter-toggle"
+        type="button"
+        (click)="toggleMobileFilter()"
+        aria-label="Abrir filtros"
+      >
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+        </svg>
+        Filtros
+      </button>
+
+      <button
+        class="catalog-page__search-btn"
+        type="button"
+        (click)="openSearch()"
+        aria-label="Buscar produtos"
+      >
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+      </button>
+    </div>
+
+    <app-sort-dropdown
+      [currentSort]="sort()"
+      (sortChange)="onSortChange($event)"
+    />
+  </div>
+
+  <div class="catalog-page__content">
+    <!-- Filter panel (sidebar on desktop, overlay on mobile) -->
+    <app-filter-panel
+      class="catalog-page__sidebar"
+      [filters]="filters()"
+      [counts]="filterCounts()"
+      [open]="mobileFilterOpen()"
+      (filterChange)="onFilterChange($event)"
+    />
+
+    <!-- Main content area -->
+    <main class="catalog-page__main">
+      @if (error()) {
+        <div class="catalog-page__error" role="alert">
+          <p class="catalog-page__error-message">{{ error() }}</p>
+          <button
+            class="catalog-page__retry-btn"
+            type="button"
+            (click)="retry()"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      } @else if (!loading() && products().length === 0) {
+        <div class="catalog-page__empty">
+          <p class="catalog-page__empty-message">Nenhum produto encontrado</p>
+          <p class="catalog-page__empty-hint">Tente ajustar os filtros ou buscar por outro termo.</p>
+        </div>
+      } @else {
+        <app-product-grid
+          [products]="products()"
+          [loading]="loading()"
+          [hasMore]="hasMore()"
+          (loadMore)="onLoadMore()"
+          (productNavigate)="onProductNavigate($event)"
+        />
+      }
+    </main>
+  </div>
+
+  <!-- Search overlay -->
+  <app-search-overlay
+    [open]="searchOpen()"
+    [suggestions]="searchResults()"
+    (search)="onSearch($event)"
+    (close)="onSearchClose()"
+  />
+</div>

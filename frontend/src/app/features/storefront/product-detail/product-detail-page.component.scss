@@ -1,0 +1,174 @@
+@use '../../../../styles/variables' as *;
+
+.product-detail-page {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: $space-6 $container-padding;
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-10;
+
+    @media (max-width: #{$breakpoint-md - 1}) {
+      grid-template-columns: 1fr;
+      gap: $space-6;
+    }
+  }
+
+  &__gallery {
+    position: sticky;
+    top: $space-6;
+    align-self: start;
+
+    @media (max-width: #{$breakpoint-md - 1}) {
+      position: static;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-6;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+    line-height: $line-height-tight;
+  }
+
+  &__brand {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  &__price {
+    font-family: $font-body;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  &__size-guide-btn {
+    align-self: flex-start;
+    padding: 0;
+    border: none;
+    background: none;
+    color: $text-accent;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    text-decoration: underline;
+    cursor: pointer;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: darken($gold, 10%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+  }
+
+  // Error state
+  &--error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    gap: $space-4;
+  }
+
+  &__error-text {
+    font-family: $font-body;
+    font-size: $font-size-lg;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  &__back-link {
+    font-family: $font-body;
+    font-size: $font-size-base;
+    color: $text-accent;
+    text-decoration: underline;
+
+    &:hover {
+      color: darken($gold, 10%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+  }
+
+  // Shimmer loading
+  &--loading {
+    gap: $space-4;
+  }
+
+  &__shimmer {
+    background: linear-gradient(90deg, $gray-100 25%, $gray-200 50%, $gray-100 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: $radius-md;
+
+    &--breadcrumb {
+      height: 20px;
+      width: 200px;
+    }
+
+    &--image {
+      aspect-ratio: 1;
+      width: 100%;
+      border-radius: $radius-lg;
+    }
+
+    &--title {
+      height: 36px;
+      width: 70%;
+    }
+
+    &--price {
+      height: 28px;
+      width: 120px;
+    }
+
+    &--variants {
+      height: 80px;
+      width: 100%;
+    }
+  }
+
+  &__info-shimmer {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}

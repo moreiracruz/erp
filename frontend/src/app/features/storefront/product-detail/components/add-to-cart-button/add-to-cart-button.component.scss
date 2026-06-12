@@ -1,0 +1,66 @@
+@use '../../../../../../styles/variables' as *;
+
+.add-to-cart-button {
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-3;
+    width: 100%;
+    min-height: 52px;
+    padding: $space-4 $space-8;
+    border: none;
+    border-radius: $radius-md;
+    background: $gold;
+    color: $brown-dark;
+    font-family: $font-body;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover:not(:disabled) {
+      background: darken($gold, 8%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: $brown-dark;
+    border-radius: $radius-full;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@media (max-width: #{$breakpoint-md - 1}) {
+  .add-to-cart-button {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: $space-4;
+    background: $surface-card;
+    box-shadow: $shadow-lg;
+    z-index: $z-sticky;
+  }
+}

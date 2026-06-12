@@ -1,0 +1,146 @@
+@use '../../../../../../styles/variables' as *;
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-overlay;
+  background: $surface-overlay;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: $space-16;
+
+  &__container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 $space-4;
+    background: $surface-card;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-xl;
+    overflow: hidden;
+  }
+
+  &__input-wrapper {
+    display: flex;
+    align-items: center;
+    padding: $space-3 $space-4;
+    gap: $space-2;
+    border-bottom: 1px solid $border-subtle;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: $text-muted;
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: $font-body;
+    font-size: $font-size-lg;
+    color: $text-primary;
+    background: transparent;
+
+    &::placeholder {
+      color: $text-muted;
+    }
+
+    // Remove default search X button
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  &__close-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: $radius-full;
+    background: $gray-100;
+    color: $text-secondary;
+    font-size: $font-size-base;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $gray-200;
+      color: $text-primary;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $gold;
+      outline-offset: 2px;
+    }
+  }
+
+  &__suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  &__suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-3 $space-4;
+    cursor: pointer;
+    transition: background $transition-fast;
+
+    &:hover,
+    &--active {
+      background: $gray-50;
+    }
+
+    &--active {
+      outline: 2px solid $gold;
+      outline-offset: -2px;
+    }
+  }
+
+  &__suggestion-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: $radius-sm;
+    border: 1px solid $border-subtle;
+  }
+
+  &__suggestion-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__suggestion-name {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__suggestion-category {
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+
+  &__suggestion-price {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $gold;
+    white-space: nowrap;
+  }
+}

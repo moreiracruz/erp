@@ -1,0 +1,187 @@
+<aside
+  class="filter-panel"
+  [class.filter-panel--open]="open()"
+  role="region"
+  aria-label="Filtros de produtos"
+>
+  <!-- Clear filters button -->
+  @if (hasActiveFilters()) {
+    <button
+      class="filter-panel__clear-btn"
+      type="button"
+      (click)="clearAllFilters()"
+    >
+      Limpar filtros
+    </button>
+  }
+
+  <!-- Category section -->
+  <div class="filter-panel__section">
+    <button
+      class="filter-panel__section-header"
+      type="button"
+      [attr.aria-expanded]="isSectionExpanded('category')"
+      aria-controls="filter-category-content"
+      (click)="toggleSection('category')"
+    >
+      <span class="filter-panel__section-title">Categoria</span>
+      <span class="filter-panel__section-icon" [class.filter-panel__section-icon--expanded]="isSectionExpanded('category')">
+        &#9662;
+      </span>
+    </button>
+
+    @if (isSectionExpanded('category')) {
+      <div id="filter-category-content" class="filter-panel__section-content" role="group" aria-label="Filtros por categoria">
+        @for (category of getCategoryKeys(); track category) {
+          <label class="filter-panel__checkbox">
+            <input
+              type="checkbox"
+              [checked]="isCategorySelected(category)"
+              (change)="toggleCategory(category)"
+            />
+            <span class="filter-panel__checkbox-label">{{ category }}</span>
+            <span class="filter-panel__count-badge">{{ counts().categories[category] }}</span>
+          </label>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Size section -->
+  <div class="filter-panel__section">
+    <button
+      class="filter-panel__section-header"
+      type="button"
+      [attr.aria-expanded]="isSectionExpanded('size')"
+      aria-controls="filter-size-content"
+      (click)="toggleSection('size')"
+    >
+      <span class="filter-panel__section-title">Tamanho</span>
+      <span class="filter-panel__section-icon" [class.filter-panel__section-icon--expanded]="isSectionExpanded('size')">
+        &#9662;
+      </span>
+    </button>
+
+    @if (isSectionExpanded('size')) {
+      <div id="filter-size-content" class="filter-panel__section-content" role="group" aria-label="Filtros por tamanho">
+        <div class="filter-panel__size-buttons">
+          @for (size of getSizeKeys(); track size) {
+            <button
+              type="button"
+              class="filter-panel__size-btn"
+              [class.filter-panel__size-btn--active]="isSizeSelected(size)"
+              [attr.aria-pressed]="isSizeSelected(size)"
+              (click)="toggleSize(size)"
+            >
+              {{ size }}
+              <span class="filter-panel__count-badge">{{ counts().sizes[size] }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Color section -->
+  <div class="filter-panel__section">
+    <button
+      class="filter-panel__section-header"
+      type="button"
+      [attr.aria-expanded]="isSectionExpanded('color')"
+      aria-controls="filter-color-content"
+      (click)="toggleSection('color')"
+    >
+      <span class="filter-panel__section-title">Cor</span>
+      <span class="filter-panel__section-icon" [class.filter-panel__section-icon--expanded]="isSectionExpanded('color')">
+        &#9662;
+      </span>
+    </button>
+
+    @if (isSectionExpanded('color')) {
+      <div id="filter-color-content" class="filter-panel__section-content" role="group" aria-label="Filtros por cor">
+        <div class="filter-panel__color-swatches">
+          @for (color of getColorKeys(); track color) {
+            <button
+              type="button"
+              class="filter-panel__color-swatch"
+              [class.filter-panel__color-swatch--active]="isColorSelected(color)"
+              [attr.aria-pressed]="isColorSelected(color)"
+              [attr.aria-label]="color"
+              [title]="color"
+              (click)="toggleColor(color)"
+            >
+              <span class="filter-panel__color-swatch-inner" [style.background-color]="color"></span>
+              <span class="filter-panel__count-badge">{{ counts().colors[color] }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Price range section -->
+  <div class="filter-panel__section">
+    <button
+      class="filter-panel__section-header"
+      type="button"
+      [attr.aria-expanded]="isSectionExpanded('price')"
+      aria-controls="filter-price-content"
+      (click)="toggleSection('price')"
+    >
+      <span class="filter-panel__section-title">Faixa de preço</span>
+      <span class="filter-panel__section-icon" [class.filter-panel__section-icon--expanded]="isSectionExpanded('price')">
+        &#9662;
+      </span>
+    </button>
+
+    @if (isSectionExpanded('price')) {
+      <div id="filter-price-content" class="filter-panel__section-content" role="group" aria-label="Filtros por faixa de preço">
+        <div class="filter-panel__price-inputs">
+          <label class="filter-panel__price-field">
+            <span class="filter-panel__price-label">Mín</span>
+            <input
+              type="number"
+              class="filter-panel__price-input"
+              [value]="priceMin"
+              (input)="priceMin = $any($event.target).value"
+              placeholder="0"
+              min="0"
+              aria-label="Preço mínimo"
+            />
+          </label>
+          <span class="filter-panel__price-separator">–</span>
+          <label class="filter-panel__price-field">
+            <span class="filter-panel__price-label">Máx</span>
+            <input
+              type="number"
+              class="filter-panel__price-input"
+              [value]="priceMax"
+              (input)="priceMax = $any($event.target).value"
+              placeholder="999"
+              min="0"
+              aria-label="Preço máximo"
+            />
+          </label>
+        </div>
+        <div class="filter-panel__price-actions">
+          <button
+            type="button"
+            class="filter-panel__price-apply"
+            (click)="applyPriceRange()"
+          >
+            Aplicar
+          </button>
+          @if (filters().priceRange !== null) {
+            <button
+              type="button"
+              class="filter-panel__price-clear"
+              (click)="clearPriceRange()"
+            >
+              Limpar
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</aside>
