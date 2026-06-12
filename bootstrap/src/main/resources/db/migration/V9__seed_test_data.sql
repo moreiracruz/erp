@@ -26,48 +26,48 @@ INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES
   ('a1b2c3d4-1111-4000-a000-000000000010', 'Camiseta Basic Algodão', 'Reino & Flor', 'Camisetas', true, NOW());
 
 -- ============================================================================
--- VARIANTES
+-- VARIANTES (reference produtos by uuid via subquery)
 -- ============================================================================
 INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES
   -- Vestido Floral Primavera
-  (gen_random_uuid(), 1, 'VFP-P-ROSA', 'P', 'Rosa', '7891000000101', 289.90, 120.00, true),
-  (gen_random_uuid(), 1, 'VFP-M-ROSA', 'M', 'Rosa', '7891000000102', 289.90, 120.00, true),
-  (gen_random_uuid(), 1, 'VFP-G-ROSA', 'G', 'Rosa', '7891000000103', 289.90, 120.00, true),
-  (gen_random_uuid(), 1, 'VFP-M-AZUL', 'M', 'Azul', '7891000000104', 299.90, 125.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000001'), 'VFP-P-ROSA', 'P', 'Rosa', '7891000000101', 289.90, 120.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000001'), 'VFP-M-ROSA', 'M', 'Rosa', '7891000000102', 289.90, 120.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000001'), 'VFP-G-ROSA', 'G', 'Rosa', '7891000000103', 289.90, 120.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000001'), 'VFP-M-AZUL', 'M', 'Azul', '7891000000104', 299.90, 125.00, true),
   -- Blusa Seda Natural
-  (gen_random_uuid(), 2, 'BSN-P-BEGE', 'P', 'Bege', '7891000000201', 189.90, 75.00, true),
-  (gen_random_uuid(), 2, 'BSN-M-BEGE', 'M', 'Bege', '7891000000202', 189.90, 75.00, true),
-  (gen_random_uuid(), 2, 'BSN-G-BEGE', 'G', 'Bege', '7891000000203', 189.90, 75.00, true),
-  (gen_random_uuid(), 2, 'BSN-M-PRETO', 'M', 'Preto', '7891000000204', 189.90, 75.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000002'), 'BSN-P-BEGE', 'P', 'Bege', '7891000000201', 189.90, 75.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000002'), 'BSN-M-BEGE', 'M', 'Bege', '7891000000202', 189.90, 75.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000002'), 'BSN-G-BEGE', 'G', 'Bege', '7891000000203', 189.90, 75.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000002'), 'BSN-M-PRETO', 'M', 'Preto', '7891000000204', 189.90, 75.00, true),
   -- Saia Midi Linho
-  (gen_random_uuid(), 3, 'SML-P-BEGE', 'P', 'Bege', '7891000000301', 219.90, 90.00, true),
-  (gen_random_uuid(), 3, 'SML-M-BEGE', 'M', 'Bege', '7891000000302', 219.90, 90.00, true),
-  (gen_random_uuid(), 3, 'SML-G-VERDE', 'G', 'Verde', '7891000000303', 229.90, 95.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000003'), 'SML-P-BEGE', 'P', 'Bege', '7891000000301', 219.90, 90.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000003'), 'SML-M-BEGE', 'M', 'Bege', '7891000000302', 219.90, 90.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000003'), 'SML-G-VERDE', 'G', 'Verde', '7891000000303', 229.90, 95.00, true),
   -- Vestido Renda Dourada
-  (gen_random_uuid(), 4, 'VRD-P-DOURADO', 'P', 'Dourado', '7891000000401', 349.90, 145.00, true),
-  (gen_random_uuid(), 4, 'VRD-M-DOURADO', 'M', 'Dourado', '7891000000402', 349.90, 145.00, true),
-  (gen_random_uuid(), 4, 'VRD-G-DOURADO', 'G', 'Dourado', '7891000000403', 349.90, 145.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000004'), 'VRD-P-DOURADO', 'P', 'Dourado', '7891000000401', 349.90, 145.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000004'), 'VRD-M-DOURADO', 'M', 'Dourado', '7891000000402', 349.90, 145.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000004'), 'VRD-G-DOURADO', 'G', 'Dourado', '7891000000403', 349.90, 145.00, true),
   -- Conjunto Elegance
-  (gen_random_uuid(), 5, 'CE-P-PRETO', 'P', 'Preto', '7891000000501', 459.90, 190.00, true),
-  (gen_random_uuid(), 5, 'CE-M-PRETO', 'M', 'Preto', '7891000000502', 459.90, 190.00, true),
-  (gen_random_uuid(), 5, 'CE-G-MARROM', 'G', 'Marrom', '7891000000503', 479.90, 200.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000005'), 'CE-P-PRETO', 'P', 'Preto', '7891000000501', 459.90, 190.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000005'), 'CE-M-PRETO', 'M', 'Preto', '7891000000502', 459.90, 190.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000005'), 'CE-G-MARROM', 'G', 'Marrom', '7891000000503', 479.90, 200.00, true),
   -- Blusa Bordada Artesanal
-  (gen_random_uuid(), 6, 'BBA-P-BRANCO', 'P', 'Branco', '7891000000601', 159.90, 65.00, true),
-  (gen_random_uuid(), 6, 'BBA-M-BRANCO', 'M', 'Branco', '7891000000602', 159.90, 65.00, true),
-  (gen_random_uuid(), 6, 'BBA-G-BRANCO', 'G', 'Branco', '7891000000603', 159.90, 65.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000006'), 'BBA-P-BRANCO', 'P', 'Branco', '7891000000601', 159.90, 65.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000006'), 'BBA-M-BRANCO', 'M', 'Branco', '7891000000602', 159.90, 65.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000006'), 'BBA-G-BRANCO', 'G', 'Branco', '7891000000603', 159.90, 65.00, true),
   -- Calça Pantalona
-  (gen_random_uuid(), 7, 'CPL-M-BEGE', 'M', 'Bege', '7891000000701', 249.90, 100.00, true),
-  (gen_random_uuid(), 7, 'CPL-G-BEGE', 'G', 'Bege', '7891000000702', 249.90, 100.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000007'), 'CPL-M-BEGE', 'M', 'Bege', '7891000000701', 249.90, 100.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000007'), 'CPL-G-BEGE', 'G', 'Bege', '7891000000702', 249.90, 100.00, true),
   -- Jaqueta Couro Eco
-  (gen_random_uuid(), 8, 'JCE-M-PRETO', 'M', 'Preto', '7891000000801', 399.90, 170.00, true),
-  (gen_random_uuid(), 8, 'JCE-G-PRETO', 'G', 'Preto', '7891000000802', 399.90, 170.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000008'), 'JCE-M-PRETO', 'M', 'Preto', '7891000000801', 399.90, 170.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000008'), 'JCE-G-PRETO', 'G', 'Preto', '7891000000802', 399.90, 170.00, true),
   -- Shorts Alfaiataria
-  (gen_random_uuid(), 9, 'SA-P-PRETO', 'P', 'Preto', '7891000000901', 149.90, 60.00, true),
-  (gen_random_uuid(), 9, 'SA-M-BEGE', 'M', 'Bege', '7891000000902', 149.90, 60.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000009'), 'SA-P-PRETO', 'P', 'Preto', '7891000000901', 149.90, 60.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000009'), 'SA-M-BEGE', 'M', 'Bege', '7891000000902', 149.90, 60.00, true),
   -- Camiseta Basic
-  (gen_random_uuid(), 10, 'CB-P-BRANCO', 'P', 'Branco', '7891000001001', 79.90, 30.00, true),
-  (gen_random_uuid(), 10, 'CB-M-PRETO', 'M', 'Preto', '7891000001002', 79.90, 30.00, true),
-  (gen_random_uuid(), 10, 'CB-G-BEGE', 'G', 'Bege', '7891000001003', 79.90, 30.00, true);
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000010'), 'CB-P-BRANCO', 'P', 'Branco', '7891000001001', 79.90, 30.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000010'), 'CB-M-PRETO', 'M', 'Preto', '7891000001002', 79.90, 30.00, true),
+  (gen_random_uuid(), (SELECT id FROM produtos WHERE uuid = 'a1b2c3d4-1111-4000-a000-000000000010'), 'CB-G-BEGE', 'G', 'Bege', '7891000001003', 79.90, 30.00, true);
 
 -- ============================================================================
 -- ESTOQUE
