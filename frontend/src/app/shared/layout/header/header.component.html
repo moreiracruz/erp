@@ -8,7 +8,7 @@
     <!-- Desktop Navigation -->
     <nav class="header__nav" aria-label="Navegação principal">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="header__nav-link">Início</a>
-      <a routerLink="/catalogo" routerLinkActive="active" class="header__nav-link">Coleção</a>
+      <a routerLink="/catalog" routerLinkActive="active" class="header__nav-link">Coleção</a>
       <a routerLink="/sobre" routerLinkActive="active" class="header__nav-link">Sobre</a>
       <a routerLink="/contato" routerLinkActive="active" class="header__nav-link">Contato</a>
     </nav>
@@ -45,7 +45,7 @@
   @if (mobileMenuOpen()) {
     <nav class="header__mobile-menu" aria-label="Menu mobile">
       <a routerLink="/" (click)="closeMenu()" class="header__mobile-link">Início</a>
-      <a routerLink="/catalogo" (click)="closeMenu()" class="header__mobile-link">Coleção</a>
+      <a routerLink="/catalog" (click)="closeMenu()" class="header__mobile-link">Coleção</a>
       <a routerLink="/sobre" (click)="closeMenu()" class="header__mobile-link">Sobre</a>
       <a routerLink="/contato" (click)="closeMenu()" class="header__mobile-link">Contato</a>
       <a routerLink="/auth/login" (click)="closeMenu()" class="header__mobile-link header__mobile-link--cta">Entrar</a>
