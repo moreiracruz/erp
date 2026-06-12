@@ -1,0 +1,65 @@
+<div class="orders-page">
+  <div class="page-header">
+    <h2>Meus Pedidos</h2>
+  </div>
+
+  <div class="orders-list" *ngIf="orders().length > 0; else emptyState">
+    <div
+      *ngFor="let order of orders()"
+      class="order-card"
+      [class.expanded]="expandedOrderId() === order.id"
+    >
+      <button
+        class="order-summary"
+        (click)="toggleOrder(order.id)"
+        [attr.aria-expanded]="expandedOrderId() === order.id"
+        [attr.aria-controls]="'order-details-' + order.id"
+      >
+        <div class="order-info">
+          <span class="order-number">{{ order.orderNumber }}</span>
+          <span class="order-date">{{ formatDate(order.date) }}</span>
+        </div>
+        <div class="order-meta">
+          <span class="status-badge" [class]="'status-' + order.status">
+            {{ getStatusLabel(order.status) }}
+          </span>
+          <span class="order-total">{{ formatCurrency(order.total) }}</span>
+        </div>
+        <span class="expand-icon" [class.rotated]="expandedOrderId() === order.id">▾</span>
+      </button>
+
+      <div
+        class="order-details"
+        [id]="'order-details-' + order.id"
+        *ngIf="expandedOrderId() === order.id"
+        role="region"
+        [attr.aria-label]="'Detalhes do pedido ' + order.orderNumber"
+      >
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Qtd</th>
+              <th>Preço</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items">
+              <td>{{ item.productName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ formatCurrency(item.price) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <span class="empty-icon">📦</span>
+      <p>Você ainda não fez pedidos</p>
+      <a href="/" class="btn-browse">Explorar produtos</a>
+    </div>
+  </ng-template>
+</div>

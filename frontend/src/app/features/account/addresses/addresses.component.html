@@ -1,0 +1,97 @@
+<div class="addresses-page">
+  <div class="page-header">
+    <h2>Meus Endereços</h2>
+    <button class="btn-add" (click)="openForm()" *ngIf="!showForm()">
+      <span>+</span> Novo endereço
+    </button>
+  </div>
+
+  <div class="addresses-grid" *ngIf="addresses().length > 0; else emptyState">
+    <div *ngFor="let address of addresses(); trackBy: trackById" class="address-card">
+      <div class="address-content">
+        <p>{{ address.street }}, {{ address.number }}</p>
+        <p *ngIf="address.complement">{{ address.complement }}</p>
+        <p>{{ address.neighborhood }} — {{ address.city }}/{{ address.state }}</p>
+        <p class="address-cep">CEP: {{ address.cep }}</p>
+      </div>
+      <div class="address-actions">
+        <button class="btn-action edit" (click)="editAddress(address)" aria-label="Editar endereço">
+          Editar
+        </button>
+        <button class="btn-action delete" (click)="deleteAddress(address.id)" aria-label="Excluir endereço">
+          Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state" *ngIf="!showForm()">
+      <span class="empty-icon">📍</span>
+      <p>Nenhum endereço cadastrado</p>
+    </div>
+  </ng-template>
+
+  <div class="address-form-wrapper" *ngIf="showForm()">
+    <h3 class="form-title">{{ editingId() ? 'Editar endereço' : 'Novo endereço' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="onSave()" class="address-form" novalidate>
+      <div class="form-field full-width">
+        <label for="street">Rua</label>
+        <input id="street" type="text" formControlName="street" placeholder="Nome da rua" />
+        <span class="field-error" *ngIf="form.get('street')?.invalid && form.get('street')?.touched">
+          Rua é obrigatória
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="number">Número</label>
+        <input id="number" type="text" formControlName="number" placeholder="Nº" />
+        <span class="field-error" *ngIf="form.get('number')?.invalid && form.get('number')?.touched">
+          Número é obrigatório
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="complement">Complemento</label>
+        <input id="complement" type="text" formControlName="complement" placeholder="Apto, bloco..." />
+      </div>
+
+      <div class="form-field">
+        <label for="neighborhood">Bairro</label>
+        <input id="neighborhood" type="text" formControlName="neighborhood" placeholder="Bairro" />
+        <span class="field-error" *ngIf="form.get('neighborhood')?.invalid && form.get('neighborhood')?.touched">
+          Bairro é obrigatório
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="city">Cidade</label>
+        <input id="city" type="text" formControlName="city" placeholder="Cidade" />
+        <span class="field-error" *ngIf="form.get('city')?.invalid && form.get('city')?.touched">
+          Cidade é obrigatória
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="state">Estado</label>
+        <input id="state" type="text" formControlName="state" placeholder="UF" maxlength="2" />
+        <span class="field-error" *ngIf="form.get('state')?.invalid && form.get('state')?.touched">
+          Estado é obrigatório
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="cep">CEP</label>
+        <input id="cep" type="text" formControlName="cep" placeholder="00000-000" />
+        <span class="field-error" *ngIf="form.get('cep')?.invalid && form.get('cep')?.touched">
+          CEP é obrigatório
+        </span>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closeForm()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

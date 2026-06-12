@@ -1,0 +1,116 @@
+@use '../../../styles/variables' as *;
+
+.account-layout {
+  display: flex;
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: $space-8 $container-padding;
+  min-height: calc(100vh - 200px);
+  gap: $space-8;
+}
+
+.account-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid $border-subtle;
+  padding-right: $space-6;
+
+  .sidebar-title {
+    font-family: $font-display;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0 0 $space-6;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-3 $space-4;
+    border-radius: $radius-md;
+    text-decoration: none;
+    color: $text-secondary;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    transition: all $transition-fast;
+    border-left: 3px solid transparent;
+
+    &:hover {
+      color: $text-primary;
+      background-color: $gray-50;
+    }
+
+    &.active {
+      color: $text-primary;
+      background-color: $gray-50;
+      border-left-color: $gold;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  .nav-icon {
+    font-size: $font-size-lg;
+  }
+}
+
+.account-tabs {
+  display: none;
+}
+
+.account-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: $breakpoint-md) {
+  .account-layout {
+    flex-direction: column;
+    padding: $space-4 $container-padding;
+    gap: $space-4;
+  }
+
+  .account-sidebar {
+    display: none;
+  }
+
+  .account-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: $space-2;
+    padding-bottom: $space-3;
+    border-bottom: 1px solid $border-subtle;
+    -webkit-overflow-scrolling: touch;
+
+    .tab-item {
+      display: flex;
+      align-items: center;
+      gap: $space-2;
+      padding: $space-2 $space-4;
+      border-radius: $radius-full;
+      text-decoration: none;
+      color: $text-secondary;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      white-space: nowrap;
+      transition: all $transition-fast;
+      border: 1px solid $border-subtle;
+
+      &.active {
+        color: $text-primary;
+        background-color: $beige-light;
+        border-color: $gold;
+      }
+    }
+
+    .tab-icon {
+      font-size: $font-size-base;
+    }
+  }
+}

@@ -1,0 +1,96 @@
+<div class="profile-page">
+  <div class="page-header">
+    <h2>Meu Perfil</h2>
+    <button
+      *ngIf="!editing()"
+      class="btn-edit"
+      (click)="toggleEdit()"
+      aria-label="Editar perfil"
+    >
+      Editar
+    </button>
+  </div>
+
+  <div class="profile-card" *ngIf="!editing()">
+    <div class="profile-field">
+      <span class="field-label">Nome completo</span>
+      <span class="field-value">{{ profile().fullName }}</span>
+    </div>
+    <div class="profile-field">
+      <span class="field-label">E-mail</span>
+      <span class="field-value">{{ profile().email }}</span>
+    </div>
+    <div class="profile-field">
+      <span class="field-label">Telefone</span>
+      <span class="field-value">{{ profile().phone || '—' }}</span>
+    </div>
+    <div class="profile-field">
+      <span class="field-label">CPF</span>
+      <span class="field-value">{{ maskedCpf() }}</span>
+    </div>
+  </div>
+
+  <form
+    *ngIf="editing()"
+    [formGroup]="form"
+    (ngSubmit)="onSave()"
+    class="profile-form"
+    novalidate
+  >
+    <div class="form-field">
+      <label for="fullName">Nome completo</label>
+      <input
+        id="fullName"
+        type="text"
+        formControlName="fullName"
+        placeholder="Seu nome completo"
+      />
+      <span
+        class="field-error"
+        *ngIf="form.get('fullName')?.invalid && form.get('fullName')?.touched"
+      >
+        Nome é obrigatório
+      </span>
+    </div>
+
+    <div class="form-field">
+      <label for="email">E-mail</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        [readonly]="true"
+        class="readonly"
+      />
+      <span class="field-hint">O e-mail não pode ser alterado</span>
+    </div>
+
+    <div class="form-field">
+      <label for="phone">Telefone</label>
+      <input
+        id="phone"
+        type="tel"
+        formControlName="phone"
+        placeholder="(00) 00000-0000"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="toggleEdit()">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="form.invalid || saving()"
+      >
+        <span *ngIf="!saving()">Salvar</span>
+        <span *ngIf="saving()">Salvando...</span>
+      </button>
+    </div>
+  </form>
+
+  <div class="success-message" *ngIf="successMsg()" role="alert">
+    {{ successMsg() }}
+  </div>
+</div>

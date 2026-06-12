@@ -1,0 +1,239 @@
+@use '../../../../styles/variables' as *;
+
+.addresses-page {
+  background: $surface-card;
+  border-radius: $radius-lg;
+  padding: $space-8;
+  box-shadow: $shadow-sm;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $space-6;
+
+  h2 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+  }
+}
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  background: $gold;
+  color: $white;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: darken($gold, 8%);
+  }
+}
+
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $space-4;
+}
+
+.address-card {
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: $space-5;
+  transition: border-color $transition-fast;
+
+  &:hover {
+    border-color: $gold;
+  }
+}
+
+.address-content {
+  margin-bottom: $space-4;
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $text-primary;
+    line-height: $line-height-relaxed;
+  }
+
+  .address-cep {
+    color: $text-muted;
+    margin-top: $space-1;
+  }
+}
+
+.address-actions {
+  display: flex;
+  gap: $space-3;
+  border-top: 1px solid $border-subtle;
+  padding-top: $space-3;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  padding: $space-1 $space-2;
+  border-radius: $radius-sm;
+  transition: all $transition-fast;
+
+  &.edit {
+    color: $gold;
+    &:hover {
+      background: rgba($gold, 0.1);
+    }
+  }
+
+  &.delete {
+    color: $error;
+    &:hover {
+      background: rgba($error, 0.1);
+    }
+  }
+}
+
+// Inline form
+.address-form-wrapper {
+  margin-top: $space-6;
+  border: 1px solid $gold;
+  border-radius: $radius-md;
+  padding: $space-6;
+  background: $gray-50;
+}
+
+.form-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0 0 $space-5;
+}
+
+.address-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+  }
+
+  input {
+    padding: $space-3 $space-4;
+    border: 1px solid $border-default;
+    border-radius: $radius-md;
+    font-size: $font-size-base;
+    color: $text-primary;
+    transition: border-color $transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: $gold;
+    }
+  }
+
+  .field-error {
+    font-size: $font-size-sm;
+    color: $error;
+  }
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: $space-3;
+  margin-top: $space-3;
+}
+
+.btn-primary {
+  padding: $space-3 $space-6;
+  background: $gold;
+  color: $white;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: darken($gold, 8%);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  padding: $space-3 $space-6;
+  background: transparent;
+  color: $text-secondary;
+  border: 1px solid $border-default;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $text-secondary;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: $space-12 $space-4;
+
+  .empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: $space-4;
+  }
+
+  p {
+    font-size: $font-size-base;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .addresses-page {
+    padding: $space-5;
+  }
+
+  .addresses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .address-form {
+    grid-template-columns: 1fr;
+  }
+}

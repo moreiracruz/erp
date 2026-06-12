@@ -1,0 +1,201 @@
+@use '../../../../styles/variables' as *;
+
+.orders-page {
+  background: $surface-card;
+  border-radius: $radius-lg;
+  padding: $space-8;
+  box-shadow: $shadow-sm;
+}
+
+.page-header {
+  margin-bottom: $space-6;
+
+  h2 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+  }
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.order-card {
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  overflow: hidden;
+  transition: border-color $transition-fast;
+
+  &.expanded {
+    border-color: $gold;
+  }
+}
+
+.order-summary {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: $space-4 $space-5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: $space-4;
+  text-align: left;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $gray-50;
+  }
+}
+
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  flex: 1;
+
+  .order-number {
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    font-size: $font-size-base;
+  }
+
+  .order-date {
+    font-size: $font-size-sm;
+    color: $text-muted;
+  }
+}
+
+.order-meta {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+
+  .order-total {
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    font-size: $font-size-base;
+  }
+}
+
+.status-badge {
+  padding: $space-1 $space-3;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.status-processing {
+    background: rgba($gold, 0.15);
+    color: darken($gold, 10%);
+  }
+
+  &.status-shipped {
+    background: rgba($olive-green, 0.15);
+    color: $olive-green;
+  }
+
+  &.status-delivered {
+    background: rgba($brown-dark, 0.1);
+    color: $brown-dark;
+  }
+}
+
+.expand-icon {
+  font-size: $font-size-lg;
+  color: $text-muted;
+  transition: transform $transition-fast;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+.order-details {
+  padding: 0 $space-5 $space-5;
+  border-top: 1px solid $border-subtle;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: $space-3;
+
+  th {
+    text-align: left;
+    font-size: $font-size-xs;
+    color: $text-muted;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: $space-2 $space-3;
+    border-bottom: 1px solid $border-subtle;
+  }
+
+  td {
+    padding: $space-3;
+    font-size: $font-size-sm;
+    color: $text-primary;
+    border-bottom: 1px solid $gray-100;
+  }
+
+  th:last-child,
+  td:last-child {
+    text-align: right;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: $space-16 $space-4;
+
+  .empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: $space-4;
+  }
+
+  p {
+    font-size: $font-size-lg;
+    color: $text-secondary;
+    margin: 0 0 $space-6;
+  }
+
+  .btn-browse {
+    display: inline-block;
+    padding: $space-3 $space-6;
+    background: $gold;
+    color: $white;
+    text-decoration: none;
+    border-radius: $radius-md;
+    font-weight: $font-weight-semibold;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background: darken($gold, 8%);
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .orders-page {
+    padding: $space-5;
+  }
+
+  .order-summary {
+    flex-wrap: wrap;
+    padding: $space-3 $space-4;
+  }
+
+  .order-meta {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $space-2;
+  }
+}
