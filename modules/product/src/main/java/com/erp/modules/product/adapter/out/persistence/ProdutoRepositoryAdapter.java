@@ -4,6 +4,7 @@ import com.erp.modules.product.domain.model.Produto;
 import com.erp.modules.product.domain.port.out.ProdutoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +22,11 @@ public class ProdutoRepositoryAdapter implements ProdutoRepository {
 
     public ProdutoRepositoryAdapter(ProdutoJpaRepository jpaRepo) {
         this.jpaRepo = jpaRepo;
+    }
+
+    @Override
+    public List<Produto> findAllActive() {
+        return jpaRepo.findByActiveTrue().stream().map(this::toDomain).toList();
     }
 
     @Override

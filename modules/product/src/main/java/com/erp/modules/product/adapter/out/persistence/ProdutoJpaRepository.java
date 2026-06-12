@@ -12,6 +12,8 @@ import java.util.UUID;
  */
 interface ProdutoJpaRepository extends JpaRepository<ProdutoJpaEntity, Long> {
 
+    java.util.List<ProdutoJpaEntity> findByActiveTrue();
+
     Optional<ProdutoJpaEntity> findByUuid(UUID uuid);
 
     boolean existsByNameIgnoreCaseAndActiveTrue(String name);

@@ -70,13 +70,20 @@ public class ProductController {
     }
 
     /**
-     * Retrieves a product by its public UUID.
+     * Lists all active products (public endpoint for storefront).
+     */
+    @GetMapping
+    public java.util.List<ProdutoResponse> findAll() {
+        return getProductUseCase.findAll();
+    }
+
+    /**
+     * Retrieves a product by its public UUID (public endpoint).
      *
      * @param uuid the product's UUID
      * @return the product, or 404 if not found
      */
     @GetMapping("/{uuid}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_STOCK')")
     public ProdutoResponse findByUuid(@PathVariable UUID uuid) {
         return getProductUseCase.findByUuid(uuid);
     }

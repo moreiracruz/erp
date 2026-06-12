@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AuthPort } from '../../core/ports';
 import { LoginCredentials, RegisterData, TokenPair, User } from '../../core/models';
 import { environment } from '../../../environments/environment';
@@ -18,7 +18,12 @@ export class AuthHttpAdapter extends AuthPort {
   }
 
   register(data: RegisterData): Observable<TokenPair> {
-    return this.http.post<TokenPair>(`${this.baseUrl}/register`, data);
+    // Mock: backend register endpoint not ready yet
+    return of({
+      accessToken: 'mock-access-token',
+      refreshToken: 'mock-refresh-token',
+      expiresIn: 3600,
+    });
   }
 
   refresh(refreshToken: string): Observable<TokenPair> {
@@ -34,6 +39,7 @@ export class AuthHttpAdapter extends AuthPort {
   }
 
   recoverPassword(email: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/recover`, { email });
+    // Mock: backend recover-password endpoint not ready yet
+    return of(undefined);
   }
 }

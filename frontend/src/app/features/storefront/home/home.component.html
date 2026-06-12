@@ -6,7 +6,7 @@
     <h1 class="hero__title">Elegância que<br>conta histórias</h1>
     <p class="hero__subtitle">Peças exclusivas que celebram a feminilidade com sofisticação e conforto</p>
     <div class="hero__actions">
-      <a routerLink="/catalogo" class="hero__cta hero__cta--primary">Explorar Coleção</a>
+      <a routerLink="/catalog" class="hero__cta hero__cta--primary">Explorar Coleção</a>
       <a routerLink="/sobre" class="hero__cta hero__cta--secondary">Nossa História</a>
     </div>
   </div>
@@ -21,7 +21,7 @@
     </div>
     <div class="categories__grid">
       @for (cat of categories; track cat.slug) {
-        <a [routerLink]="['/catalogo']" [queryParams]="{categoria: cat.slug}" class="categories__card">
+        <a [routerLink]="['/catalog']" [queryParams]="{cat: cat.slug}" class="categories__card">
           <div class="categories__card-image" [style.background-image]="'url(' + cat.image + ')'">
             <div class="categories__card-placeholder"></div>
           </div>
@@ -37,11 +37,11 @@
   <div class="featured__container">
     <div class="featured__header">
       <h2 class="featured__title">Destaques</h2>
-      <a routerLink="/catalogo" class="featured__view-all">Ver tudo →</a>
+      <a routerLink="/catalog" class="featured__view-all">Ver tudo →</a>
     </div>
     <div class="featured__grid">
       @for (product of featuredProducts; track product.uuid) {
-        <a [routerLink]="['/produto', product.uuid]" class="product-card">
+        <a [routerLink]="['/product', product.uuid]" class="product-card">
           <div class="product-card__image" [style.background-image]="'url(' + product.image + ')'">
             <div class="product-card__placeholder"></div>
           </div>
