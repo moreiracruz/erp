@@ -89,9 +89,9 @@ INSERT INTO clientes (uuid, full_name, cpf, email, phone, active, created_at) VA
 -- ============================================================================
 -- CAMPANHAS DE DESCONTO
 -- ============================================================================
-INSERT INTO campanhas (uuid, name, type, discount_value, starts_at, ends_at, target_type, active, created_at) VALUES
-  (gen_random_uuid(), 'Promoção de Inverno', 'PERCENTAGE', 15.00, NOW() - INTERVAL '5 days', NOW() + INTERVAL '30 days', 'ALL', true, NOW()),
-  (gen_random_uuid(), 'Desconto Vestidos', 'PERCENTAGE', 10.00, NOW(), NOW() + INTERVAL '15 days', 'CATEGORY', true, NOW());
+INSERT INTO campanhas (uuid, name, type, discount_value, starts_at, ends_at, target_type, active) VALUES
+  (gen_random_uuid(), 'Promoção de Inverno', 'PERCENTAGE', 15.00, NOW() - INTERVAL '5 days', NOW() + INTERVAL '30 days', 'ALL', true),
+  (gen_random_uuid(), 'Desconto Vestidos', 'PERCENTAGE', 10.00, NOW(), NOW() + INTERVAL '15 days', 'CATEGORY', true);
 
 -- ============================================================================
 -- CUPONS
