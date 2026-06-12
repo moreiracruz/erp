@@ -20,7 +20,9 @@ permissions:
 env:
   JAVA_VERSION: '21'
   JAVA_DISTRIBUTION: 'temurin'
-  DOCKER_IMAGE: moreiracruz/erp-loja-roupas
+  NODE_VERSION: '20'
+  DOCKER_IMAGE_BACKEND: moreiracruz/erp-loja-roupas
+  DOCKER_IMAGE_FRONTEND: moreiracruz/erp-frontend
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────
@@ -155,8 +157,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.DOCKER_IMAGE }}:${{ inputs.version }}
-            ${{ env.DOCKER_IMAGE }}:latest
+            ${{ env.DOCKER_IMAGE_BACKEND }}:${{ inputs.version }}
+            ${{ env.DOCKER_IMAGE_BACKEND }}:latest
             ghcr.io/${{ github.repository }}:${{ inputs.version }}
             ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha
@@ -217,7 +219,7 @@ jobs:
             fi
             echo "### 🐳 Docker"
             echo '```bash'
-            echo "docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.version }}"
+            echo "docker pull ${{ env.DOCKER_IMAGE_BACKEND }}:${{ inputs.version }}"
             echo "docker pull ghcr.io/${{ github.repository }}:${{ inputs.version }}"
             echo '```'
             echo "EOF"

@@ -1,7 +1,16 @@
 version: "3.9"
 services:
+  frontend:
+    image: moreiracruz/erp-frontend:latest
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      app:
+        condition: service_healthy
+
   app:
-    image: erp-loja-roupas:latest
+    image: moreiracruz/erp-loja-roupas:latest
     build: .
     ports:
       - "8080:8080"
@@ -11,7 +20,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       INVENTORY_EXPIRY_TTL_MINUTES: 30
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
     depends_on:
       postgres:
         condition: service_healthy
