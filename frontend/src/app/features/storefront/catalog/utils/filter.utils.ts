@@ -13,8 +13,8 @@ import { FilterState, DEFAULT_FILTERS, FilterCounts } from '../models';
  */
 export function filterProducts(products: ProductSummary[], filters: FilterState): ProductSummary[] {
   return products.filter((product) => {
-    // Category filter (AND with other criteria)
-    if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
+    // Category filter (AND with other criteria) — case-insensitive comparison
+    if (filters.categories.length > 0 && !filters.categories.some(c => c.toLowerCase() === product.category.toLowerCase())) {
       return false;
     }
 

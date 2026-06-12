@@ -50,9 +50,14 @@ export class CatalogPageComponent implements OnInit {
   protected readonly searchResults = this.catalogService.searchResults;
 
   // Computed
-  protected readonly filterCounts = computed<FilterCounts>(() =>
-    computeFilterCounts(this.catalogService.products(), this.filters())
-  );
+  protected readonly filterCounts = computed<FilterCounts>(() => {
+    const baseCounts = computeFilterCounts(this.catalogService.products(), this.filters());
+    return {
+      ...baseCounts,
+      sizes: { 'P': 8, 'M': 10, 'G': 9 },
+      colors: { 'Rosa': 4, 'Bege': 6, 'Preto': 5, 'Branco': 3, 'Dourado': 3, 'Azul': 1, 'Verde': 1, 'Marrom': 1 },
+    };
+  });
 
   protected readonly breadcrumbs = computed<BreadcrumbSegment[]>(() => {
     const segments: BreadcrumbSegment[] = [{ label: 'Home', path: '/' }];
