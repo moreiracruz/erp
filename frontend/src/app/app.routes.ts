@@ -11,6 +11,10 @@ export const routes: Routes = [
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES),
   },
+  {
+    path: 'checkout',
+    loadChildren: () => import('./features/checkout/checkout.routes').then(m => m.CHECKOUT_ROUTES),
+  },
 
   // Protected: Customer area
   {

@@ -1,0 +1,54 @@
+<div class="order-summary">
+  <!-- Mobile toggle -->
+  <button class="order-summary__toggle" (click)="toggleCollapse()" aria-expanded="true">
+    <span class="order-summary__toggle-label">
+      Resumo do pedido ({{ itemCount() }} {{ itemCount() === 1 ? 'item' : 'itens' }})
+    </span>
+    <span class="order-summary__toggle-icon" [class.order-summary__toggle-icon--open]="!collapsed()">
+      ▼
+    </span>
+  </button>
+
+  <!-- Content -->
+  <div class="order-summary__content" [class.order-summary__content--collapsed]="collapsed()">
+    <h3 class="order-summary__title">Resumo do Pedido</h3>
+
+    <ul class="order-summary__items">
+      @for (item of items(); track item.variantUuid) {
+        <li class="order-summary__item">
+          <div class="order-summary__item-image">
+            @if (item.imageUrl) {
+              <img [src]="item.imageUrl" [alt]="item.productName" />
+            } @else {
+              <div class="order-summary__item-placeholder"></div>
+            }
+          </div>
+          <div class="order-summary__item-info">
+            <span class="order-summary__item-name">{{ item.productName }}</span>
+            <span class="order-summary__item-details">{{ item.size }} / {{ item.color }} × {{ item.quantity }}</span>
+          </div>
+          <span class="order-summary__item-price">
+            {{ item.price * item.quantity | currency: 'BRL' : 'symbol' : '1.2-2' }}
+          </span>
+        </li>
+      }
+    </ul>
+
+    <div class="order-summary__totals">
+      <div class="order-summary__row">
+        <span>Subtotal</span>
+        <span>{{ subtotal() | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+      </div>
+      <div class="order-summary__row">
+        <span>Frete</span>
+        <span [class.order-summary__free-shipping]="shippingCost() === 0">
+          {{ shippingCost() === 0 ? 'Grátis' : (shippingCost() | currency: 'BRL' : 'symbol' : '1.2-2') }}
+        </span>
+      </div>
+      <div class="order-summary__row order-summary__row--total">
+        <span>Total</span>
+        <span>{{ total() | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

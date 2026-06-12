@@ -1,0 +1,75 @@
+<div class="cart-page">
+  <h1 class="cart-page__title">Carrinho</h1>
+
+  @if (isEmpty()) {
+    <div class="cart-page__empty">
+      <p class="cart-page__empty-text">Seu carrinho está vazio</p>
+      <a class="cart-page__empty-link" routerLink="/catalog">Explorar catálogo</a>
+    </div>
+  } @else {
+    <div class="cart-page__content">
+      <ul class="cart-page__items">
+        @for (item of items(); track item.variantUuid) {
+          <li class="cart-page__item">
+            <div class="cart-page__item-image">
+              @if (item.imageUrl) {
+                <img [src]="item.imageUrl" [alt]="item.productName" />
+              } @else {
+                <div class="cart-page__item-placeholder"></div>
+              }
+            </div>
+
+            <div class="cart-page__item-info">
+              <h3 class="cart-page__item-name">{{ item.productName }}</h3>
+              <p class="cart-page__item-variant">{{ item.size }} / {{ item.color }}</p>
+              <p class="cart-page__item-price">{{ item.price | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+            </div>
+
+            <div class="cart-page__item-actions">
+              <div class="cart-page__quantity">
+                <button
+                  class="cart-page__quantity-btn"
+                  (click)="decrement(item.variantUuid)"
+                  [disabled]="item.quantity <= 1"
+                  aria-label="Diminuir quantidade"
+                >
+                  −
+                </button>
+                <span class="cart-page__quantity-value">{{ item.quantity }}</span>
+                <button
+                  class="cart-page__quantity-btn"
+                  (click)="increment(item.variantUuid)"
+                  aria-label="Aumentar quantidade"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                class="cart-page__remove-btn"
+                (click)="remove(item.variantUuid)"
+                aria-label="Remover item"
+              >
+                Remover
+              </button>
+            </div>
+
+            <div class="cart-page__item-total">
+              {{ item.price * item.quantity | currency: 'BRL' : 'symbol' : '1.2-2' }}
+            </div>
+          </li>
+        }
+      </ul>
+
+      <div class="cart-page__footer">
+        <div class="cart-page__subtotal">
+          <span>Subtotal</span>
+          <span class="cart-page__subtotal-value">{{ subtotal() | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+        </div>
+        <button class="cart-page__checkout-btn" (click)="goToCheckout()">
+          Finalizar Compra
+        </button>
+      </div>
+    </div>
+  }
+</div>

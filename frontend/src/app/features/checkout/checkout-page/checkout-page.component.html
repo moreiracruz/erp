@@ -1,0 +1,234 @@
+<div class="checkout-page">
+  <!-- Step Indicator -->
+  <div class="checkout-page__steps">
+    @for (step of steps; track step.number) {
+      <div
+        class="checkout-page__step"
+        [class.checkout-page__step--active]="step.number === currentStep()"
+        [class.checkout-page__step--completed]="step.number < currentStep()"
+      >
+        <div class="checkout-page__step-dot">{{ step.number }}</div>
+        <span class="checkout-page__step-label">{{ step.label }}</span>
+      </div>
+      @if (step.number < steps.length) {
+        <div
+          class="checkout-page__step-line"
+          [class.checkout-page__step-line--completed]="step.number < currentStep()"
+        ></div>
+      }
+    }
+  </div>
+
+  <div class="checkout-page__layout">
+    <!-- Form Section -->
+    <div class="checkout-page__form-section">
+      <!-- Step 1: Dados Pessoais -->
+      @if (currentStep() === 1) {
+        <div class="checkout-page__form">
+          <h2 class="checkout-page__form-title">Dados Pessoais</h2>
+
+          <div class="checkout-page__field">
+            <label class="checkout-page__label" for="name">Nome completo</label>
+            <input
+              class="checkout-page__input"
+              id="name"
+              type="text"
+              [ngModel]="personalData().name"
+              (ngModelChange)="updatePersonalField('name', $event)"
+              placeholder="Seu nome"
+            />
+          </div>
+
+          <div class="checkout-page__field">
+            <label class="checkout-page__label" for="email">E-mail</label>
+            <input
+              class="checkout-page__input"
+              id="email"
+              type="email"
+              [ngModel]="personalData().email"
+              (ngModelChange)="updatePersonalField('email', $event)"
+              placeholder="seu@email.com"
+            />
+          </div>
+
+          <div class="checkout-page__field">
+            <label class="checkout-page__label" for="phone">Telefone</label>
+            <input
+              class="checkout-page__input"
+              id="phone"
+              type="tel"
+              [ngModel]="personalData().phone"
+              (ngModelChange)="updatePersonalField('phone', $event)"
+              placeholder="(00) 00000-0000"
+            />
+          </div>
+
+          <div class="checkout-page__actions">
+            <button
+              class="checkout-page__btn checkout-page__btn--primary"
+              [disabled]="!isStep1Valid()"
+              (click)="nextStep()"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Step 2: Endereço -->
+      @if (currentStep() === 2) {
+        <div class="checkout-page__form">
+          <h2 class="checkout-page__form-title">Endereço de Entrega</h2>
+
+          <div class="checkout-page__field checkout-page__field--half">
+            <label class="checkout-page__label" for="cep">CEP</label>
+            <input
+              class="checkout-page__input"
+              id="cep"
+              type="text"
+              [ngModel]="addressData().cep"
+              (ngModelChange)="updateAddressField('cep', $event)"
+              placeholder="00000-000"
+            />
+          </div>
+
+          <div class="checkout-page__field">
+            <label class="checkout-page__label" for="street">Rua</label>
+            <input
+              class="checkout-page__input"
+              id="street"
+              type="text"
+              [ngModel]="addressData().street"
+              (ngModelChange)="updateAddressField('street', $event)"
+              placeholder="Nome da rua"
+            />
+          </div>
+
+          <div class="checkout-page__field-row">
+            <div class="checkout-page__field checkout-page__field--third">
+              <label class="checkout-page__label" for="number">Número</label>
+              <input
+                class="checkout-page__input"
+                id="number"
+                type="text"
+                [ngModel]="addressData().number"
+                (ngModelChange)="updateAddressField('number', $event)"
+                placeholder="Nº"
+              />
+            </div>
+
+            <div class="checkout-page__field checkout-page__field--two-thirds">
+              <label class="checkout-page__label" for="complement">Complemento</label>
+              <input
+                class="checkout-page__input"
+                id="complement"
+                type="text"
+                [ngModel]="addressData().complement"
+                (ngModelChange)="updateAddressField('complement', $event)"
+                placeholder="Apto, bloco, etc. (opcional)"
+              />
+            </div>
+          </div>
+
+          <div class="checkout-page__field">
+            <label class="checkout-page__label" for="neighborhood">Bairro</label>
+            <input
+              class="checkout-page__input"
+              id="neighborhood"
+              type="text"
+              [ngModel]="addressData().neighborhood"
+              (ngModelChange)="updateAddressField('neighborhood', $event)"
+              placeholder="Bairro"
+            />
+          </div>
+
+          <div class="checkout-page__field-row">
+            <div class="checkout-page__field checkout-page__field--two-thirds">
+              <label class="checkout-page__label" for="city">Cidade</label>
+              <input
+                class="checkout-page__input"
+                id="city"
+                type="text"
+                [ngModel]="addressData().city"
+                (ngModelChange)="updateAddressField('city', $event)"
+                placeholder="Cidade"
+              />
+            </div>
+
+            <div class="checkout-page__field checkout-page__field--third">
+              <label class="checkout-page__label" for="state">Estado</label>
+              <input
+                class="checkout-page__input"
+                id="state"
+                type="text"
+                [ngModel]="addressData().state"
+                (ngModelChange)="updateAddressField('state', $event)"
+                placeholder="UF"
+              />
+            </div>
+          </div>
+
+          <div class="checkout-page__actions">
+            <button class="checkout-page__btn checkout-page__btn--secondary" (click)="prevStep()">
+              Voltar
+            </button>
+            <button
+              class="checkout-page__btn checkout-page__btn--primary"
+              [disabled]="!isStep2Valid()"
+              (click)="nextStep()"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Step 3: Pagamento -->
+      @if (currentStep() === 3) {
+        <div class="checkout-page__form">
+          <h2 class="checkout-page__form-title">Forma de Pagamento</h2>
+
+          <div class="checkout-page__payment-options">
+            @for (option of paymentOptions; track option.value) {
+              <button
+                class="checkout-page__payment-option"
+                [class.checkout-page__payment-option--selected]="paymentMethod() === option.value"
+                (click)="selectPayment(option.value)"
+              >
+                <span class="checkout-page__payment-radio">
+                  @if (paymentMethod() === option.value) {
+                    <span class="checkout-page__payment-radio-dot"></span>
+                  }
+                </span>
+                <span class="checkout-page__payment-label">{{ option.label }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="checkout-page__actions">
+            <button class="checkout-page__btn checkout-page__btn--secondary" (click)="prevStep()">
+              Voltar
+            </button>
+            <button
+              class="checkout-page__btn checkout-page__btn--primary"
+              [disabled]="!isStep3Valid()"
+              (click)="confirmOrder()"
+            >
+              Confirmar Pedido
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Order Summary Sidebar -->
+    <aside class="checkout-page__sidebar">
+      <app-order-summary
+        [items]="items()"
+        [subtotal]="subtotal()"
+        [shippingCost]="shippingCost()"
+        [total]="total()"
+      />
+    </aside>
+  </div>
+</div>
