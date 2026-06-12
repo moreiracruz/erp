@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { LoginCredentials, TokenPair, User } from '../models';
+import { LoginCredentials, RegisterData, TokenPair, User } from '../models';
 
 /**
  * Port defining authentication operations.
@@ -7,7 +7,9 @@ import { LoginCredentials, TokenPair, User } from '../models';
  */
 export abstract class AuthPort {
   abstract login(credentials: LoginCredentials): Observable<TokenPair>;
+  abstract register(data: RegisterData): Observable<TokenPair>;
   abstract refresh(refreshToken: string): Observable<TokenPair>;
   abstract logout(): Observable<void>;
   abstract getCurrentUser(): Observable<User | null>;
+  abstract recoverPassword(email: string): Observable<void>;
 }

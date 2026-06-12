@@ -17,3 +17,11 @@ export interface LoginCredentials {
   username: string;
   password: string;
 }
+
+export interface RegisterData {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  cpf?: string;
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthPort } from '../../core/ports';
-import { LoginCredentials, TokenPair, User } from '../../core/models';
+import { LoginCredentials, RegisterData, TokenPair, User } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -17,6 +17,10 @@ export class AuthHttpAdapter extends AuthPort {
     return this.http.post<TokenPair>(`${this.baseUrl}/login`, credentials);
   }
 
+  register(data: RegisterData): Observable<TokenPair> {
+    return this.http.post<TokenPair>(`${this.baseUrl}/register`, data);
+  }
+
   refresh(refreshToken: string): Observable<TokenPair> {
     return this.http.post<TokenPair>(`${this.baseUrl}/refresh`, { refreshToken });
   }
@@ -27,5 +31,9 @@ export class AuthHttpAdapter extends AuthPort {
 
   getCurrentUser(): Observable<User | null> {
     return this.http.get<User | null>(`${this.baseUrl}/me`);
+  }
+
+  recoverPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/recover`, { email });
   }
 }

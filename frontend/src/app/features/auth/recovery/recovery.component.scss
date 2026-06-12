@@ -1,0 +1,185 @@
+@use '../../../../styles/variables' as *;
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: $space-6;
+  background-color: $surface-primary;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: $surface-card;
+  border-radius: $radius-lg;
+  padding: $space-10;
+  box-shadow: $shadow-md;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $space-6;
+    box-shadow: none;
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: $space-8;
+
+  h1 {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0 0 $space-2;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.form-field {
+  margin-bottom: $space-5;
+
+  label {
+    display: block;
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    margin-bottom: $space-2;
+  }
+
+  input[type='email'] {
+    width: 100%;
+    padding: $space-3 $space-4;
+    font-family: $font-body;
+    font-size: $font-size-base;
+    color: $text-primary;
+    background: $surface-card;
+    border: 1px solid $border-subtle;
+    border-radius: $radius-md;
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $text-muted;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $gold;
+      box-shadow: 0 0 0 3px rgba($gold, 0.2);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: $error;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($error, 0.2);
+      }
+    }
+  }
+}
+
+.field-error {
+  display: block;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $error;
+  margin-top: $space-1;
+}
+
+.success-message {
+  background-color: rgba($olive-green, 0.08);
+  border: 1px solid rgba($olive-green, 0.3);
+  border-radius: $radius-md;
+  padding: $space-4 $space-6;
+  text-align: center;
+
+  p {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $olive-green;
+    margin: 0 0 $space-2;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.btn-primary {
+  width: 100%;
+  padding: $space-3 $space-6;
+  margin-top: $space-6;
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: $text-primary;
+  background-color: $gold;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color $transition-fast, opacity $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: darken($gold, 8%);
+  }
+
+  &:focus {
+    outline: 2px solid $gold;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba($text-primary, 0.3);
+  border-top-color: $text-primary;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: $space-6;
+
+  p {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin: 0;
+
+    a {
+      color: $text-muted;
+      text-decoration: none;
+      font-weight: $font-weight-medium;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: $gold;
+      }
+    }
+  }
+}

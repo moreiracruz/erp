@@ -1,0 +1,196 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Criar Conta</h1>
+      <p>Junte-se ao Reino &amp; Flor</p>
+    </div>
+
+    <div
+      class="error-summary"
+      role="alert"
+      aria-live="assertive"
+      *ngIf="errorMessage() as msg"
+    >
+      {{ msg }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-field">
+        <label for="fullName">Nome completo</label>
+        <input
+          #nameInput
+          id="fullName"
+          type="text"
+          formControlName="fullName"
+          autocomplete="name"
+          placeholder="Seu nome completo"
+          [attr.aria-invalid]="form.get('fullName')?.invalid && form.get('fullName')?.touched"
+          aria-describedby="fullName-error"
+        />
+        <span
+          id="fullName-error"
+          class="field-error"
+          *ngIf="form.get('fullName')?.invalid && form.get('fullName')?.touched"
+          aria-live="assertive"
+        >
+          Nome é obrigatório
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="reg-email">E-mail</label>
+        <input
+          id="reg-email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="seu@email.com"
+          [attr.aria-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+          aria-describedby="reg-email-error"
+        />
+        <span
+          id="reg-email-error"
+          class="field-error"
+          *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+          aria-live="assertive"
+        >
+          <span *ngIf="form.get('email')?.hasError('required')">E-mail é obrigatório</span>
+          <span *ngIf="form.get('email')?.hasError('email')">Formato de e-mail inválido</span>
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="reg-password">Senha</label>
+        <div class="input-wrapper">
+          <input
+            id="reg-password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+            placeholder="Mínimo 8 caracteres"
+            (input)="onPasswordInput()"
+            [attr.aria-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+            aria-describedby="reg-password-error"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+          >
+            {{ showPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <div class="password-strength" *ngIf="passwordStrength() as strength">
+          <div class="strength-bar" [attr.data-strength]="strength">
+            <div class="strength-fill"></div>
+          </div>
+          <span class="strength-label" [attr.data-strength]="strength">
+            {{ strength === 'weak' ? 'Fraca' : strength === 'medium' ? 'Média' : 'Forte' }}
+          </span>
+        </div>
+        <span
+          id="reg-password-error"
+          class="field-error"
+          *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
+          aria-live="assertive"
+        >
+          <span *ngIf="form.get('password')?.hasError('required')">Senha é obrigatória</span>
+          <span *ngIf="form.get('password')?.hasError('minlength')">Senha deve ter no mínimo 8 caracteres</span>
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="confirmPassword">Confirmar senha</label>
+        <div class="input-wrapper">
+          <input
+            id="confirmPassword"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+            placeholder="Repita a senha"
+            [attr.aria-invalid]="form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched"
+            aria-describedby="confirm-password-error"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleConfirmPasswordVisibility()"
+            [attr.aria-label]="showConfirmPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+          >
+            {{ showConfirmPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <span
+          id="confirm-password-error"
+          class="field-error"
+          *ngIf="form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched"
+          aria-live="assertive"
+        >
+          <span *ngIf="form.get('confirmPassword')?.hasError('required')">Confirmação é obrigatória</span>
+          <span *ngIf="form.get('confirmPassword')?.hasError('passwordMismatch')">As senhas não coincidem</span>
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Telefone</label>
+        <input
+          id="phone"
+          type="tel"
+          formControlName="phone"
+          autocomplete="tel"
+          placeholder="(11) 99999-9999"
+          [attr.aria-invalid]="form.get('phone')?.invalid && form.get('phone')?.touched"
+          aria-describedby="phone-error"
+        />
+        <span
+          id="phone-error"
+          class="field-error"
+          *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched"
+          aria-live="assertive"
+        >
+          Telefone é obrigatório
+        </span>
+      </div>
+
+      <div class="form-field">
+        <label for="cpf">CPF <span class="optional">(opcional)</span></label>
+        <input
+          id="cpf"
+          type="text"
+          formControlName="cpf"
+          placeholder="000.000.000-00"
+          aria-describedby="cpf-hint"
+        />
+        <span id="cpf-hint" class="field-hint">Necessário para emissão de nota fiscal</span>
+      </div>
+
+      <div class="form-field checkbox-field">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="termsAccepted" />
+          <span>Li e aceito os <a href="/termos" target="_blank">termos de uso</a></span>
+        </label>
+        <span
+          class="field-error"
+          *ngIf="form.get('termsAccepted')?.invalid && form.get('termsAccepted')?.touched"
+          aria-live="assertive"
+        >
+          Você deve aceitar os termos
+        </span>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="form.invalid || loading()"
+      >
+        <span *ngIf="!loading()">CRIAR CONTA</span>
+        <span *ngIf="loading()" class="spinner" aria-label="Carregando"></span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Já tem uma conta? <a routerLink="/auth/login">Entrar</a></p>
+    </div>
+  </div>
+</div>

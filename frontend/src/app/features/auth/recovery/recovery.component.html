@@ -1,0 +1,55 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Recuperar Senha</h1>
+      <p>Enviaremos um link para redefinir sua senha</p>
+    </div>
+
+    <ng-container *ngIf="!submitted(); else successBlock">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-field">
+          <label for="recovery-email">E-mail</label>
+          <input
+            #emailInput
+            id="recovery-email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            placeholder="seu@email.com"
+            [attr.aria-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+            aria-describedby="recovery-email-error"
+          />
+          <span
+            id="recovery-email-error"
+            class="field-error"
+            *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+            aria-live="assertive"
+          >
+            <span *ngIf="form.get('email')?.hasError('required')">E-mail é obrigatório</span>
+            <span *ngIf="form.get('email')?.hasError('email')">Formato de e-mail inválido</span>
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="form.invalid || loading()"
+        >
+          <span *ngIf="!loading()">ENVIAR LINK</span>
+          <span *ngIf="loading()" class="spinner" aria-label="Carregando"></span>
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-template #successBlock>
+      <div class="success-message" role="status" aria-live="polite">
+        <p>Se este e-mail estiver cadastrado, enviaremos um link de recuperação.</p>
+        <p>Verifique sua caixa de entrada e spam.</p>
+      </div>
+    </ng-template>
+
+    <div class="auth-footer">
+      <p><a routerLink="/auth/login">Voltar para o login</a></p>
+    </div>
+  </div>
+</div>
