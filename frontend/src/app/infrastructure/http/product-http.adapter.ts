@@ -7,16 +7,16 @@ import { Product, ProductSummary } from '../../core/models';
 export class ProductHttpAdapter extends ProductPort {
 
   private readonly mockProducts: ProductSummary[] = [
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000001', name: 'Vestido Floral Primavera', brand: 'Reino & Flor', category: 'Vestidos', minPrice: 289.90, maxPrice: 299.90, imageUrl: 'assets/images/product-1.jpg' },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000002', name: 'Blusa Seda Natural', brand: 'Reino & Flor', category: 'Blusas', minPrice: 189.90, maxPrice: 189.90, imageUrl: 'assets/images/product-2.jpg' },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000003', name: 'Saia Midi Linho', brand: 'Reino & Flor', category: 'Saias', minPrice: 219.90, maxPrice: 229.90, imageUrl: 'assets/images/product-3.jpg' },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000004', name: 'Vestido Renda Dourada', brand: 'Reino & Flor', category: 'Vestidos', minPrice: 349.90, maxPrice: 349.90, imageUrl: 'assets/images/product-4.jpg' },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000005', name: 'Conjunto Elegance', brand: 'Reino & Flor', category: 'Conjuntos', minPrice: 459.90, maxPrice: 479.90, imageUrl: 'assets/images/product-5.jpg' },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000006', name: 'Blusa Bordada Artesanal', brand: 'Reino & Flor', category: 'Blusas', minPrice: 159.90, maxPrice: 159.90, imageUrl: 'assets/images/product-6.jpg' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000001', name: 'Vestido Floral Primavera', brand: 'Reino & Flor', category: 'Vestidos', minPrice: 289.90, maxPrice: 299.90, imageUrl: 'assets/images/vestido_floral_primavera.png' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000002', name: 'Blusa Seda Natural', brand: 'Reino & Flor', category: 'Blusas', minPrice: 189.90, maxPrice: 189.90, imageUrl: 'assets/images/blusa_seda_natural.png' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000003', name: 'Saia Midi Linho', brand: 'Reino & Flor', category: 'Saias', minPrice: 219.90, maxPrice: 229.90, imageUrl: 'assets/images/saia_midi_linho.png' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000004', name: 'Vestido Renda Dourada', brand: 'Reino & Flor', category: 'Vestidos', minPrice: 349.90, maxPrice: 349.90, imageUrl: 'assets/images/vestido_renda_dourada.png' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000005', name: 'Conjunto Elegance', brand: 'Reino & Flor', category: 'Conjuntos', minPrice: 459.90, maxPrice: 479.90 },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000006', name: 'Blusa Bordada Artesanal', brand: 'Reino & Flor', category: 'Blusas', minPrice: 159.90, maxPrice: 159.90, imageUrl: 'assets/images/blusa_bordada_artesanal.png' },
     { uuid: 'a1b2c3d4-1111-4000-a000-000000000007', name: 'Calça Pantalona Linho', brand: 'Reino & Flor', category: 'Calças', minPrice: 249.90, maxPrice: 249.90 },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000008', name: 'Jaqueta Couro Eco', brand: 'Parceira', category: 'Jaquetas', minPrice: 399.90, maxPrice: 399.90 },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000009', name: 'Shorts Alfaiataria', brand: 'Reino & Flor', category: 'Shorts', minPrice: 149.90, maxPrice: 149.90 },
-    { uuid: 'a1b2c3d4-1111-4000-a000-000000000010', name: 'Camiseta Basic Algodão', brand: 'Reino & Flor', category: 'Camisetas', minPrice: 79.90, maxPrice: 79.90 },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000008', name: 'Jaqueta Couro Eco', brand: 'Parceira', category: 'Jaquetas', minPrice: 399.90, maxPrice: 399.90, imageUrl: 'assets/images/jaqueta_couro_eco.png' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000009', name: 'Shorts Alfaiataria', brand: 'Reino & Flor', category: 'Shorts', minPrice: 149.90, maxPrice: 149.90, imageUrl: 'assets/images/shorts_alfaiataria.png' },
+    { uuid: 'a1b2c3d4-1111-4000-a000-000000000010', name: 'Camiseta Basic Algodão', brand: 'Reino & Flor', category: 'Camisetas', minPrice: 79.90, maxPrice: 79.90, imageUrl: 'assets/images/camiseta_basic_algodao.png' },
   ];
 
   getAll(): Observable<ProductSummary[]> {
