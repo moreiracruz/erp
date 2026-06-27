@@ -98,27 +98,27 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize` rules per endpoint; `logout` requires any authenticated role
     - _Requirements: 1.1, 1.3, 1.6, 2.1_
 
-  - [ ]* 3.5 Write property test: JWT claims are always well-formed (Property 1)
+  - [ ] 3.5 Write property test: JWT claims are always well-formed (Property 1)
     - **Property 1: JWT claims are always well-formed after successful login**
     - Generate arbitrary valid `Credentials` using jqwik `@ForAll`; for each: invoke `LoginUseCase`, parse the returned JWT, assert `sub` == user UUID, `role` ∈ valid set, `exp` == now + 900 ± 2s, refresh token expiry == now + 604800s
     - **Validates: Requirements 1.1, 1.5**
 
-  - [ ]* 3.6 Write property test: Refresh token is single-use (Property 2)
+  - [ ] 3.6 Write property test: Refresh token is single-use (Property 2)
     - **Property 2: Refresh token is a single-use credential**
     - For any active token, call `/refresh` once (succeeds), then attempt to use the same raw token again — assert HTTP 401 on second use regardless of remaining validity
     - **Validates: Requirements 1.3, 1.6**
 
-  - [ ]* 3.7 Write property test: Invalid credentials never reveal the failing field (Property 3)
+  - [ ] 3.7 Write property test: Invalid credentials never reveal the failing field (Property 3)
     - **Property 3: Invalid credentials never reveal the failing field**
     - For any `(username, password)` pair where either username is unknown or password is wrong, assert response is always HTTP 401 with body `{"message": "Credenciais inválidas"}` and no other fields
     - **Validates: Requirements 1.2**
 
-  - [ ]* 3.8 Write property test: Account lockout activates after 5 consecutive failures (Property 4)
+  - [ ] 3.8 Write property test: Account lockout activates after 5 consecutive failures (Property 4)
     - **Property 4: Account lockout activates after 5 consecutive failures**
     - Submit ≥ 5 consecutive wrong-password requests for any username, then submit the correct password — assert HTTP 401 is returned
     - **Validates: Requirements 1.7**
 
-  - [ ]* 3.9 Write property test: Unknown/invalid roles in a JWT are always rejected (Property 5)
+  - [ ] 3.9 Write property test: Unknown/invalid roles in a JWT are always rejected (Property 5)
     - **Property 5: Unknown or invalid roles in a JWT are always rejected**
     - Generate JWTs with arbitrary role values outside `{ROLE_MANAGER, ROLE_CASHIER, ROLE_STOCK, ROLE_FINANCE}`, assert every protected endpoint returns HTTP 403
     - **Validates: Requirements 2.4**
@@ -150,7 +150,7 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize` per endpoint: write endpoints = `MANAGER`, read endpoints = `MANAGER or STOCK`, search by SKU/barcode = `MANAGER or CASHIER or STOCK`
     - _Requirements: 2.5, 2.7, 3.3–3.9_
 
-  - [x]* 4.5 Write property test: Product deactivation cascades atomically (Property 11)
+  - [x] 4.5 Write property test: Product deactivation cascades atomically (Property 11)
     - **Property 11: Product deactivation cascades to all variants atomically**
     - For any `Produto` with `N ≥ 0` generated variants, after calling `DeactivateProductUseCase`, assert all `N` variants have `active = false` in the database (Testcontainers)
     - **Validates: Requirements 3.6**
@@ -189,22 +189,22 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: read = `MANAGER or STOCK`, entry/withdrawal = `MANAGER or STOCK`
     - _Requirements: 2.5, 2.7, 4.3, 4.4_
 
-  - [x]* 5.6 Write property test: Stock counter invariant after any operation (Property 6)
+  - [x] 5.6 Write property test: Stock counter invariant after any operation (Property 6)
     - **Property 6: Stock counter invariant holds after every operation**
     - Generate arbitrary sequences of `StockOp` (ENTRADA qty, SAÍDA qty, RESERVA qty, LIBERAÇÃO qty) using jqwik `@ForAll`; for each sequence apply operations to an `EstoqueItem` in-memory; assert `availableStock == physicalStock - reservedStock ≥ 0` after every step; invalid ops (would go negative) should throw and leave counters unchanged
     - **Validates: Requirements 4.1, 4.2**
 
-  - [x]* 5.7 Write property test: Reserve-then-release round trip (Property 7)
+  - [x] 5.7 Write property test: Reserve-then-release round trip (Property 7)
     - **Property 7: Reserve-then-release restores original stock state**
     - For any `EstoqueItem` with `availableStock ≥ Q`, reserve Q then release — assert final `physicalStock`, `reservedStock`, `availableStock` are identical to pre-reservation values
     - **Validates: Requirements 4.6, 4.8**
 
-  - [x]* 5.8 Write property test: Withdrawals that would create negative stock are always rejected (Property 8)
+  - [x] 5.8 Write property test: Withdrawals that would create negative stock are always rejected (Property 8)
     - **Property 8: Withdrawals that would create negative physicalStock are always rejected**
     - For any `Q > physicalStock`, assert `RegisterWithdrawalUseCase` returns HTTP 422 with current `physicalStock`, counters unchanged
     - **Validates: Requirements 4.5**
 
-  - [x]* 5.9 Write property test: Quantity out of [1, 100000] is always rejected (Property 19)
+  - [x] 5.9 Write property test: Quantity out of [1, 100000] is always rejected (Property 19)
     - **Property 19: Quantidade fora do intervalo [1, 100.000] é sempre rejeitada**
     - For any `Q < 1` or `Q > 100000`, assert entry and withdrawal endpoints return HTTP 422 with allowed range message, counters unchanged
     - **Validates: Requirements 4.10**
@@ -254,12 +254,12 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: campaign/coupon management = `MANAGER`; `POST /calculate` = `CASHIER or MANAGER`; `POST /coupons/{code}/confirm` = `CASHIER or MANAGER`
     - _Requirements: 2.5, 2.6, 8.1–8.8_
 
-  - [x]* 8.5 Write property test: Combined discount never exceeds sale total (Property 13)
+  - [x] 8.5 Write property test: Combined discount never exceeds sale total (Property 13)
     - **Property 13: Combined discount never exceeds sale total**
     - For any sale total `T` and any combination of applicable discount rules generated by jqwik, assert `0 ≤ D ≤ T` and `T - D ≥ 0`
     - **Validates: Requirements 8.8**
 
-  - [x]* 8.6 Write property test: Coupon usage count never exceeds maximum limit (Property 14)
+  - [x] 8.6 Write property test: Coupon usage count never exceeds maximum limit (Property 14)
     - **Property 14: Coupon usage count never exceeds its maximum limit**
     - Simulate concurrent confirmation attempts using jqwik (repeated calls) for a coupon with `maxUsages = N`; assert `usageCount ≤ N` after all attempts; confirm HTTP 422 is returned on the attempt that would exceed `N`
     - **Validates: Requirements 8.7**
@@ -302,12 +302,12 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: write (open/add item/finalize/cancel) = `CASHIER or MANAGER`; read = `MANAGER or FINANCE`
     - _Requirements: 2.5, 2.6, 5.1–5.13_
 
-  - [x]* 9.5 Write property test: Sale total computed on backend, never trusted from client (Property 9)
+  - [x] 9.5 Write property test: Sale total computed on backend, never trusted from client (Property 9)
     - **Property 9: Sale total is always computed on the backend (never trusted from client)**
     - For any sale with any set of items and discount, generate arbitrary `expectedTotal` values that differ from backend total by any amount ≥ 0.01; assert HTTP 422 with `"Valor de total inválido"` for all mismatches
     - **Validates: Requirements 5.5, 5.6**
 
-  - [x]* 9.6 Write property test: Cash payment change calculation is exact (Property 10)
+  - [x] 9.6 Write property test: Cash payment change calculation is exact (Property 10)
     - **Property 10: Cash payment change calculation is exact**
     - For any `amountPaid ≥ total`, assert `changeAmount == amountPaid - total` with no rounding errors; for any `amountPaid < total`, assert HTTP 422 with exact total due
     - **Validates: Requirements 5.7, 5.8**
@@ -360,12 +360,12 @@ The plan is organized into four sprints:
     - Enforce `Sales_Service` rejection of inactive customer association (validate in `AddItemUseCase` / `OpenSaleUseCase` when `clienteUuid` is present)
     - _Requirements: 2.5, 6.1–6.7_
 
-  - [x]* 12.5 Write property test: CPF validation is deterministic and algorithm-correct (Property 17)
+  - [x] 12.5 Write property test: CPF validation is deterministic and algorithm-correct (Property 17)
     - **Property 17: CPF validation is deterministic and algorithm-correct**
     - For any string of exactly 11 digits generated by jqwik `@ForAll`, assert `Cpf.isValid(input)` returns the same result as an independent reference implementation of the Brazilian check-digit algorithm; verify the function is pure (same input → same output always)
     - **Validates: Requirements 6.2**
 
-  - [ ]* 12.6 Write property test: Duplicate CPF registration never exposes existing customer data (Property 18)
+  - [ ] 12.6 Write property test: Duplicate CPF registration never exposes existing customer data (Property 18)
     - **Property 18: Duplicate CPF registration never exposes existing customer data**
     - For any registration attempt with an already-existing CPF, assert HTTP 422 response body contains only `{"message": "CPF já cadastrado"}` and no UUID, name, email, phone, or birthDate fields from the existing record
     - **Validates: Requirements 6.3**
@@ -402,12 +402,12 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: all endpoints = `MANAGER or FINANCE`
     - _Requirements: 2.5, 2.8, 7.1–7.9_
 
-  - [x]* 13.6 Write property test: SaleCompletedEvent idempotency — exactly one RECEITA entry (Property 12)
+  - [x] 13.6 Write property test: SaleCompletedEvent idempotency — exactly one RECEITA entry (Property 12)
     - **Property 12: SaleCompletedEvent idempotency — exactly one RECEITA entry**
     - For any `SaleCompletedEvent` with a given `saleUuid`, deliver the same event `N ≥ 1` times (Testcontainers); assert exactly one `LancamentoFinanceiro` of type `RECEITA` with that `saleUuid` exists in the database
     - **Validates: Requirements 7.2, 11.6**
 
-  - [x]* 13.7 Write property test: Cash flow net balance arithmetic (Property 16)
+  - [x] 13.7 Write property test: Cash flow net balance arithmetic (Property 16)
     - **Property 16: Cash flow net balance equals sum of receitas minus sum of despesas**
     - For any date range `[from, to]` (from ≤ to, ≤ 366 days) generated by jqwik, with arbitrary RECEITA and DESPESA entries inserted, assert `netBalance == sum(RECEITA) - sum(DESPESA)` exactly using `BigDecimal` arithmetic
     - **Validates: Requirements 7.5, 7.8**
@@ -437,7 +437,7 @@ The plan is organized into four sprints:
     - Apply idempotency guard from task 14.3
     - _Requirements: 5.10, 11.6_
 
-  - [x]* 14.5 Write property test: Domain event envelope is always structurally valid (Property 15)
+  - [x] 14.5 Write property test: Domain event envelope is always structurally valid (Property 15)
     - **Property 15: Domain event envelope is always structurally valid**
     - For any triggering business operation (`SaleCompleted`, `StockReserved`, `PaymentApproved`) exercised by jqwik, assert the emitted `EventEnvelope` always has: non-null `eventId` (valid UUIDv4), correct `eventType` string, non-null `occurredAt` (ISO 8601), non-null `payload` with all required fields present and non-null
     - **Validates: Requirements 11.1, 11.2, 11.3**
