@@ -1,0 +1,206 @@
+@use '../../../../../../styles/variables' as *;
+
+.upload-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: $space-8;
+  border: 2px dashed $border-default;
+  border-radius: $radius-lg;
+  background: $gray-50;
+  cursor: pointer;
+  transition: border-color $transition-fast, background $transition-fast;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $gold;
+    background: $gray-100;
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 2px;
+  }
+
+  &--drag-over {
+    border-color: $gold;
+    background: rgba($gold, 0.06);
+    border-style: solid;
+  }
+
+  &--uploading {
+    cursor: default;
+    pointer-events: none;
+    border-color: $border-subtle;
+  }
+
+  &--has-preview {
+    min-height: 120px;
+    padding: $space-4;
+  }
+
+  &__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  // Default content (idle state)
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-3;
+    text-align: center;
+  }
+
+  &__icon {
+    color: $gray-400;
+    transition: color $transition-fast;
+
+    .upload-zone:hover &,
+    .upload-zone:focus-visible & {
+      color: $gold;
+    }
+
+    .upload-zone--drag-over & {
+      color: $gold;
+    }
+  }
+
+  &__text {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    margin: 0;
+  }
+
+  &__link {
+    color: $gold;
+    text-decoration: underline;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__hint {
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  // Progress state
+  &__progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-3;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  &__progress-icon {
+    color: $gold;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  &__progress-text {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    margin: 0;
+  }
+
+  &__progress-bar {
+    width: 100%;
+    height: 6px;
+    background: $gray-200;
+    border-radius: $radius-full;
+    overflow: hidden;
+  }
+
+  &__progress-bar-fill {
+    height: 100%;
+    background: $gold;
+    border-radius: $radius-full;
+    transition: width $transition-fast;
+  }
+
+  &__progress-percentage {
+    font-family: $font-mono;
+    font-size: $font-size-xs;
+    color: $text-muted;
+  }
+
+  // Preview state
+  &__preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  &__preview-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: $radius-md;
+    border: 1px solid $border-subtle;
+  }
+
+  &__preview-text {
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  // Error messages
+  &__errors {
+    list-style: none;
+    padding: $space-3 $space-4;
+    margin: $space-3 0 0;
+    background: rgba($error, 0.06);
+    border: 1px solid rgba($error, 0.2);
+    border-radius: $radius-md;
+
+    &--server {
+      background: rgba($warning, 0.06);
+      border-color: rgba($warning, 0.2);
+    }
+  }
+
+  &__error-item {
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    color: $error;
+    line-height: $line-height-normal;
+
+    & + & {
+      margin-top: $space-1;
+    }
+
+    .upload-zone__errors--server & {
+      color: $gray-700;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

@@ -55,78 +55,78 @@ Implement the Storefront Catalog feature for the "Reino & Flor" Angular frontend
 - [x] 2. Checkpoint - Ensure utility functions compile and unit tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Property-based tests for utility functions
-  - [ ]* 3.1 Write property test for filter correctness (AND semantics)
+- [x] 3. Property-based tests for utility functions
+  - [x] 3.1 Write property test for filter correctness (AND semantics)
     - **Property 1: Filter correctness (AND semantics)**
     - **Validates: Requirements 2.2**
     - Use fast-check to generate arbitrary product lists and filter states
     - Verify filtered output contains only products matching ALL criteria AND contains every matching product
     - File: `features/storefront/catalog/utils/filter.utils.spec.ts`
 
-  - [ ]* 3.2 Write property test for query params round-trip
+  - [x] 3.2 Write property test for query params round-trip
     - **Property 2: Query params round-trip**
     - **Validates: Requirements 2.3, 2.4, 3.4**
     - Use fast-check to generate arbitrary FilterState and SortOption
     - Verify `deserializeFilters(serializeFilters(state, sort))` produces equivalent state
     - File: `features/storefront/catalog/utils/query-params.utils.spec.ts`
 
-  - [ ]* 3.3 Write property test for filter counts accuracy
+  - [x] 3.3 Write property test for filter counts accuracy
     - **Property 3: Filter counts accuracy**
     - **Validates: Requirements 2.5**
     - Use fast-check to generate product lists and active filters
     - Verify counts match the number of products that would appear if each option were toggled
     - File: `features/storefront/catalog/utils/filter.utils.spec.ts`
 
-  - [ ]* 3.4 Write property test for clear filters idempotence
+  - [x] 3.4 Write property test for clear filters idempotence
     - **Property 4: Clear filters idempotence**
     - **Validates: Requirements 2.6**
     - Verify `filterProducts(products, DEFAULT_FILTERS)` returns the complete unfiltered list in original order
     - File: `features/storefront/catalog/utils/filter.utils.spec.ts`
 
-  - [ ]* 3.5 Write property test for sort ordering invariant
+  - [x] 3.5 Write property test for sort ordering invariant
     - **Property 5: Sort ordering invariant**
     - **Validates: Requirements 3.2**
     - Use fast-check to generate non-empty product lists and sort options
     - Verify adjacent pair ordering predicate holds for all pairs
     - File: `features/storefront/catalog/utils/sort.utils.spec.ts`
 
-  - [ ]* 3.6 Write property test for variant attribute extraction
+  - [x] 3.6 Write property test for variant attribute extraction
     - **Property 9: Variant attribute extraction**
     - **Validates: Requirements 6.1, 6.2**
     - Verify displayed sizes/colors equal distinct values from active variants
     - File: `features/storefront/catalog/utils/variant.utils.spec.ts`
 
-  - [ ]* 3.7 Write property test for cross-dimension availability
+  - [x] 3.7 Write property test for cross-dimension availability
     - **Property 10: Cross-dimension availability**
     - **Validates: Requirements 6.3, 6.4**
     - Verify a color is disabled iff no active variant with that size+color exists
     - File: `features/storefront/catalog/utils/variant.utils.spec.ts`
 
-  - [ ]* 3.8 Write property test for selected variant price correctness
+  - [x] 3.8 Write property test for selected variant price correctness
     - **Property 11: Selected variant price correctness**
     - **Validates: Requirements 6.5**
     - Verify displayed price equals the matching variant's price field
     - File: `features/storefront/catalog/utils/variant.utils.spec.ts`
 
-  - [ ]* 3.9 Write property test for default variant selection
+  - [x] 3.9 Write property test for default variant selection
     - **Property 12: Default variant selection**
     - **Validates: Requirements 6.6**
     - Verify pre-selected size/color matches the first active variant
     - File: `features/storefront/catalog/utils/variant.utils.spec.ts`
 
-  - [ ]* 3.10 Write property test for breadcrumb segment correctness
+  - [x] 3.10 Write property test for breadcrumb segment correctness
     - **Property 7: Breadcrumb segment correctness**
     - **Validates: Requirements 5.4, 12.1, 12.2**
     - Verify PDP breadcrumbs = 3 segments, catalog with category = 2 segments, correct labels
     - File: `features/storefront/catalog/utils/breadcrumb.utils.spec.ts`
 
-  - [ ]* 3.11 Write property test for related products category constraint
+  - [x] 3.11 Write property test for related products category constraint
     - **Property 8: Related products category constraint**
     - **Validates: Requirements 5.5**
     - Verify same category, excludes self, max 4 items
     - File: `features/storefront/catalog/utils/related-products.utils.spec.ts`
 
-  - [ ]* 3.12 Write property test for search minimum length gate
+  - [x] 3.12 Write property test for search minimum length gate
     - **Property 13: Search minimum length gate**
     - **Validates: Requirements 9.2**
     - Verify search triggers iff trimmed length >= 3
@@ -144,7 +144,7 @@ Implement the Storefront Catalog feature for the "Reino & Flor" Angular frontend
     - Implement error mapping with user-friendly Portuguese messages
     - _Requirements: 2.2, 2.6, 3.2, 3.3, 4.1, 4.2, 4.5, 9.2, 10.1, 10.3, 10.4, 10.5_
 
-  - [ ]* 4.2 Write unit tests for CatalogService
+  - [x] 4.2 Write unit tests for CatalogService
     - Test cache behavior (Property 14: Cache TTL behavior)
     - Test page reset on filter/sort change (Property 6)
     - Test error mapping
@@ -179,7 +179,7 @@ Implement the Storefront Catalog feature for the "Reino & Flor" Angular frontend
     - Use `aria-label="Breadcrumb"` and `aria-current="page"` on last item
     - _Requirements: 5.4, 12.1, 12.2, 12.3, 13.1_
 
-  - [ ]* 5.4 Write unit tests for ProductCardComponent
+  - [x] 5.4 Write unit tests for ProductCardComponent
     - Test rendering of product data, hover overlay, image fallback, aria-label
     - File: `features/storefront/shared/components/product-card/product-card.component.spec.ts`
     - _Requirements: 1.2, 1.3, 11.3, 13.2_
@@ -228,7 +228,7 @@ Implement the Storefront Catalog feature for the "Reino & Flor" Angular frontend
     - Display error messages in Portuguese
     - _Requirements: 1.1, 1.4, 1.5, 2.3, 2.4, 3.3, 3.4, 4.5, 10.3, 12.1, 14.1_
 
-  - [ ]* 6.6 Write unit tests for CatalogPageComponent
+  - [x] 6.6 Write unit tests for CatalogPageComponent
     - Test query param sync, filter/sort application, error state display, empty state
     - File: `features/storefront/catalog/catalog-page.component.spec.ts`
     - _Requirements: 1.5, 2.3, 2.4, 10.3_
@@ -286,7 +286,7 @@ Implement the Storefront Catalog feature for the "Reino & Flor" Angular frontend
     - Handle loading (shimmer), error (retry + "Voltar ao catálogo" link for 404), and add-to-cart validation
     - _Requirements: 5.1, 5.2, 5.4, 5.5, 5.6, 6.5, 6.6, 7.1, 7.3, 7.4, 7.5, 10.4, 12.2_
 
-  - [ ]* 8.7 Write unit tests for ProductDetailPageComponent
+  - [x] 8.7 Write unit tests for ProductDetailPageComponent
     - Test variant selection, default variant, price update, add-to-cart validation, error states
     - File: `features/storefront/product-detail/product-detail-page.component.spec.ts`
     - _Requirements: 6.5, 6.6, 7.3, 7.4, 10.4_

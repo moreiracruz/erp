@@ -132,6 +132,13 @@
           </div>
         </div>
 
+        @if (editingProduct()) {
+          <section class="modal-section">
+            <h3>Imagens</h3>
+            <app-product-image-section [productUuid]="editingProduct()!.id" />
+          </section>
+        }
+
         <footer class="modal-footer">
           <button class="btn-cancel" (click)="closeForm()">Cancelar</button>
           <button class="btn-save" (click)="saveProduct()">Salvar</button>

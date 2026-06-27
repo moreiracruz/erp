@@ -5,11 +5,12 @@ import {
   input,
   output,
   signal,
-  OnInit,
   OnDestroy,
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
+
+import { ProductImage } from '../../../../../core/models';
 
 @Component({
   selector: 'app-image-gallery',
@@ -20,13 +21,14 @@ import {
   styleUrls: ['./image-gallery.component.scss'],
 })
 export class ImageGalleryComponent implements AfterViewInit, OnDestroy {
-  readonly images = input.required<string[]>();
+  readonly images = input.required<ProductImage[]>();
   readonly currentIndex = input<number>(0);
   readonly imageSelect = output<number>();
 
   @ViewChild('primaryImage') primaryImageRef!: ElementRef<HTMLElement>;
 
   protected readonly internalIndex = signal(0);
+  readonly placeholderUrl = 'assets/images/product-placeholder.webp';
 
   private touchStartX = 0;
   private touchEndX = 0;
@@ -77,7 +79,9 @@ export class ImageGalleryComponent implements AfterViewInit, OnDestroy {
   }
 
   getAltText(index: number): string {
-    return `Produto imagem ${index + 1} de ${this.images().length}`;
+    const imgs = this.images();
+    if (!imgs.length) return 'Imagem do produto indisponível';
+    return `Produto imagem ${index + 1} de ${imgs.length}`;
   }
 
   private handleSwipe(): void {
@@ -111,7 +115,7 @@ export class ImageGalleryComponent implements AfterViewInit, OnDestroy {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
-      link.href = imgs[i];
+      link.href = imgs[i].fullUrl;
       document.head.appendChild(link);
       this.preloadLinks.push(link);
     });

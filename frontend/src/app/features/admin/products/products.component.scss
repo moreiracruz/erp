@@ -282,6 +282,18 @@
   }
 }
 
+.modal-section {
+  padding: $space-6;
+  border-top: 1px solid $border-subtle;
+
+  h3 {
+    font-family: $font-display;
+    font-size: $font-size-lg;
+    color: $brown-dark;
+    margin: 0 0 $space-4;
+  }
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;

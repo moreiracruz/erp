@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, signal, computed } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { ProductImageSectionComponent } from './components/product-image-section/product-image-section.component';
+
 interface AdminProduct {
   id: string;
   name: string;
@@ -15,7 +17,7 @@ interface AdminProduct {
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ProductImageSectionComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
