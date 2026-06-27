@@ -46,6 +46,7 @@
         <jjwt.version>0.12.6</jjwt.version>
         <opentelemetry.version>2.11.0</opentelemetry.version>
         <logstash-logback.version>7.4</logstash-logback.version>
+        <thumbnailator.version>0.4.20</thumbnailator.version>
     </properties>
 
     <dependencyManagement>
@@ -144,6 +145,13 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback.version}</version>
+            </dependency>
+
+            <!-- Thumbnailator: image resizing -->
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${thumbnailator.version}</version>
             </dependency>
 
             <!-- jqwik property-based testing -->
