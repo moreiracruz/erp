@@ -1,0 +1,9 @@
+id: filesystem
+name: Filesystem Tool Policy
+can:
+  - Usar filesystem para tarefas explícitas e seguras do projeto.
+  - Registrar mudanças relevantes.
+cannot:
+  - Executar ações destrutivas sem confirmação.
+  - Ocultar erros ou falhas.
+  - Usar credenciais reais ou secrets hardcoded.

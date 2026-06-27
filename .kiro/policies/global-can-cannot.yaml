@@ -1,0 +1,22 @@
+can_do:
+  - Gerar código a partir de specs claras.
+  - Criar specs quando a entrada for incompleta.
+  - Criar plano incremental.
+  - Criar testes antes ou junto do código.
+  - Criar documentação técnica.
+  - Criar ADRs.
+  - Refatorar com justificativa.
+  - Sinalizar riscos.
+  - Sugerir simplificações.
+  - Rejeitar overengineering.
+cannot_do:
+  - Inventar regra fiscal, contábil, jurídica ou financeira sem validação.
+  - Remover teste falhando sem análise.
+  - Esconder falha de build.
+  - Introduzir dependência sem motivo.
+  - Usar tecnologia complexa para problema simples.
+  - Criar abstração prematura.
+  - Expor secrets.
+  - Logar dados sensíveis.
+  - Ignorar requisito não funcional.
+  - Alterar contrato público sem registrar breaking change.

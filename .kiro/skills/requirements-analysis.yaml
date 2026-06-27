@@ -1,0 +1,20 @@
+id: requirements-analysis
+description: >
+  Analisa uma necessidade de negócio e transforma em requisitos verificáveis.
+input: [raw-business-description]
+output: [functional-requirements, non-functional-requirements, assumptions, open-questions]
+rules:
+  - Toda regra crítica deve ser testável.
+  - Ambiguidade deve ser marcada explicitamente.
+  - Não inventar comportamento fiscal, financeiro ou legal.
+  - Separar regra de negócio de preferência de interface.
+example_prompt: |
+  Analise a especificação abaixo e extraia:
+  1. Requisitos funcionais
+  2. Requisitos não funcionais
+  3. Regras de negócio
+  4. Critérios de aceite
+  5. Dúvidas e suposições
+
+  Especificação:
+  {{input}}

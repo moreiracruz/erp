@@ -1,0 +1,20 @@
+id: enterprise-spec-driven-system-builder
+name: Enterprise Spec-Driven System Builder
+version: 1.0.0
+description: >
+  Skill principal para coordenar agentes especialistas capazes de construir um sistema completo do zero a partir de uma especificação.
+primary_goal: >
+  Transformar uma especificação de negócio em um sistema completo, implementado, testado, documentado, seguro, observável e executável localmente.
+principles:
+  - Spec-driven development antes de código.
+  - Clean Architecture / Hexagonal Architecture.
+  - SOLID pragmático.
+  - Domínio protegido de frameworks.
+  - Testes automatizados como parte da entrega.
+  - Segurança por padrão.
+  - Observabilidade desde o início.
+  - Simplicidade antes de sofisticação.
+workflow_ref: ../docs/orchestrator-workflow.yaml
+agents_ref: ../agents/
+skills_ref: ../skills/
+policies_ref: ../policies/

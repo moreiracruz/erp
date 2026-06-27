@@ -1,0 +1,9 @@
+id: observability-design
+description: >
+  Define logs estruturados, métricas, tracing, health checks, dashboards e alertas úteis.
+rules:
+  - Logs JSON com correlationId.
+  - Métricas técnicas e de negócio.
+  - Health checks para dependências críticas.
+  - Não logar dados sensíveis.
+  - Evitar alertas ruidosos.

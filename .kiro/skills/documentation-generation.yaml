@@ -1,0 +1,8 @@
+id: documentation-generation
+description: >
+  Gera documentação técnica, README, guias de setup, API, arquitetura e troubleshooting.
+rules:
+  - Documentar o que existe.
+  - Informar pré-requisitos.
+  - Incluir comandos executáveis.
+  - Manter consistência com ADRs e arquitetura.

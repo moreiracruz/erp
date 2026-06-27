@@ -1,0 +1,11 @@
+id: angular-frontend-generation
+description: >
+  Gera frontend Angular limpo, testável e alinhado ao contrato REST.
+rules:
+  - Usar TypeScript strict.
+  - Preferir componentes coesos.
+  - Usar reactive forms.
+  - Centralizar HTTP em services.
+  - Proteger rotas com guards.
+  - Usar interceptors para autenticação.
+  - Não colocar regra crítica somente no frontend.

@@ -1,0 +1,37 @@
+workflow:
+  - step: 1
+    name: Intake
+    agent: product-spec-agent
+  - step: 2
+    name: Architecture Definition
+    agent: architecture-agent
+  - step: 3
+    name: Technical Planning
+    agent: system-orchestrator
+  - step: 4
+    name: Database Design
+    agent: database-agent
+  - step: 5
+    name: Backend Implementation
+    agent: backend-agent
+  - step: 6
+    name: Frontend Implementation
+    agent: frontend-agent
+  - step: 7
+    name: Testing
+    agent: testing-agent
+  - step: 8
+    name: Security Review
+    agent: security-agent
+  - step: 9
+    name: Observability
+    agent: observability-agent
+  - step: 10
+    name: DevOps
+    agent: devops-agent
+  - step: 11
+    name: Documentation
+    agent: documentation-agent
+  - step: 12
+    name: Final Review
+    agent: code-review-agent
