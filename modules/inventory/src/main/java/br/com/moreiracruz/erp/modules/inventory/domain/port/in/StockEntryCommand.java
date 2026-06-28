@@ -2,4 +2,9 @@ package br.com.moreiracruz.erp.modules.inventory.domain.port.in;
 
 import java.util.UUID;
 
-public record StockEntryCommand(UUID varianteUuid, int quantity, UUID actorUuid) {}
+public record StockEntryCommand(UUID varianteUuid, int quantity, UUID actorUuid, UUID referenceUuid) {
+
+    public StockEntryCommand(UUID varianteUuid, int quantity, UUID actorUuid) {
+        this(varianteUuid, quantity, actorUuid, null);
+    }
+}

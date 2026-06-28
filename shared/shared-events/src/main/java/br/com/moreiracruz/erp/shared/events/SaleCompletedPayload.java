@@ -20,6 +20,7 @@ public record SaleCompletedPayload(
      * A single line item within a completed sale.
      */
     public record SaleItem(
+            UUID varianteUuid,
             String sku,
             int quantity
     ) {}

@@ -62,7 +62,7 @@ class EventIdempotencyIT extends AbstractIntegrationTest {
         SaleCompletedPayload payload = new SaleCompletedPayload(
                 saleUuid,
                 operatorUuid,
-                List.of(new SaleCompletedPayload.SaleItem("SKU-001", 2)),
+                List.of(new SaleCompletedPayload.SaleItem(varianteUuid, "SKU-001", 2)),
                 new BigDecimal("99.90"),
                 "PIX"
         );
@@ -110,7 +110,7 @@ class EventIdempotencyIT extends AbstractIntegrationTest {
         SaleCompletedPayload payload = new SaleCompletedPayload(
                 saleUuid,
                 operatorUuid,
-                List.of(new SaleCompletedPayload.SaleItem("SKU-002", 3)),
+                List.of(new SaleCompletedPayload.SaleItem(varianteUuid, "SKU-002", 3)),
                 new BigDecimal("149.70"),
                 "CREDITO"
         );

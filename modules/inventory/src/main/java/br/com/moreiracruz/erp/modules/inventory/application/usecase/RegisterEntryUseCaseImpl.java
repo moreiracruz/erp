@@ -28,6 +28,6 @@ public class RegisterEntryUseCaseImpl implements RegisterEntryUseCase {
         item.incrementPhysical(cmd.quantity());
         estoqueItemRepo.save(item);
         movimentoRepo.save(MovimentoEstoque.of(
-                cmd.varianteUuid(), OperationType.ENTRADA, cmd.quantity(), cmd.actorUuid(), null));
+                cmd.varianteUuid(), OperationType.ENTRADA, cmd.quantity(), cmd.actorUuid(), cmd.referenceUuid()));
     }
 }

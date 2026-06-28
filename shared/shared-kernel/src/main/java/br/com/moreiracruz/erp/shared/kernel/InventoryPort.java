@@ -33,4 +33,24 @@ public interface InventoryPort {
      * @param saleUuid the finalized sale whose reservations are committed
      */
     void commitAll(UUID saleUuid);
+
+    /**
+     * Registers a physical stock entry with an external reference.
+     *
+     * @param varianteUuid  the product variant
+     * @param quantity      units entering stock
+     * @param actorUuid     operator responsible for the movement
+     * @param referenceUuid business reference, such as a consignment contract UUID
+     */
+    void registerEntry(UUID varianteUuid, int quantity, UUID actorUuid, UUID referenceUuid);
+
+    /**
+     * Registers a physical stock withdrawal with an external reference.
+     *
+     * @param varianteUuid  the product variant
+     * @param quantity      units leaving stock
+     * @param actorUuid     operator responsible for the movement
+     * @param referenceUuid business reference, such as a consignment contract UUID
+     */
+    void registerWithdrawal(UUID varianteUuid, int quantity, UUID actorUuid, UUID referenceUuid);
 }

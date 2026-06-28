@@ -28,6 +28,6 @@ public class RegisterWithdrawalUseCaseImpl implements RegisterWithdrawalUseCase 
         item.decrementPhysical(cmd.quantity());
         estoqueItemRepo.save(item);
         movimentoRepo.save(MovimentoEstoque.of(
-                cmd.varianteUuid(), OperationType.SAIDA, cmd.quantity(), cmd.actorUuid(), null));
+                cmd.varianteUuid(), OperationType.SAIDA, cmd.quantity(), cmd.actorUuid(), cmd.referenceUuid()));
     }
 }

@@ -35,6 +35,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES),
   },
   {
+    path: 'consignments',
+    canActivate: [authGuard, roleGuard('ROLE_STOCK', 'ROLE_MANAGER')],
+    loadChildren: () => import('./features/consignment/consignment.routes').then(m => m.CONSIGNMENT_ROUTES),
+  },
+  {
     path: 'dashboard',
     canActivate: [authGuard, roleGuard('ROLE_MANAGER', 'ROLE_FINANCE')],
     loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),

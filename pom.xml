@@ -23,6 +23,7 @@
         <module>modules/customer</module>
         <module>modules/finance</module>
         <module>modules/pricing</module>
+        <module>modules/consignment</module>
         <module>infrastructure</module>
         <module>bootstrap</module>
     </modules>
@@ -120,6 +121,11 @@
             <dependency>
                 <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-pricing</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>br.com.moreiracruz.erp</groupId>
+                <artifactId>module-consignment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

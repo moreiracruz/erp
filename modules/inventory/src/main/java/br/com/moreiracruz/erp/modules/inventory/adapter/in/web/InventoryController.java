@@ -69,7 +69,7 @@ public class InventoryController {
     public ResponseEntity<Void> registerEntry(@PathVariable UUID uuid,
                                                @RequestBody StockOperationRequest request) {
         registerEntryUseCase.registerEntry(
-                new StockEntryCommand(uuid, request.quantity(), request.actorUuid()));
+                new StockEntryCommand(uuid, request.quantity(), request.actorUuid(), null));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -84,7 +84,7 @@ public class InventoryController {
     public ResponseEntity<Void> registerWithdrawal(@PathVariable UUID uuid,
                                                     @RequestBody StockOperationRequest request) {
         registerWithdrawalUseCase.registerWithdrawal(
-                new StockWithdrawalCommand(uuid, request.quantity(), request.actorUuid()));
+                new StockWithdrawalCommand(uuid, request.quantity(), request.actorUuid(), null));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

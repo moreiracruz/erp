@@ -59,6 +59,10 @@
             <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-pricing</artifactId>
         </dependency>
+        <dependency>
+            <groupId>br.com.moreiracruz.erp</groupId>
+            <artifactId>module-consignment</artifactId>
+        </dependency>
 
         <!-- Spring Boot starters -->
         <dependency>

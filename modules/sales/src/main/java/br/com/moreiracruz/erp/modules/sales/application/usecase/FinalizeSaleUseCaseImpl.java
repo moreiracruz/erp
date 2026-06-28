@@ -86,7 +86,8 @@ public class FinalizeSaleUseCaseImpl implements FinalizeSaleUseCase {
 
         // Publish domain event
         List<SaleCompletedPayload.SaleItem> saleItems = venda.getItems().stream()
-                .map(item -> new SaleCompletedPayload.SaleItem(item.getSku(), item.getQuantity()))
+                .map(item -> new SaleCompletedPayload.SaleItem(
+                        item.getVarianteUuid(), item.getSku(), item.getQuantity()))
                 .toList();
 
         SaleCompletedPayload payload = new SaleCompletedPayload(

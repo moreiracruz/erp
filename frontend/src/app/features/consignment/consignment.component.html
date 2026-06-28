@@ -1,0 +1,114 @@
+<section class="consignment-page">
+  <header class="page-header">
+    <div>
+      <h1>Consignação recebida</h1>
+      <p>Controle consignantes, contratos, entrada em estoque, devoluções e acertos manuais.</p>
+    </div>
+    <button type="button" (click)="loadData()" [disabled]="loading()">Atualizar</button>
+  </header>
+
+  <p class="error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <div class="grid">
+    <section class="panel">
+      <h2>Consignante</h2>
+      <label>Nome <input [ngModel]="consignorForm().name" (ngModelChange)="setConsignorField('name', $event)" /></label>
+      <label>Documento <input [ngModel]="consignorForm().document" (ngModelChange)="setConsignorField('document', $event)" /></label>
+      <label>Email <input [ngModel]="consignorForm().email" (ngModelChange)="setConsignorField('email', $event)" /></label>
+      <label>Telefone <input [ngModel]="consignorForm().phone" (ngModelChange)="setConsignorField('phone', $event)" /></label>
+      <button type="button" (click)="createConsignor()" [disabled]="loading()">Cadastrar</button>
+    </section>
+
+    <section class="panel">
+      <h2>Novo contrato</h2>
+      <label>Consignante
+        <select [(ngModel)]="contractForm().consignorUuid">
+          <option value="">Selecione</option>
+          <option *ngFor="let consignor of consignors()" [value]="consignor.uuid">{{ consignor.name }}</option>
+        </select>
+      </label>
+      <label>Código <input [(ngModel)]="contractForm().code" /></label>
+      <button type="button" (click)="openContract()" [disabled]="loading()">Abrir contrato</button>
+    </section>
+  </div>
+
+  <section class="contracts-layout">
+    <aside class="contracts-list">
+      <h2>Contratos</h2>
+      <button
+        type="button"
+        class="contract-row"
+        *ngFor="let contract of contracts()"
+        [class.active]="contract.uuid === selectedContractUuid()"
+        (click)="selectedContractUuid.set(contract.uuid)">
+        <strong>{{ contract.code }}</strong>
+        <span>{{ contract.status }}</span>
+      </button>
+      <p class="empty" *ngIf="contracts().length === 0 && !loading()">Nenhum contrato cadastrado.</p>
+    </aside>
+
+    <section class="contract-detail" *ngIf="selectedContract() as contract">
+      <header>
+        <div>
+          <h2>{{ contract.code }}</h2>
+          <p>Status: {{ contract.status }}</p>
+        </div>
+        <button type="button" (click)="closeContract()" [disabled]="loading()">Encerrar</button>
+      </header>
+
+      <div class="actions">
+        <div>
+          <h3>Receber item</h3>
+          <input placeholder="UUID da variante" [(ngModel)]="receiveForm().varianteUuid" />
+          <input type="number" min="1" [(ngModel)]="receiveForm().quantity" />
+          <button type="button" (click)="receiveItem()" [disabled]="loading()">Receber</button>
+        </div>
+
+        <div>
+          <h3>Devolver pendente</h3>
+          <select [(ngModel)]="returnForm().itemUuid">
+            <option value="">Selecione item</option>
+            <option *ngFor="let item of pendingItems()" [value]="item.uuid">{{ item.varianteUuid }} - saldo {{ item.remainingQuantity }}</option>
+          </select>
+          <input type="number" min="1" [(ngModel)]="returnForm().quantity" />
+          <button type="button" (click)="returnItem()" [disabled]="loading()">Devolver</button>
+        </div>
+
+        <div>
+          <h3>Acerto manual</h3>
+          <select [(ngModel)]="settlementForm().itemUuid">
+            <option value="">Selecione item vendido</option>
+            <option *ngFor="let item of soldItems()" [value]="item.uuid">{{ item.varianteUuid }} - vendido a acertar {{ item.soldQuantity - item.settledQuantity }}</option>
+          </select>
+          <input type="number" min="1" [(ngModel)]="settlementForm().quantity" />
+          <input type="number" min="0.01" step="0.01" [(ngModel)]="settlementForm().manualAmount" />
+          <input placeholder="Observação" [(ngModel)]="settlementForm().notes" />
+          <button type="button" (click)="settleItem()" [disabled]="loading()">Registrar acerto</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Variante</th>
+            <th>Recebido</th>
+            <th>Pendente</th>
+            <th>Vendido</th>
+            <th>Acertado</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of contract.items">
+            <td>{{ item.varianteUuid }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.remainingQuantity }}</td>
+            <td>{{ item.soldQuantity }}</td>
+            <td>{{ item.settledQuantity }}</td>
+            <td>{{ item.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+</section>
