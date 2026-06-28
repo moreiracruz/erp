@@ -50,14 +50,14 @@ public class CustomerController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_CASHIER')")
     public ResponseEntity<ClienteResponse> register(@RequestBody RegisterCustomerCommand cmd) {
         ClienteResponse response = registerCustomerUseCase.register(cmd);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{uuid}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_CASHIER')")
     public ResponseEntity<ClienteResponse> findByUuid(@PathVariable UUID uuid) {
         var cliente = clienteRepository.findByUuid(uuid)
                 .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
@@ -65,7 +65,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{uuid}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<ClienteResponse> update(@PathVariable UUID uuid,
                                                    @RequestBody RegisterCustomerCommand cmd) {
         // Find existing customer, recreate with new data
@@ -95,14 +95,14 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{uuid}/deactivate")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deactivate(@PathVariable UUID uuid) {
         deactivateCustomerUseCase.deactivate(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_CASHIER')")
     public ResponseEntity<Page<ClienteResponse>> search(
             @RequestParam(required = false) String cpf,
             @RequestParam(required = false) String name,

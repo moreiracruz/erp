@@ -52,14 +52,14 @@ public class PricingController {
     }
 
     @PostMapping("/campaigns")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CampanhaResponse> createCampaign(@RequestBody CreateCampaignCommand cmd) {
         CampanhaResponse response = createCampaignUseCase.create(cmd);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/campaigns")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<CampanhaResponse>> listActiveCampaigns() {
         List<CampanhaResponse> campaigns = campanhaRepository.findAllActive().stream()
                 .map(this::toResponse)
@@ -68,7 +68,7 @@ public class PricingController {
     }
 
     @PutMapping("/campaigns/{uuid}/deactivate")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deactivateCampaign(@PathVariable UUID uuid) {
         Campanha campanha = campanhaRepository.findByUuid(uuid)
                 .orElseThrow(() -> new br.com.moreiracruz.erp.shared.exceptions.NotFoundException(
@@ -79,21 +79,21 @@ public class PricingController {
     }
 
     @PostMapping("/coupons")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<CupomResponse> createCoupon(@RequestBody CreateCouponCommand cmd) {
         CupomResponse response = createCouponUseCase.create(cmd);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/calculate")
-    @PreAuthorize("hasRole('ROLE_CASHIER') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<DiscountResult> calculateDiscount(@RequestBody DiscountQuery query) {
         DiscountResult result = calculateDiscountUseCase.calculate(query);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/coupons/{code}/confirm")
-    @PreAuthorize("hasRole('ROLE_CASHIER') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> confirmCouponUsage(@PathVariable String code) {
         confirmCouponUsageUseCase.confirm(code);
         return ResponseEntity.noContent().build();

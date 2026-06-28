@@ -4,4 +4,6 @@ import java.util.UUID;
 
 public interface ReleaseReserveUseCase {
     void release(UUID reservaUuid);
+
+    void releaseAllBySaleUuid(UUID saleUuid);
 }

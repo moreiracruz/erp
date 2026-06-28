@@ -28,10 +28,12 @@ public class FinanceEventConsumer {
     }
 
     @EventListener
-    public void onSaleCompleted(EventEnvelope<SaleCompletedPayload> event) {
-        SaleCompletedPayload payload = event.payload();
+    public void onSaleCompleted(EventEnvelope<?> event) {
+        if (!"SaleCompleted".equals(event.eventType()) || !(event.payload() instanceof SaleCompletedPayload payload)) {
+            return;
+        }
 
-        // Idempotency check — skip if already processed
+        // Idempotency check: skip if already processed.
         if (lancamentoRepository.existsBySaleUuid(payload.saleUuid())) {
             log.info("Sale {} already processed, skipping finance entry creation", payload.saleUuid());
             return;

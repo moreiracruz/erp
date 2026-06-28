@@ -22,6 +22,11 @@ public class CupomRepositoryAdapter implements CupomRepository {
     }
 
     @Override
+    public Optional<Cupom> findByCodeIgnoreCaseForUpdate(String code) {
+        return jpaRepository.findWithLockByCodeIgnoreCase(code).map(this::toDomain);
+    }
+
+    @Override
     public Cupom save(Cupom cupom) {
         CupomJpaEntity entity = toEntity(cupom);
         CupomJpaEntity saved = jpaRepository.save(entity);

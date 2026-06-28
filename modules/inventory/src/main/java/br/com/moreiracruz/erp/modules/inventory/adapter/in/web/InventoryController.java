@@ -53,7 +53,7 @@ public class InventoryController {
      * @param uuid the variant's UUID
      */
     @GetMapping("/variants/{uuid}/stock")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_STOCK')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STOCK')")
     public ResponseEntity<StockResponse> getStock(@PathVariable UUID uuid) {
         return ResponseEntity.ok(getStockUseCase.getStock(uuid));
     }
@@ -65,7 +65,7 @@ public class InventoryController {
      * @param request quantity and actor
      */
     @PostMapping("/variants/{uuid}/entries")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_STOCK')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STOCK')")
     public ResponseEntity<Void> registerEntry(@PathVariable UUID uuid,
                                                @RequestBody StockOperationRequest request) {
         registerEntryUseCase.registerEntry(
@@ -80,7 +80,7 @@ public class InventoryController {
      * @param request quantity and actor
      */
     @PostMapping("/variants/{uuid}/withdrawals")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_STOCK')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STOCK')")
     public ResponseEntity<Void> registerWithdrawal(@PathVariable UUID uuid,
                                                     @RequestBody StockOperationRequest request) {
         registerWithdrawalUseCase.registerWithdrawal(
@@ -94,7 +94,7 @@ public class InventoryController {
      * @param uuid the variant's UUID
      */
     @GetMapping("/variants/{uuid}/movements")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_STOCK')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STOCK')")
     public ResponseEntity<List<MovimentoResponse>> getMovements(@PathVariable UUID uuid) {
         List<MovimentoEstoque> movements = movimentoRepository.findByVarianteUuid(uuid);
         List<MovimentoResponse> response = movements.stream()

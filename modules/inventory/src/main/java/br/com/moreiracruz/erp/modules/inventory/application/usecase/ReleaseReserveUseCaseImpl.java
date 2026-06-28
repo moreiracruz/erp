@@ -46,4 +46,22 @@ public class ReleaseReserveUseCaseImpl implements ReleaseReserveUseCase {
                 reserva.getVarianteUuid(), OperationType.LIBERACAO_RESERVA,
                 reserva.getQuantity(), null, reserva.getSaleUuid()));
     }
+
+    @Override
+    public void releaseAllBySaleUuid(UUID saleUuid) {
+        reservaRepo.findBySaleUuid(saleUuid).stream()
+                .filter(r -> r.isActive())
+                .forEach(reserva -> {
+                    var item = estoqueItemRepo.findByVarianteUuidForUpdate(reserva.getVarianteUuid());
+                    item.decrementReserved(reserva.getQuantity());
+                    estoqueItemRepo.save(item);
+
+                    reserva.markReleased();
+                    reservaRepo.save(reserva);
+
+                    movimentoRepo.save(MovimentoEstoque.of(
+                            reserva.getVarianteUuid(), OperationType.LIBERACAO_RESERVA,
+                            reserva.getQuantity(), null, reserva.getSaleUuid()));
+                });
+    }
 }

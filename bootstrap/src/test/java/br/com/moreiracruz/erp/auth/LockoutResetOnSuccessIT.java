@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Integration test verifying that the failure counter resets on successful login.
  * Property 7: Counter resets on success after ≤5 failures.
  */
-@org.junit.jupiter.api.Disabled("TODO: lockout counter persistence across transactions needs investigation")
 class LockoutResetOnSuccessIT extends AbstractIntegrationTest {
 
     @Autowired

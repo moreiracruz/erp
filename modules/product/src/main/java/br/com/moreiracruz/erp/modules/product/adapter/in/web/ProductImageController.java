@@ -64,7 +64,7 @@ public class ProductImageController {
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public List<ImageResponse> upload(@PathVariable UUID uuid,
                                       @RequestParam("files") List<MultipartFile> files) {
         List<UploadImageCommand> commands = files.stream()
@@ -93,7 +93,7 @@ public class ProductImageController {
      */
     @DeleteMapping("/{imageId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public void delete(@PathVariable UUID uuid, @PathVariable Long imageId) {
         deleteImageUseCase.delete(uuid, imageId);
     }
@@ -106,7 +106,7 @@ public class ProductImageController {
      * @return the updated list of images sorted by the new order
      */
     @PutMapping("/reorder")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public List<ImageResponse> reorder(@PathVariable UUID uuid,
                                        @RequestBody ReorderRequest request) {
         return reorderImagesUseCase.reorder(uuid, request.imageIds());
@@ -120,7 +120,7 @@ public class ProductImageController {
      * @return the updated image metadata
      */
     @PutMapping("/{imageId}/main")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ImageResponse setMain(@PathVariable UUID uuid, @PathVariable Long imageId) {
         return setMainImageUseCase.setMain(uuid, imageId);
     }

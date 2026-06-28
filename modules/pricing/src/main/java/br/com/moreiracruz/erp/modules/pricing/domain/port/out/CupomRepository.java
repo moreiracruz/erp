@@ -8,5 +8,7 @@ public interface CupomRepository {
 
     Optional<Cupom> findByCodeIgnoreCase(String code);
 
+    Optional<Cupom> findByCodeIgnoreCaseForUpdate(String code);
+
     Cupom save(Cupom cupom);
 }

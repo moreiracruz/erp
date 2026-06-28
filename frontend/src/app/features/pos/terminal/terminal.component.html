@@ -27,6 +27,14 @@
         <button class="search-btn" (click)="searchProduct()">Buscar</button>
       </div>
 
+      @if (errorMessage()) {
+        <p class="pos-error">{{ errorMessage() }}</p>
+      }
+
+      @if (loading()) {
+        <p class="pos-loading">Processando...</p>
+      }
+
       <div class="items-list">
         @if (items().length === 0) {
           <div class="empty-state">
@@ -55,6 +63,7 @@
                       (ngModelChange)="updateQty(item.id, $event)"
                       min="1"
                       class="qty-input"
+                      readonly
                     />
                   </td>
                   <td class="item-price">R$ {{ item.price.toFixed(2) }}</td>
@@ -110,8 +119,8 @@
       </div>
 
       <div class="actions">
-        <button class="btn-finalize" (click)="finalizeSale()">Finalizar Venda (F5)</button>
-        <button class="btn-cancel" (click)="cancelSale()">Cancelar (Esc)</button>
+        <button class="btn-finalize" (click)="finalizeSale()" [disabled]="loading()">Finalizar Venda (F5)</button>
+        <button class="btn-cancel" (click)="cancelSale()" [disabled]="loading()">Cancelar (Esc)</button>
       </div>
 
       <div class="shortcuts-hint">

@@ -53,7 +53,7 @@ public class SalesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_CASHIER') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_MANAGER')")
     public VendaResponse open(@RequestBody OpenSaleRequest request, Authentication auth) {
         UUID operatorUuid = (UUID) auth.getPrincipal();
         return openSaleUseCase.open(operatorUuid,
@@ -61,7 +61,7 @@ public class SalesController {
     }
 
     @PostMapping("/{uuid}/items")
-    @PreAuthorize("hasRole('ROLE_CASHIER') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_MANAGER')")
     public VendaResponse addItem(@PathVariable UUID uuid, @RequestBody AddItemRequest request) {
         ProductPort.VariantInfo variant = productPort.findByBarcode(request.barcode());
         AddItemCommand cmd = new AddItemCommand(
@@ -70,7 +70,7 @@ public class SalesController {
     }
 
     @PostMapping("/{uuid}/finalize")
-    @PreAuthorize("hasRole('ROLE_CASHIER') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_MANAGER')")
     public FinalizationResponse finalize(@PathVariable UUID uuid,
                                          @RequestBody FinalizeSaleRequest request) {
         return finalizeSaleUseCase.finalize(uuid,
@@ -80,13 +80,13 @@ public class SalesController {
 
     @PostMapping("/{uuid}/cancel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ROLE_CASHIER') or hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_MANAGER')")
     public void cancel(@PathVariable UUID uuid, @RequestBody CancelSaleRequest request) {
         cancelSaleUseCase.cancel(uuid, new CancelSaleCommand(request.reason()));
     }
 
     @GetMapping("/{uuid}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_FINANCE')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_FINANCE')")
     public VendaResponse findByUuid(@PathVariable UUID uuid) {
         return vendaRepository.findByUuid(uuid)
                 .map(this::toResponse)

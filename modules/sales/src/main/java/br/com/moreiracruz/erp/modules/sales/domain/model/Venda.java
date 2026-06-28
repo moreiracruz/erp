@@ -36,8 +36,15 @@ public class Venda extends AggregateRoot {
     }
 
     private Venda(UUID operatorUuid, String terminalId, UUID clienteUuid) {
+        if (operatorUuid == null) {
+            throw new ValidationException("Operador é obrigatório");
+        }
+        if (terminalId == null || terminalId.isBlank() || terminalId.length() > 50) {
+            throw new ValidationException("Terminal deve ter entre 1 e 50 caracteres");
+        }
+        this.uuid = UUID.randomUUID();
         this.operatorUuid = operatorUuid;
-        this.terminalId = terminalId;
+        this.terminalId = terminalId.trim();
         this.clienteUuid = clienteUuid;
         this.status = VendaStatus.EM_ANDAMENTO;
         this.subtotal = BigDecimal.ZERO;

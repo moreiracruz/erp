@@ -17,6 +17,14 @@
     <span class="results-count">{{ filteredProducts().length }} produtos</span>
   </div>
 
+  @if (errorMessage()) {
+    <p class="form-error">{{ errorMessage() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="loading-state">Carregando...</p>
+  }
+
   <!-- Products Table -->
   <div class="table-container">
     <table class="products-table">
@@ -46,6 +54,7 @@
                 class="toggle-btn"
                 [class.active]="product.active"
                 (click)="toggleActive(product)"
+                [disabled]="loading() || !product.active"
                 [attr.aria-label]="product.active ? 'Desativar produto' : 'Ativar produto'"
               >
                 <span class="toggle-track">
@@ -141,7 +150,7 @@
 
         <footer class="modal-footer">
           <button class="btn-cancel" (click)="closeForm()">Cancelar</button>
-          <button class="btn-save" (click)="saveProduct()">Salvar</button>
+          <button class="btn-save" (click)="saveProduct()" [disabled]="loading()">Salvar</button>
         </footer>
       </div>
     </div>

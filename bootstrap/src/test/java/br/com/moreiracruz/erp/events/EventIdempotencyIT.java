@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration test verifying event consumer idempotency.
  * Property 10: N deliveries → 1 side-effect.
  */
-@org.junit.jupiter.api.Disabled("TODO: event consumer wiring and idempotency logic need implementation")
 class EventIdempotencyIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -52,8 +51,8 @@ class EventIdempotencyIT extends AbstractIntegrationTest {
         Long produtoId = jdbcTemplate.queryForObject(
                 "INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES (?, 'EventTest', 'B', 'C', true, NOW()) RETURNING id",
                 Long.class, produtoUuid);
-        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES (?, ?, 'SKU-EVT1', 'M', 'X', '9990000000001', 10.00, 5.00, true)",
-                varianteUuid, produtoId);
+        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, produto_uuid, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, 'SKU-EVT1', 'M', 'X', '9990000000001', 10.00, 5.00, true)",
+                varianteUuid, produtoId, produtoUuid);
 
         // Setup: create stock and reserve it for this sale
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, 10, operatorUuid));
@@ -95,8 +94,8 @@ class EventIdempotencyIT extends AbstractIntegrationTest {
         Long produtoId = jdbcTemplate.queryForObject(
                 "INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES (?, 'EventTest2', 'B', 'C', true, NOW()) RETURNING id",
                 Long.class, produtoUuid);
-        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES (?, ?, 'SKU-EVT2', 'M', 'X', '9990000000002', 10.00, 5.00, true)",
-                varianteUuid, produtoId);
+        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, produto_uuid, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, 'SKU-EVT2', 'M', 'X', '9990000000002', 10.00, 5.00, true)",
+                varianteUuid, produtoId, produtoUuid);
 
         // Setup: create stock and reserve it
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, 20, operatorUuid));

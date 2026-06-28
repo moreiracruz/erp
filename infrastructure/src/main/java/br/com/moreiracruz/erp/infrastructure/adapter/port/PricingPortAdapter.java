@@ -1,5 +1,8 @@
 package br.com.moreiracruz.erp.infrastructure.adapter.port;
 
+import br.com.moreiracruz.erp.modules.pricing.domain.port.in.CalculateDiscountUseCase;
+import br.com.moreiracruz.erp.modules.pricing.domain.port.in.ConfirmCouponUsageUseCase;
+import br.com.moreiracruz.erp.modules.pricing.domain.port.in.DiscountQuery;
 import br.com.moreiracruz.erp.shared.kernel.PricingPort;
 import org.springframework.stereotype.Component;
 
@@ -12,22 +15,34 @@ import java.util.UUID;
  * module's inbound use case ports. Lives in infrastructure to avoid lateral
  * module dependencies.
  *
- * <p>NOTE: The pricing module's CalculateDiscountUseCase and ConfirmCouponUsageUseCase
- * are not yet implemented. This adapter provides a no-op/pass-through implementation
- * until the pricing module is fully wired.
  */
 @Component
 public class PricingPortAdapter implements PricingPort {
 
+    private final CalculateDiscountUseCase calculateDiscountUseCase;
+    private final ConfirmCouponUsageUseCase confirmCouponUsageUseCase;
+
+    public PricingPortAdapter(CalculateDiscountUseCase calculateDiscountUseCase,
+                              ConfirmCouponUsageUseCase confirmCouponUsageUseCase) {
+        this.calculateDiscountUseCase = calculateDiscountUseCase;
+        this.confirmCouponUsageUseCase = confirmCouponUsageUseCase;
+    }
+
     @Override
     public BigDecimal calculateDiscount(UUID saleUuid, List<ItemLine> items,
                                         BigDecimal subtotal, String couponCode) {
-        // TODO: Delegate to pricing module's CalculateDiscountUseCase once available
-        return BigDecimal.ZERO;
+        List<DiscountQuery.ItemLine> queryItems = items.stream()
+                .map(item -> new DiscountQuery.ItemLine(
+                        item.varianteUuid(), item.quantity(), item.unitPrice()))
+                .toList();
+
+        return calculateDiscountUseCase.calculate(
+                new DiscountQuery(saleUuid, queryItems, subtotal, couponCode))
+                .discountAmount();
     }
 
     @Override
     public void confirmCouponUsage(String couponCode) {
-        // TODO: Delegate to pricing module's ConfirmCouponUsageUseCase once available
+        confirmCouponUsageUseCase.confirm(couponCode);
     }
 }

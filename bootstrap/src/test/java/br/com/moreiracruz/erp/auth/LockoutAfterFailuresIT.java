@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Integration test verifying brute-force lockout after N>5 failures.
  * Property 6: Account locks after 5+ consecutive failed attempts.
  */
-@org.junit.jupiter.api.Disabled("TODO: lockout persistence across transactions needs investigation")
 class LockoutAfterFailuresIT extends AbstractIntegrationTest {
 
     @Autowired

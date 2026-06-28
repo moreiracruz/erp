@@ -1,18 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ProductImageSectionComponent } from './components/product-image-section/product-image-section.component';
-
-interface AdminProduct {
-  id: string;
-  name: string;
-  brand: string;
-  category: string;
-  price: number;
-  cost: number;
-  active: boolean;
-}
+import { AdminProduct, AdminProductHttpAdapter } from '../../../infrastructure/http/admin-product-http.adapter';
 
 @Component({
   selector: 'app-products',
@@ -22,10 +13,12 @@ interface AdminProduct {
   styleUrl: './products.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   readonly searchQuery = signal('');
   readonly showForm = signal(false);
   readonly editingProduct = signal<AdminProduct | null>(null);
+  readonly loading = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly formData = signal<Omit<AdminProduct, 'id' | 'active'>>({
     name: '',
@@ -35,15 +28,13 @@ export class ProductsComponent {
     cost: 0,
   });
 
-  readonly products = signal<AdminProduct[]>([
-    { id: '1', name: 'Vestido Floral Midi', brand: 'Reino & Flor', category: 'Vestidos', price: 289.90, cost: 120.00, active: true },
-    { id: '2', name: 'Blusa Renda Manga Longa', brand: 'Reino & Flor', category: 'Blusas', price: 159.90, cost: 65.00, active: true },
-    { id: '3', name: 'Saia Midi Plissada', brand: 'Reino & Flor', category: 'Saias', price: 199.90, cost: 80.00, active: true },
-    { id: '4', name: 'Calça Pantalona Linho', brand: 'Reino & Flor', category: 'Calças', price: 249.90, cost: 95.00, active: true },
-    { id: '5', name: 'Jaqueta Couro Eco', brand: 'Parceiro A', category: 'Jaquetas', price: 399.90, cost: 180.00, active: false },
-    { id: '6', name: 'Camiseta Basic Algodão', brand: 'Reino & Flor', category: 'Camisetas', price: 79.90, cost: 30.00, active: true },
-    { id: '7', name: 'Shorts Alfaiataria', brand: 'Reino & Flor', category: 'Shorts', price: 149.90, cost: 55.00, active: true },
-  ]);
+  readonly products = signal<AdminProduct[]>([]);
+
+  constructor(private readonly productAdapter: AdminProductHttpAdapter) {}
+
+  ngOnInit(): void {
+    this.loadProducts();
+  }
 
   readonly filteredProducts = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -84,33 +75,67 @@ export class ProductsComponent {
     if (!data.name.trim()) return;
 
     const editing = this.editingProduct();
-    if (editing) {
-      this.products.set(
-        this.products().map((p) =>
-          p.id === editing.id ? { ...p, ...data } : p,
-        ),
-      );
-    } else {
-      const newProduct: AdminProduct = {
-        id: crypto.randomUUID(),
-        ...data,
-        active: true,
-      };
-      this.products.set([...this.products(), newProduct]);
-    }
+    const command = {
+      name: data.name.trim(),
+      brand: data.brand.trim(),
+      category: data.category.trim(),
+    };
+    this.loading.set(true);
+    this.errorMessage.set(null);
 
-    this.closeForm();
+    if (editing) {
+      this.productAdapter.update(editing.id, command).subscribe({
+        next: (updated) => {
+          this.products.set(this.products().map((p) => (p.id === editing.id ? updated : p)));
+          this.loading.set(false);
+          this.closeForm();
+        },
+        error: () => this.handleError('Não foi possível atualizar o produto.'),
+      });
+    } else {
+      this.productAdapter.create(command).subscribe({
+        next: (created) => {
+          this.products.set([...this.products(), created]);
+          this.loading.set(false);
+          this.closeForm();
+        },
+        error: () => this.handleError('Não foi possível criar o produto.'),
+      });
+    }
   }
 
   toggleActive(product: AdminProduct): void {
-    this.products.set(
-      this.products().map((p) =>
-        p.id === product.id ? { ...p, active: !p.active } : p,
-      ),
-    );
+    if (!product.active) return;
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.productAdapter.deactivate(product.id).subscribe({
+      next: () => {
+        this.products.set(this.products().map((p) => (p.id === product.id ? { ...p, active: false } : p)));
+        this.loading.set(false);
+      },
+      error: () => this.handleError('Não foi possível desativar o produto.'),
+    });
   }
 
   updateFormField(field: keyof Omit<AdminProduct, 'id' | 'active'>, value: string | number): void {
     this.formData.set({ ...this.formData(), [field]: value });
+  }
+
+  private loadProducts(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.productAdapter.list().subscribe({
+      next: (products) => {
+        this.products.set(products);
+        this.loading.set(false);
+      },
+      error: () => this.handleError('Não foi possível carregar os produtos.'),
+    });
+  }
+
+  private handleError(message: string): void {
+    this.errorMessage.set(message);
+    this.loading.set(false);
   }
 }

@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration test verifying coupon optimistic lock under concurrent access.
  * Property 9: Coupon usage never exceeds max.
  */
-@org.junit.jupiter.api.Disabled("TODO: coupon confirm use case concurrent behavior needs implementation")
 class CouponOptimisticLockIT extends AbstractIntegrationTest {
 
     @Autowired

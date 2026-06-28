@@ -42,14 +42,14 @@ public class FinanceController {
     }
 
     @PostMapping("/expenses")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_FINANCE')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_FINANCE')")
     public ResponseEntity<LancamentoResponse> registerExpense(@RequestBody RegisterExpenseCommand cmd) {
         LancamentoResponse response = registerExpenseUseCase.register(cmd);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/cash-flow")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_FINANCE')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_FINANCE')")
     public ResponseEntity<CashFlowReport> getCashFlow(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
@@ -57,7 +57,7 @@ public class FinanceController {
     }
 
     @GetMapping("/entries/{uuid}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_FINANCE')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_FINANCE')")
     public ResponseEntity<LancamentoResponse> findByUuid(@PathVariable UUID uuid) {
         var lancamento = lancamentoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new NotFoundException("Lançamento não encontrado"));

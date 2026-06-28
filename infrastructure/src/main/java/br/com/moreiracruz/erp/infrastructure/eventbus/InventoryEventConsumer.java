@@ -27,14 +27,17 @@ public class InventoryEventConsumer {
     }
 
     @EventListener
-    public void onSaleCompleted(EventEnvelope<SaleCompletedPayload> event) {
-        // Idempotency guard — check if this event was already processed
+    public void onSaleCompleted(EventEnvelope<?> event) {
+        if (!"SaleCompleted".equals(event.eventType()) || !(event.payload() instanceof SaleCompletedPayload payload)) {
+            return;
+        }
+
+        // Idempotency guard: check if this event was already processed.
         if (domainEventRepository.existsByEventId(event.eventId())) {
             log.info("Event {} already processed by InventoryEventConsumer, skipping", event.eventId());
             return;
         }
 
-        SaleCompletedPayload payload = event.payload();
         log.info("Committing inventory reservations for sale {}", payload.saleUuid());
 
         commitReserveUseCase.commit(payload.saleUuid());

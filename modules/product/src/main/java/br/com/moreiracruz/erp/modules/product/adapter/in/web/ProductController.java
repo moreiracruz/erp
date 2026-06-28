@@ -65,7 +65,7 @@ public class ProductController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ProdutoResponse create(@RequestBody RegisterProductCommand cmd) {
         return registerProductUseCase.register(cmd);
     }
@@ -116,7 +116,7 @@ public class ProductController {
      * @return the updated product
      */
     @PutMapping("/{uuid}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ProdutoResponse update(@PathVariable UUID uuid, @RequestBody UpdateProductCommand cmd) {
         return updateProductUseCase.update(uuid, cmd);
     }
@@ -128,7 +128,7 @@ public class ProductController {
      */
     @DeleteMapping("/{uuid}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public void deactivate(@PathVariable UUID uuid) {
         deactivateProductUseCase.deactivate(uuid);
     }
@@ -142,7 +142,7 @@ public class ProductController {
      */
     @PostMapping("/{uuid}/variants")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public VarianteResponse createVariant(@PathVariable UUID uuid,
                                           @RequestBody RegisterVariantCommand cmd) {
         return registerVariantUseCase.register(uuid, cmd);
@@ -155,7 +155,7 @@ public class ProductController {
      * @return the matching variant, or 404 if not found
      */
     @GetMapping("/variants/by-sku/{sku}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_STOCK')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_STOCK')")
     public VarianteResponse findBySku(@PathVariable String sku) {
         return searchVariantUseCase.findBySku(sku);
     }
@@ -167,7 +167,7 @@ public class ProductController {
      * @return the matching variant, or 404 if not found
      */
     @GetMapping("/variants/by-barcode/{barcode}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_CASHIER') or hasRole('ROLE_STOCK')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_CASHIER') or hasAuthority('ROLE_STOCK')")
     public VarianteResponse findByBarcode(@PathVariable String barcode) {
         return searchVariantUseCase.findByBarcode(barcode);
     }

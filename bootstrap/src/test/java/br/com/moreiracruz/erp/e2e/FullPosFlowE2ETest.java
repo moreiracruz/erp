@@ -3,7 +3,6 @@ package br.com.moreiracruz.erp.e2e;
 import br.com.moreiracruz.erp.test.AbstractIntegrationTest;
 import br.com.moreiracruz.erp.test.TestJwtGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.jupiter.api.Disabled;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Validates Requirement 15: Complete POS flow.
  */
 @AutoConfigureMockMvc
-@Disabled("TODO: requires full product/variant/stock setup before sale flow — needs redesign")
 class FullPosFlowE2ETest extends AbstractIntegrationTest {
 
     @Autowired
@@ -97,7 +95,7 @@ class FullPosFlowE2ETest extends AbstractIntegrationTest {
                         .content(openSaleBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.uuid").exists())
-                .andExpect(jsonPath("$.status").value("ABERTA"))
+                .andExpect(jsonPath("$.status").value("EM_ANDAMENTO"))
                 .andReturn();
 
         JsonNode saleJson = objectMapper.readTree(saleResult.getResponse().getContentAsString());

@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * domain aggregate — this class only orchestrates ports and factories.
  */
 @Service
-@Transactional
+@Transactional(noRollbackFor = AuthenticationException.class)
 public class LoginUseCaseImpl implements LoginUseCase {
 
     private static final long ACCESS_TOKEN_EXPIRES_IN_SECONDS = 900L;
