@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.erp</groupId>
+        <groupId>br.com.moreiracruz.erp</groupId>
         <artifactId>erp-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
@@ -16,11 +16,5 @@
     <description>Core domain abstractions: AggregateRoot, DomainEvent, Identifiable, value objects</description>
 
     <dependencies>
-        <!-- Jakarta Persistence API for @MappedSuperclass, @Id, @PrePersist annotations on AggregateRoot -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <!-- version managed by Spring Boot BOM -->
-        </dependency>
     </dependencies>
 </project>

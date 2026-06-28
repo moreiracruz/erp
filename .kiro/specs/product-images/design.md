@@ -107,7 +107,7 @@ graph TB
 ### Domain Model
 
 ```java
-// modules/product/src/main/java/com/erp/modules/product/domain/model/ProdutoImagem.java
+// modules/product/src/main/java/br/com/moreiracruz/erp/modules/product/domain/model/ProdutoImagem.java
 public class ProdutoImagem {
     private Long id;
     private UUID produtoUuid;

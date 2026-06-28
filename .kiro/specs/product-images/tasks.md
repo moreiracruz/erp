@@ -8,7 +8,7 @@ This plan implements the Product Image Management feature following the existing
 
 - [x] 1. Domain model, ports, and configuration
   - [x] 1.1 Create `ProdutoImagem` domain model and `ImageValidator` utility
-    - Create `ProdutoImagem.java` in `modules/product/src/main/java/com/erp/modules/product/domain/model/` with `create()` and `restore()` factory methods
+    - Create `ProdutoImagem.java` in `modules/product/src/main/java/br/com/moreiracruz/erp/modules/product/domain/model/` with `create()` and `restore()` factory methods
     - Create `ImageValidator.java` in same package with `validateMagicBytes(byte[])`, `validateFileSize(long)`, `validateFilename(String)` methods
     - Implement magic bytes detection for JPEG (0xFF 0xD8 0xFF), PNG (0x89 0x50 0x4E 0x47), WebP (RIFF...WEBP)
     - _Requirements: 1.2, 1.3, 1.6, 1.7, 1.8, 8.3_
@@ -74,7 +74,7 @@ This plan implements the Product Image Management feature following the existing
 
 - [x] 3. Infrastructure adapters (persistence and storage)
   - [x] 3.1 Implement `ProdutoImagemJpaEntity` and `ProdutoImagemJpaRepository`
-    - Create JPA entity in `infrastructure/src/main/java/com/erp/infrastructure/persistence/product/`
+    - Create JPA entity in `infrastructure/src/main/java/br/com/moreiracruz/erp/infrastructure/persistence/product/`
     - Create Spring Data JPA repository interface with required query methods
     - _Requirements: 12.1, 12.2, 12.3_
 

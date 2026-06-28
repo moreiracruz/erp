@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.erp</groupId>
+    <groupId>br.com.moreiracruz.erp</groupId>
     <artifactId>erp-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -73,62 +73,62 @@
 
             <!-- Internal modules -->
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>shared-kernel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>shared-events</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>shared-exceptions</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-auth</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-product</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-inventory</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-sales</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-customer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-finance</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>module-pricing</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.erp</groupId>
+                <groupId>br.com.moreiracruz.erp</groupId>
                 <artifactId>test-support</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
@@ -360,7 +360,7 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>com/erp/test/**</exclude>
+                        <exclude>br/com/moreiracruz/erp/test/**</exclude>
                         <exclude>**/builders/**</exclude>
                         <exclude>**/arbitraries/**</exclude>
                     </excludes>
