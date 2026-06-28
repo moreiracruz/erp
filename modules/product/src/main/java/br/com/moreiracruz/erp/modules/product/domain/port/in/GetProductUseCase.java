@@ -11,4 +11,8 @@ public interface GetProductUseCase {
     List<ProdutoResponse> findAll();
 
     ProdutoResponse findByUuid(UUID uuid);
+
+    List<CatalogProductResponse> findCatalog();
+
+    CatalogProductResponse findCatalogByUuid(UUID uuid);
 }

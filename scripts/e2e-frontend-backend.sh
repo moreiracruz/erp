@@ -106,6 +106,7 @@ fi
 echo "OK: frontend HTML contains <app-root>"
 
 wait_for_status "public products API through frontend proxy" "GET" "$FRONTEND_URL/api/v1/products" "200"
+wait_for_status "public catalog API through frontend proxy" "GET" "$FRONTEND_URL/api/v1/products/catalog" "200"
 wait_for_status "protected products API through frontend proxy" "POST" "$FRONTEND_URL/api/v1/products" "401" "{}"
 
 echo ""
@@ -114,6 +115,7 @@ echo "Validated:"
 echo "  - backend readiness: $BACKEND_URL/actuator/health/readiness"
 echo "  - frontend static app: $FRONTEND_URL/"
 echo "  - frontend -> backend proxy: $FRONTEND_URL/api/v1/products"
+echo "  - frontend -> backend catalog proxy: $FRONTEND_URL/api/v1/products/catalog"
 echo "  - backend security via proxy: protected POST returned 401"
 echo ""
 echo "Stack is still running for inspection. To stop it:"

@@ -1,6 +1,7 @@
 package br.com.moreiracruz.erp.modules.product.adapter.in.web;
 
 import br.com.moreiracruz.erp.modules.product.domain.port.in.DeactivateProductUseCase;
+import br.com.moreiracruz.erp.modules.product.domain.port.in.CatalogProductResponse;
 import br.com.moreiracruz.erp.modules.product.domain.port.in.GetProductUseCase;
 import br.com.moreiracruz.erp.modules.product.domain.port.in.ProdutoResponse;
 import br.com.moreiracruz.erp.modules.product.domain.port.in.RegisterProductCommand;
@@ -75,6 +76,25 @@ public class ProductController {
     @GetMapping
     public java.util.List<ProdutoResponse> findAll() {
         return getProductUseCase.findAll();
+    }
+
+    /**
+     * Lists active products with active variants and price range for the storefront.
+     */
+    @GetMapping("/catalog")
+    public java.util.List<CatalogProductResponse> findCatalog() {
+        return getProductUseCase.findCatalog();
+    }
+
+    /**
+     * Retrieves a storefront product detail with active variants.
+     *
+     * @param uuid the product's UUID
+     * @return product detail for the public catalog
+     */
+    @GetMapping("/catalog/{uuid}")
+    public CatalogProductResponse findCatalogByUuid(@PathVariable UUID uuid) {
+        return getProductUseCase.findCatalogByUuid(uuid);
     }
 
     /**
