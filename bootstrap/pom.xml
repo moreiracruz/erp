@@ -51,6 +51,10 @@
             <groupId>com.erp</groupId>
             <artifactId>module-pricing</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
 
         <!-- Test -->
         <dependency>

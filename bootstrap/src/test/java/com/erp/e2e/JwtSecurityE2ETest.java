@@ -29,7 +29,7 @@ class JwtSecurityE2ETest extends AbstractIntegrationTest {
     @Test
     @DisplayName("No token → 401 Unauthorized")
     void noToken_returns401() throws Exception {
-        mockMvc.perform(get("/api/v1/products/" + UUID.randomUUID())
+        mockMvc.perform(post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -77,11 +77,17 @@ class JwtSecurityE2ETest extends AbstractIntegrationTest {
         UUID userUuid = UUID.randomUUID();
         String validToken = TestJwtGenerator.generateToken(userUuid, "ROLE_MANAGER");
 
-        // GET /products/{uuid} is allowed for ROLE_MANAGER
-        // It might return 404 if product doesn't exist, but it should NOT be 401 or 403
-        int responseStatus = mockMvc.perform(get("/api/v1/products/" + UUID.randomUUID())
+        // POST /products requires ROLE_MANAGER.
+        int responseStatus = mockMvc.perform(post("/api/v1/products")
                         .header("Authorization", "Bearer " + validToken)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "Produto JWT %s",
+                                  "brand": "Marca",
+                                  "category": "Categoria"
+                                }
+                                """.formatted(UUID.randomUUID())))
                 .andReturn().getResponse().getStatus();
 
         assertThat(responseStatus).isNotIn(401, 403);
