@@ -12,4 +12,9 @@ public interface FinancePort {
      * Registers a supplier expense for an operational reference.
      */
     UUID registerSupplierExpense(BigDecimal amount, String description, UUID responsibleUuid, UUID referenceUuid);
+
+    /**
+     * Registers revenue for an operational consignment settlement.
+     */
+    UUID registerConsignmentRevenue(BigDecimal amount, String description, UUID responsibleUuid, UUID referenceUuid);
 }

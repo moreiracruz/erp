@@ -1,18 +1,32 @@
 package br.com.moreiracruz.erp.modules.consignment.application.usecase;
 
 import br.com.moreiracruz.erp.modules.consignment.domain.model.AcertoConsignacao;
+import br.com.moreiracruz.erp.modules.consignment.domain.model.AcertoConsignacaoEnvio;
+import br.com.moreiracruz.erp.modules.consignment.domain.model.ConsignatarioEnvio;
 import br.com.moreiracruz.erp.modules.consignment.domain.model.Consignante;
 import br.com.moreiracruz.erp.modules.consignment.domain.model.ContratoConsignacao;
+import br.com.moreiracruz.erp.modules.consignment.domain.model.ContratoConsignacaoEnvio;
 import br.com.moreiracruz.erp.modules.consignment.domain.model.ContratoConsignacaoStatus;
+import br.com.moreiracruz.erp.modules.consignment.domain.model.ItemConsignacaoEnvio;
 import br.com.moreiracruz.erp.modules.consignment.domain.model.ItemConsignado;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ConsigneeCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ConsigneeResponse;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ConsignanteCommand;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ConsignanteResponse;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ContractResponse;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ItemResponse;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.OpenContractCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.OpenSentContractCommand;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ReceiveItemsCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ReportSentSalesCommand;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ReturnItemsCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.ReturnSentItemsCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SendItemsCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SentContractResponse;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SentItemResponse;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SentSettlementResponse;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SettleConsignmentCommand;
+import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SettleSentConsignmentCommand;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.in.SettlementResponse;
 import br.com.moreiracruz.erp.modules.consignment.domain.port.out.ConsignmentRepository;
 import br.com.moreiracruz.erp.shared.exceptions.NotFoundException;
@@ -164,6 +178,126 @@ public class ConsignmentService {
         }
     }
 
+    public ConsigneeResponse createConsignee(ConsigneeCommand command) {
+        return toResponse(repository.saveConsignatarioEnvio(
+                ConsignatarioEnvio.create(command.name(), command.document(), command.email(), command.phone())));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ConsigneeResponse> listConsignees() {
+        return repository.findAllConsignatariosEnvio().stream().map(this::toResponse).toList();
+    }
+
+    public ConsigneeResponse updateConsignee(UUID uuid, ConsigneeCommand command) {
+        ConsignatarioEnvio consignee = findConsignee(uuid);
+        consignee.update(command.name(), command.document(), command.email(), command.phone());
+        return toResponse(repository.saveConsignatarioEnvio(consignee));
+    }
+
+    public void deactivateConsignee(UUID uuid) {
+        ConsignatarioEnvio consignee = findConsignee(uuid);
+        consignee.deactivate();
+        repository.saveConsignatarioEnvio(consignee);
+    }
+
+    public SentContractResponse openSentContract(OpenSentContractCommand command) {
+        ConsignatarioEnvio consignee = findConsignee(command.consigneeUuid());
+        if (!consignee.isActive()) {
+            throw new ValidationException("Consignatário inativo");
+        }
+        ContratoConsignacaoEnvio contract = repository.saveContratoEnvio(
+                ContratoConsignacaoEnvio.open(command.consigneeUuid(), command.code()));
+        return toResponse(contract);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SentContractResponse> listSentContracts(String status, UUID consigneeUuid) {
+        ContratoConsignacaoStatus parsedStatus = status == null || status.isBlank()
+                ? null
+                : ContratoConsignacaoStatus.valueOf(status);
+        return repository.findContratosEnvio(parsedStatus, consigneeUuid).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public SentContractResponse getSentContract(UUID uuid) {
+        return toResponse(findSentContract(uuid));
+    }
+
+    public SentContractResponse sendItems(UUID contratoUuid, SendItemsCommand command) {
+        ContratoConsignacaoEnvio contract = findSentContract(contratoUuid);
+        contract.ensureOpen();
+        validateLines(command.items());
+        for (SendItemsCommand.ItemLine line : command.items()) {
+            ItemConsignacaoEnvio item = repository.saveItemEnvio(
+                    ItemConsignacaoEnvio.send(contratoUuid, line.varianteUuid(), line.quantity()));
+            inventoryPort.registerWithdrawal(item.getVarianteUuid(), item.getQuantity(), command.actorUuid(), contratoUuid);
+        }
+        return toResponse(contract);
+    }
+
+    public SentContractResponse reportSentSales(UUID contratoUuid, ReportSentSalesCommand command) {
+        ContratoConsignacaoEnvio contract = findSentContract(contratoUuid);
+        contract.ensureOpen();
+        validateLines(command.items());
+        for (ReportSentSalesCommand.ItemLine line : command.items()) {
+            ItemConsignacaoEnvio item = findSentItemInContract(contratoUuid, line.itemUuid());
+            item.markSold(line.quantity());
+            repository.saveItemEnvio(item);
+        }
+        return toResponse(contract);
+    }
+
+    public SentContractResponse returnSentItems(UUID contratoUuid, ReturnSentItemsCommand command) {
+        ContratoConsignacaoEnvio contract = findSentContract(contratoUuid);
+        contract.ensureOpen();
+        validateLines(command.items());
+        for (ReturnSentItemsCommand.ItemLine line : command.items()) {
+            ItemConsignacaoEnvio item = findSentItemInContract(contratoUuid, line.itemUuid());
+            item.returnQuantity(line.quantity());
+            repository.saveItemEnvio(item);
+            inventoryPort.registerEntry(item.getVarianteUuid(), line.quantity(), command.actorUuid(), contratoUuid);
+        }
+        return toResponse(contract);
+    }
+
+    public SentSettlementResponse settleSent(UUID contratoUuid, SettleSentConsignmentCommand command) {
+        ContratoConsignacaoEnvio contract = findSentContract(contratoUuid);
+        contract.ensureOpen();
+        validateLines(command.items());
+        List<AcertoConsignacaoEnvio.AcertoItem> settlementItems = command.items().stream()
+                .map(line -> new AcertoConsignacaoEnvio.AcertoItem(line.itemUuid(), line.quantity(), line.manualAmount()))
+                .toList();
+        for (SettleSentConsignmentCommand.ItemLine line : command.items()) {
+            ItemConsignacaoEnvio item = findSentItemInContract(contratoUuid, line.itemUuid());
+            item.settle(line.quantity());
+            repository.saveItemEnvio(item);
+        }
+        AcertoConsignacaoEnvio settlement = repository.saveAcertoEnvio(
+                AcertoConsignacaoEnvio.create(contratoUuid, command.responsibleUuid(), command.notes(), settlementItems));
+        contract.markPartiallySettled();
+        repository.saveContratoEnvio(contract);
+        financePort.registerConsignmentRevenue(
+                settlement.getTotalAmount(),
+                "Acerto consignação enviada " + contract.getCode(),
+                command.responsibleUuid(),
+                settlement.getUuid());
+        return new SentSettlementResponse(settlement.getUuid(), settlement.getContratoUuid(),
+                settlement.getTotalAmount(), settlement.getNotes(), settlement.getCreatedAt());
+    }
+
+    public SentContractResponse closeSent(UUID contratoUuid) {
+        ContratoConsignacaoEnvio contract = findSentContract(contratoUuid);
+        boolean hasPending = repository.findItemsEnvioByContratoUuid(contratoUuid).stream()
+                .anyMatch(ItemConsignacaoEnvio::hasPendingQuantity);
+        if (hasPending) {
+            throw new ValidationException("Contrato possui itens pendentes");
+        }
+        contract.close();
+        return toResponse(repository.saveContratoEnvio(contract));
+    }
+
     private Consignante findConsignante(UUID uuid) {
         return repository.findConsignanteByUuid(uuid)
                 .orElseThrow(() -> new NotFoundException("Consignante não encontrado: " + uuid));
@@ -177,6 +311,25 @@ public class ConsignmentService {
     private ItemConsignado findItemInContract(UUID contratoUuid, UUID itemUuid) {
         ItemConsignado item = repository.findItemByUuid(itemUuid)
                 .orElseThrow(() -> new NotFoundException("Item consignado não encontrado: " + itemUuid));
+        if (!contratoUuid.equals(item.getContratoUuid())) {
+            throw new ValidationException("Item não pertence ao contrato informado");
+        }
+        return item;
+    }
+
+    private ConsignatarioEnvio findConsignee(UUID uuid) {
+        return repository.findConsignatarioEnvioByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("Consignatário não encontrado: " + uuid));
+    }
+
+    private ContratoConsignacaoEnvio findSentContract(UUID uuid) {
+        return repository.findContratoEnvioByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("Contrato de consignação enviada não encontrado: " + uuid));
+    }
+
+    private ItemConsignacaoEnvio findSentItemInContract(UUID contratoUuid, UUID itemUuid) {
+        ItemConsignacaoEnvio item = repository.findItemEnvioByUuid(itemUuid)
+                .orElseThrow(() -> new NotFoundException("Item de consignação enviada não encontrado: " + itemUuid));
         if (!contratoUuid.equals(item.getContratoUuid())) {
             throw new ValidationException("Item não pertence ao contrato informado");
         }
@@ -209,5 +362,27 @@ public class ConsignmentService {
         return new ItemResponse(item.getUuid(), item.getContratoUuid(), item.getVarianteUuid(),
                 item.getQuantity(), item.getRemainingQuantity(), item.getSoldQuantity(), item.getSettledQuantity(),
                 item.getReturnedQuantity(), item.getStatus().name(), item.getReceivedAt(), item.getSoldSaleUuid());
+    }
+
+    private ConsigneeResponse toResponse(ConsignatarioEnvio consignee) {
+        return new ConsigneeResponse(consignee.getUuid(), consignee.getName(), consignee.getDocument(),
+                consignee.getEmail(), consignee.getPhone(), consignee.isActive(), consignee.getCreatedAt());
+    }
+
+    private SentContractResponse toResponse(ContratoConsignacaoEnvio contract) {
+        return new SentContractResponse(
+                contract.getUuid(),
+                contract.getConsigneeUuid(),
+                contract.getCode(),
+                contract.getStatus().name(),
+                contract.getOpenedAt(),
+                contract.getClosedAt(),
+                repository.findItemsEnvioByContratoUuid(contract.getUuid()).stream().map(this::toResponse).toList());
+    }
+
+    private SentItemResponse toResponse(ItemConsignacaoEnvio item) {
+        return new SentItemResponse(item.getUuid(), item.getContratoUuid(), item.getVarianteUuid(),
+                item.getQuantity(), item.getAvailableQuantity(), item.getSoldQuantity(), item.getSettledQuantity(),
+                item.getReturnedQuantity(), item.getStatus().name(), item.getSentAt());
     }
 }

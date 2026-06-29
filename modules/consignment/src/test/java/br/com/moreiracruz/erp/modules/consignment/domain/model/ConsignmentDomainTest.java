@@ -48,4 +48,33 @@ class ConsignmentDomainTest {
         assertThat(item.getStatus()).isEqualTo(ItemConsignadoStatus.VENDIDO);
         assertThat(item.hasPendingQuantity()).isTrue();
     }
+
+    @Test
+    void sentConsignmentSaleCannotExceedAvailableQuantity() {
+        ItemConsignacaoEnvio item = ItemConsignacaoEnvio.send(UUID.randomUUID(), UUID.randomUUID(), 2);
+
+        assertThatThrownBy(() -> item.markSold(3))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("excede saldo");
+    }
+
+    @Test
+    void sentConsignmentCannotClosePendingSoldQuantityAfterReturn() {
+        ItemConsignacaoEnvio item = ItemConsignacaoEnvio.send(UUID.randomUUID(), UUID.randomUUID(), 2);
+        item.markSold(1);
+        item.returnQuantity(1);
+
+        assertThat(item.getStatus()).isEqualTo(ItemConsignacaoEnvioStatus.VENDIDO);
+        assertThat(item.hasPendingQuantity()).isTrue();
+    }
+
+    @Test
+    void sentConsignmentItemBecomesSettledWhenSoldQuantityIsFullySettledAndNoAvailableQuantityExists() {
+        ItemConsignacaoEnvio item = ItemConsignacaoEnvio.send(UUID.randomUUID(), UUID.randomUUID(), 2);
+        item.markSold(2);
+        item.settle(2);
+
+        assertThat(item.getStatus()).isEqualTo(ItemConsignacaoEnvioStatus.ACERTADO);
+        assertThat(item.hasPendingQuantity()).isFalse();
+    }
 }
