@@ -1,4 +1,5 @@
 @use '../../../../../../styles/variables' as *;
+@use 'sass:color';
 
 .image-grid {
   display: grid;
@@ -119,7 +120,7 @@
       color: $white;
 
       &:hover {
-        background: darken($error, 10%);
+        background: color.adjust($error, $lightness: -10%);
       }
     }
 

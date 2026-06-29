@@ -1,4 +1,5 @@
 @use '../../../../../../styles/variables' as *;
+@use 'sass:color';
 
 .filter-panel {
   display: flex;
@@ -292,7 +293,7 @@
     transition: background $transition-fast;
 
     &:hover {
-      background: darken($gold, 8%);
+      background: color.adjust($gold, $lightness: -8%);
     }
 
     &:focus-visible {

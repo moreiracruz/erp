@@ -1,4 +1,5 @@
 @use '../../../../styles/variables' as *;
+@use 'sass:color';
 
 .orders-page {
   background: $surface-card;
@@ -93,7 +94,7 @@
 
   &.status-processing {
     background: rgba($gold, 0.15);
-    color: darken($gold, 10%);
+    color: color.adjust($gold, $lightness: -10%);
   }
 
   &.status-shipped {
@@ -178,7 +179,7 @@
     transition: background-color $transition-fast;
 
     &:hover {
-      background: darken($gold, 8%);
+      background: color.adjust($gold, $lightness: -8%);
     }
   }
 }
