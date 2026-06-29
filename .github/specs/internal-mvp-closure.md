@@ -29,6 +29,7 @@ Endpoints base mantidos:
 - `/api/v1/customers`
 - `/api/v1/pricing`
 - `/api/v1/finance`
+- `/api/v1/system/users`
 
 Endpoints publicos de catalogo continuam sem autenticacao quando ja expostos para consulta. Endpoints administrativos e operacionais exigem JWT e papel compativel.
 
@@ -39,6 +40,15 @@ Endpoints publicos de catalogo continuam sem autenticacao quando ja expostos par
 - Falhas de login incrementam contador persistente.
 - Usuario bloqueado nao autentica ate a janela de lockout expirar ou ate intervencao administrativa futura.
 - Login bem-sucedido reseta falhas e lockout.
+- Usuario inativo nao autentica, mesmo com senha correta.
+
+### Administracao do Sistema
+
+- Manager consulta usuarios operacionais, cria usuarios internos, altera perfil, redefine senha, ativa/desativa conta e limpa lockout.
+- Nenhuma resposta administrativa expoe hash de senha.
+- O usuario autenticado nao pode desativar a propria conta.
+- Endpoints de administracao do sistema sao protegidos por `ROLE_MANAGER` no backend.
+- A UI `/admin/system` consome `/api/v1/system/users` via adapter HTTP e expoe estados de loading, erro, vazio, filtros e acoes administrativas.
 
 ### Catalogo e Imagens
 
@@ -74,12 +84,14 @@ Endpoints publicos de catalogo continuam sem autenticacao quando ja expostos par
 ### Frontend Operacional
 
 - Admin de produtos consome adapters HTTP em vez de mocks locais.
+- Admin de sistema consome adapter HTTP para gerenciar usuarios e perfis operacionais.
 - Terminal PDV consome adapters HTTP para abrir, adicionar item, finalizar e cancelar venda.
 - Guards Angular continuam como UX e protecao de navegacao, sem substituir RBAC backend.
 
 ## Criterios de Aceite
 
 - Controllers usam uma convencao unica de authority JWT: `hasAuthority('ROLE_*')`.
+- Administracao de usuarios internos e acessivel apenas para `ROLE_MANAGER`.
 - Testes de lockout, reset de lockout, concorrencia de cupom, idempotencia de evento, fluxo completo de PDV e matriz RBAC estao habilitados.
 - Finalizacao de venda com cupom/desconto real gera uma unica receita financeira mesmo com evento duplicado.
 - Cancelamento de venda libera reservas ativas por `saleUuid`.

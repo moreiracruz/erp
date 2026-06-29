@@ -38,6 +38,26 @@
   }
 }
 
+.admin-tabs {
+  display: flex;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  border-bottom: 1px solid $border-default;
+
+  a {
+    padding: $space-2 $space-4;
+    color: $text-secondary;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    font-weight: $font-weight-semibold;
+
+    &.active {
+      color: $brown-dark;
+      border-color: $gold;
+    }
+  }
+}
+
 // --- Filter Bar ---
 .filter-bar {
   display: flex;

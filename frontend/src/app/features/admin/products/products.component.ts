@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { ProductImageSectionComponent } from './components/product-image-section/product-image-section.component';
 import { AdminProduct, AdminProductHttpAdapter } from '../../../infrastructure/http/admin-product-http.adapter';
@@ -8,7 +9,7 @@ import { AdminProduct, AdminProductHttpAdapter } from '../../../infrastructure/h
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductImageSectionComponent],
+  imports: [CommonModule, FormsModule, RouterLink, ProductImageSectionComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

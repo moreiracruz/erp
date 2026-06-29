@@ -50,6 +50,10 @@ public class LoginUseCaseImpl implements LoginUseCase {
         var usuario = usuarioRepository.findByUsername(credentials.username())
                 .orElseThrow(() -> new AuthenticationException("Credenciais inválidas"));
 
+        if (!usuario.isActive()) {
+            throw new AuthenticationException("Credenciais inválidas");
+        }
+
         // 2. Locked account — return generic message
         if (usuario.isLocked()) {
             throw new AuthenticationException("Credenciais inválidas");

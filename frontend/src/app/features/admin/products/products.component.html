@@ -5,6 +5,11 @@
     <button class="btn-new" (click)="openNewForm()">+ Novo Produto</button>
   </header>
 
+  <nav class="admin-tabs" aria-label="Administração">
+    <a routerLink="/admin/products" class="active">Produtos</a>
+    <a routerLink="/admin/system">Sistema</a>
+  </nav>
+
   <!-- Search/Filter Bar -->
   <div class="filter-bar">
     <input

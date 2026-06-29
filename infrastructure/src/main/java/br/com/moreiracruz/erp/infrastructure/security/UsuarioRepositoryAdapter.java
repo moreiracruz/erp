@@ -5,6 +5,7 @@ import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
 import br.com.moreiracruz.erp.modules.auth.domain.port.out.UsuarioRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +33,11 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
     @Override
     public Optional<Usuario> findByUuid(UUID uuid) {
         return jpaRepository.findByUuid(uuid).map(this::toDomain);
+    }
+
+    @Override
+    public List<Usuario> findAll() {
+        return jpaRepository.findAll().stream().map(this::toDomain).toList();
     }
 
     @Override

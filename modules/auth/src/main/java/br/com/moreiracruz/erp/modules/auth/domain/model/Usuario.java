@@ -1,6 +1,7 @@
 package br.com.moreiracruz.erp.modules.auth.domain.model;
 
 import br.com.moreiracruz.erp.shared.kernel.AggregateRoot;
+import br.com.moreiracruz.erp.shared.exceptions.ValidationException;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -50,9 +51,14 @@ public class Usuario extends AggregateRoot {
      * @return a ready-to-persist {@code Usuario}
      */
     public static Usuario create(String username, String passwordHash, Role role) {
+        validateUsername(username);
+        validatePasswordHash(passwordHash);
+        if (role == null) {
+            throw new ValidationException("Perfil do usuário é obrigatório");
+        }
         Usuario u = new Usuario();
         u.uuid = UUID.randomUUID();
-        u.username = username;
+        u.username = username.trim().toLowerCase();
         u.passwordHash = passwordHash;
         u.role = role;
         u.active = true;
@@ -120,6 +126,23 @@ public class Usuario extends AggregateRoot {
         lockedUntil = null;
     }
 
+    public void changeRole(Role role) {
+        if (role == null) {
+            throw new ValidationException("Perfil do usuário é obrigatório");
+        }
+        this.role = role;
+    }
+
+    public void changePasswordHash(String passwordHash) {
+        validatePasswordHash(passwordHash);
+        this.passwordHash = passwordHash;
+        resetAttempts();
+    }
+
+    public void resetLockout() {
+        resetAttempts();
+    }
+
     /**
      * Returns {@code true} if the account is currently locked (i.e., the lock
      * instant is set and has not yet passed).
@@ -162,5 +185,17 @@ public class Usuario extends AggregateRoot {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    private static void validateUsername(String username) {
+        if (username == null || username.isBlank() || username.length() > 255) {
+            throw new ValidationException("Usuário deve ter entre 1 e 255 caracteres");
+        }
+    }
+
+    private static void validatePasswordHash(String passwordHash) {
+        if (passwordHash == null || passwordHash.isBlank()) {
+            throw new ValidationException("Senha é obrigatória");
+        }
     }
 }

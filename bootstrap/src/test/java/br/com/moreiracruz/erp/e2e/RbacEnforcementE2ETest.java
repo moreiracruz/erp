@@ -103,6 +103,16 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/sent/consignees", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/sent/consignees", "ROLE_FINANCE"),
 
+                // System administration - ROLE_MANAGER only
+                RbacTestCase.allowed("GET", "/api/v1/system/users", "ROLE_MANAGER"),
+                RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_STOCK"),
+                RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_CASHIER"),
+                RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_FINANCE"),
+                RbacTestCase.allowed("POST", "/api/v1/system/users", "ROLE_MANAGER"),
+                RbacTestCase.forbidden("POST", "/api/v1/system/users", "ROLE_STOCK"),
+                RbacTestCase.forbidden("POST", "/api/v1/system/users", "ROLE_CASHIER"),
+                RbacTestCase.forbidden("POST", "/api/v1/system/users", "ROLE_FINANCE"),
+
                 // Unauthenticated access to various endpoints → 401
                 new RbacTestCase("POST", "/api/v1/products", null, 401, "Unauthenticated → POST /products"),
                 new RbacTestCase("POST", "/api/v1/sales", null, 401, "Unauthenticated → POST /sales"),
@@ -111,6 +121,8 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
                         "Unauthenticated → GET /consignments/contracts"),
                 new RbacTestCase("GET", "/api/v1/consignments/sent/contracts", null, 401,
                         "Unauthenticated → GET /consignments/sent/contracts"),
+                new RbacTestCase("GET", "/api/v1/system/users", null, 401,
+                        "Unauthenticated → GET /system/users"),
                 new RbacTestCase("GET", "/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock",
                         null, 401, "Unauthenticated → GET /inventory")
         );
