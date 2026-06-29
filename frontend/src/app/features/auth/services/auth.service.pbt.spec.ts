@@ -180,6 +180,7 @@ describe('AuthService — Property 8: JWT decode round trip', () => {
       uuid: fc.uuid(),
       username: fc.string({ minLength: 1 }),
       role: fc.constantFrom(
+        'ROLE_USER' as UserRole,
         'ROLE_MANAGER' as UserRole,
         'ROLE_CASHIER' as UserRole,
         'ROLE_STOCK' as UserRole,

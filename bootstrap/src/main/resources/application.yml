@@ -1,8 +1,12 @@
 spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/erp}
     username: ${SPRING_DATASOURCE_USERNAME:erp_user}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -39,7 +43,7 @@ inventory:
     reservation-ttl-minutes: ${INVENTORY_EXPIRY_TTL_MINUTES:30}
     check-interval-ms: 60000
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:local-dev-secret-key-that-is-at-least-256-bits-long-for-hs256-signing}
   expiration-seconds: 900
   refresh-expiration-days: 7
 

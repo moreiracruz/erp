@@ -4,12 +4,16 @@ import { Observable, of } from 'rxjs';
 import { AuthPort } from '../../core/ports';
 import { LoginCredentials, RegisterData, TokenPair, User } from '../../core/models';
 import { environment } from '../../../environments/environment';
+import { TokenStorageService } from '../storage/token-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthHttpAdapter extends AuthPort {
   private readonly baseUrl = `${environment.apiUrl}/api/v1/auth`;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private tokenStorage: TokenStorageService,
+  ) {
     super();
   }
 
@@ -18,12 +22,7 @@ export class AuthHttpAdapter extends AuthPort {
   }
 
   register(data: RegisterData): Observable<TokenPair> {
-    // Mock: backend register endpoint not ready yet
-    return of({
-      accessToken: 'mock-access-token',
-      refreshToken: 'mock-refresh-token',
-      expiresIn: 3600,
-    });
+    return this.http.post<TokenPair>(`${this.baseUrl}/register`, data);
   }
 
   refresh(refreshToken: string): Observable<TokenPair> {
@@ -31,7 +30,11 @@ export class AuthHttpAdapter extends AuthPort {
   }
 
   logout(): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/logout`, {});
+    const refreshToken = this.tokenStorage.getRefreshToken();
+    if (!refreshToken) {
+      return of(undefined);
+    }
+    return this.http.post<void>(`${this.baseUrl}/logout`, { refreshToken });
   }
 
   getCurrentUser(): Observable<User | null> {

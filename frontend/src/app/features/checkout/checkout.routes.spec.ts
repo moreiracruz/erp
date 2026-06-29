@@ -12,11 +12,12 @@ describe('CHECKOUT_ROUTES', () => {
     expect(checkoutRoute).toBeDefined();
   });
 
-  it('should have no auth guards on any route', () => {
-    for (const route of CHECKOUT_ROUTES) {
-      expect(route.canActivate).toBeUndefined();
-      expect(route.canMatch).toBeUndefined();
-      expect((route as any).canActivateChild).toBeUndefined();
-    }
+  it('keeps cart public and protects checkout', () => {
+    const cartRoute = CHECKOUT_ROUTES.find((r) => r.path === 'cart');
+    const checkoutRoute = CHECKOUT_ROUTES.find((r) => r.path === '');
+
+    expect(cartRoute?.canActivate).toBeUndefined();
+    expect(checkoutRoute?.canActivate).toBeDefined();
+    expect(checkoutRoute?.canActivate?.length).toBe(2);
   });
 });

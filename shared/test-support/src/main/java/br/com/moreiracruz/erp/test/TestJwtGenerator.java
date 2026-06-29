@@ -58,12 +58,14 @@ public class TestJwtGenerator {
         return generateToken(UUID.randomUUID(), invalidRole);
     }
 
-    /** Generate a JWT with tampered signature (last char changed). */
+    /** Generate a JWT with tampered signature. */
     public static String generateTampered(UUID userUuid, String role) {
         String valid = generateToken(userUuid, role);
-        char lastChar = valid.charAt(valid.length() - 1);
-        char replacement = (lastChar == 'A') ? 'B' : 'A';
-        return valid.substring(0, valid.length() - 1) + replacement;
+        String[] parts = valid.split("\\.");
+        char firstSignatureChar = parts[2].charAt(0);
+        char replacement = firstSignatureChar == 'A' ? 'B' : 'A';
+        parts[2] = replacement + parts[2].substring(1);
+        return String.join(".", parts);
     }
 
     /** Get the test secret for application-test.yml configuration. */

@@ -9,6 +9,9 @@ package br.com.moreiracruz.erp.modules.auth.domain.model;
  */
 public enum Role {
 
+    /** Authenticated storefront customer. */
+    ROLE_USER,
+
     /** Full administrative access to all modules. */
     ROLE_MANAGER,
 

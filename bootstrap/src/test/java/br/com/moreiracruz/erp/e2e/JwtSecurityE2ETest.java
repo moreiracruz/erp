@@ -40,7 +40,7 @@ class JwtSecurityE2ETest extends AbstractIntegrationTest {
         UUID userUuid = UUID.randomUUID();
         String expiredToken = TestJwtGenerator.generateExpired(userUuid, "ROLE_MANAGER");
 
-        mockMvc.perform(get("/api/v1/products/" + UUID.randomUUID())
+        mockMvc.perform(get("/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock")
                         .header("Authorization", "Bearer " + expiredToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -52,7 +52,7 @@ class JwtSecurityE2ETest extends AbstractIntegrationTest {
         UUID userUuid = UUID.randomUUID();
         String tamperedToken = TestJwtGenerator.generateTampered(userUuid, "ROLE_MANAGER");
 
-        mockMvc.perform(get("/api/v1/products/" + UUID.randomUUID())
+        mockMvc.perform(get("/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock")
                         .header("Authorization", "Bearer " + tamperedToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());

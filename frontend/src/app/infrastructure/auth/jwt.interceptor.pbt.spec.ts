@@ -10,7 +10,7 @@ import { TokenStorageService } from '../storage/token-storage.service';
 /**
  * Property 10: JWT interceptor excludes auth endpoints
  *
- * For any HTTP request URL, if the URL contains `/auth/login` or `/auth/refresh`,
+ * For any HTTP request URL, if the URL contains `/auth/login`, `/auth/register` or `/auth/refresh`,
  * then the jwtInterceptor SHALL NOT attach an Authorization header; for all other URLs,
  * if a token is present in storage, the interceptor SHALL attach `Authorization: Bearer <token>`.
  *
@@ -44,15 +44,18 @@ describe('Feature: frontend-auth, Property 10: JWT interceptor excludes auth end
     httpTesting.verify();
   });
 
-  it('should NOT attach Authorization header when URL contains /auth/login or /auth/refresh', () => {
+  it('should NOT attach Authorization header when URL contains /auth/login, /auth/register or /auth/refresh', () => {
     fc.assert(
       fc.property(
         fc.oneof(
           fc.constant('http://api.example.com/auth/login'),
+          fc.constant('http://api.example.com/auth/register'),
           fc.constant('http://api.example.com/auth/refresh'),
           fc.constant('http://api.example.com/api/v1/auth/login'),
+          fc.constant('http://api.example.com/api/v1/auth/register'),
           fc.constant('http://api.example.com/api/v1/auth/refresh'),
           fc.constant('/auth/login'),
+          fc.constant('/auth/register'),
           fc.constant('/auth/refresh'),
         ),
         (authUrl) => {
@@ -71,7 +74,9 @@ describe('Feature: frontend-auth, Property 10: JWT interceptor excludes auth end
     fc.assert(
       fc.property(
         fc.string({ minLength: 1 })
-          .filter((s) => !s.includes('/auth/login') && !s.includes('/auth/refresh'))
+          .filter((s) => !s.includes('/auth/login')
+            && !s.includes('/auth/register')
+            && !s.includes('/auth/refresh'))
           .map((s) => 'http://api.example.com/' + encodeURIComponent(s)),
         (nonAuthUrl) => {
           httpClient.get(nonAuthUrl).subscribe();
@@ -93,7 +98,9 @@ describe('Feature: frontend-auth, Property 10: JWT interceptor excludes auth end
     fc.assert(
       fc.property(
         fc.string({ minLength: 1 })
-          .filter((s) => !s.includes('/auth/login') && !s.includes('/auth/refresh'))
+          .filter((s) => !s.includes('/auth/login')
+            && !s.includes('/auth/register')
+            && !s.includes('/auth/refresh'))
           .map((s) => 'http://api.example.com/' + encodeURIComponent(s)),
         (nonAuthUrl) => {
           httpClient.get(nonAuthUrl).subscribe();

@@ -4,6 +4,8 @@ import br.com.moreiracruz.erp.modules.auth.domain.model.Credentials;
 import br.com.moreiracruz.erp.modules.auth.domain.model.TokenPair;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.LoginUseCase;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.LogoutUseCase;
+import br.com.moreiracruz.erp.modules.auth.domain.port.in.RegisterUserCommand;
+import br.com.moreiracruz.erp.modules.auth.domain.port.in.RegisterUserUseCase;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.RefreshTokenUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +26,17 @@ public class AuthController {
     private final LoginUseCase loginUseCase;
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final LogoutUseCase logoutUseCase;
+    private final RegisterUserUseCase registerUserUseCase;
 
     public AuthController(
             LoginUseCase loginUseCase,
             RefreshTokenUseCase refreshTokenUseCase,
-            LogoutUseCase logoutUseCase) {
+            LogoutUseCase logoutUseCase,
+            RegisterUserUseCase registerUserUseCase) {
         this.loginUseCase = loginUseCase;
         this.refreshTokenUseCase = refreshTokenUseCase;
         this.logoutUseCase = logoutUseCase;
+        this.registerUserUseCase = registerUserUseCase;
     }
 
     /**
@@ -44,6 +49,17 @@ public class AuthController {
     public ResponseEntity<TokenPairResponse> login(@RequestBody LoginRequest request) {
         TokenPair tokenPair = loginUseCase.login(
                 new Credentials(request.username(), request.password()));
+        return ResponseEntity.ok(toResponse(tokenPair));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<TokenPairResponse> register(@RequestBody RegisterRequest request) {
+        TokenPair tokenPair = registerUserUseCase.register(new RegisterUserCommand(
+                request.fullName(),
+                request.email(),
+                request.password(),
+                request.phone(),
+                request.cpf()));
         return ResponseEntity.ok(toResponse(tokenPair));
     }
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementado como escopo operacional interno do MVP. A vitrine e o checkout publico nao fazem parte deste fechamento, exceto pelos endpoints publicos de catalogo ja existentes.
+Implementado como escopo operacional interno do MVP. A vitrine, imagens, catalogo publico e carrinho frontend continuam publicos. Checkout publico/pedidos de e-commerce permanecem fora do fechamento operacional, mas o fluxo de checkout existente exige autenticacao de cliente.
 
 ## Escopo
 
@@ -14,6 +14,7 @@ O MVP interno cobre autenticacao, RBAC, catalogo administrativo, imagens de prod
 - `ROLE_CASHIER`: operacao de PDV, consulta operacional de catalogo/clientes e calculo de descontos.
 - `ROLE_STOCK`: operacao de estoque e consulta operacional de catalogo.
 - `ROLE_FINANCE`: consulta e operacao financeira permitida.
+- `ROLE_USER`: cliente autenticado da loja; pode acessar checkout de cliente, mas nao acessa endpoints operacionais/admin.
 
 O backend usa authorities JWT com prefixo completo `ROLE_*`. Controllers devem autorizar com `hasAuthority('ROLE_*')`; o frontend pode ocultar fluxos por papel, mas a autorizacao decisiva e sempre no backend.
 
@@ -32,6 +33,13 @@ Endpoints base mantidos:
 - `/api/v1/system/users`
 
 Endpoints publicos de catalogo continuam sem autenticacao quando ja expostos para consulta. Endpoints administrativos e operacionais exigem JWT e papel compativel.
+
+Contratos publicos minimos:
+
+- `POST /api/v1/auth/register` cria conta de cliente com `ROLE_USER` e retorna par de tokens.
+- `GET /api/v1/products`, `GET /api/v1/products/catalog`, `GET /api/v1/products/{uuid}`, `GET /api/v1/products/catalog/{uuid}` e `GET /api/v1/products/{uuid}/images` nao exigem autenticacao.
+- Carrinho frontend nao exige usuario autenticado.
+- Checkout frontend exige usuario autenticado com `ROLE_USER`; backend de pedidos publicos continua fora do escopo operacional.
 
 ## Fluxos MVP
 
@@ -87,10 +95,13 @@ Endpoints publicos de catalogo continuam sem autenticacao quando ja expostos par
 - Admin de sistema consome adapter HTTP para gerenciar usuarios e perfis operacionais.
 - Terminal PDV consome adapters HTTP para abrir, adicionar item, finalizar e cancelar venda.
 - Guards Angular continuam como UX e protecao de navegacao, sem substituir RBAC backend.
+- Cadastro de cliente usa `/api/v1/auth/register`; login/cadastro/refresh nao recebem header `Authorization` pelo interceptor.
 
 ## Criterios de Aceite
 
 - Controllers usam uma convencao unica de authority JWT: `hasAuthority('ROLE_*')`.
+- Usuario anonimo pode consultar catalogo/produtos/imagens, acessar carrinho frontend e criar conta de cliente.
+- `ROLE_USER` nao acessa endpoints operacionais/admin; checkout de cliente exige `ROLE_USER`.
 - Administracao de usuarios internos e acessivel apenas para `ROLE_MANAGER`.
 - Testes de lockout, reset de lockout, concorrencia de cupom, idempotencia de evento, fluxo completo de PDV e matriz RBAC estao habilitados.
 - Finalizacao de venda com cupom/desconto real gera uma unica receita financeira mesmo com evento duplicado.
@@ -99,7 +110,7 @@ Endpoints publicos de catalogo continuam sem autenticacao quando ja expostos par
 
 ## Fora do Escopo
 
-- Checkout publico e pedidos de e-commerce.
+- Pedidos de e-commerce/checkout backend publico.
 - Regras fiscais, contabeis ou legais definitivas.
 - Reativacao administrativa de produto desativado, salvo endpoint futuro especifico.
 - Edicao/remocao granular de item no carrinho PDV no frontend enquanto o contrato backend nao oferecer essa operacao.

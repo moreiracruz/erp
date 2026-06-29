@@ -23,6 +23,10 @@ public class LogoutUseCaseImpl implements LogoutUseCase {
 
     @Override
     public void logout(String rawRefreshToken) {
+        if (rawRefreshToken == null || rawRefreshToken.isBlank()) {
+            return;
+        }
+
         // 1. Hash the raw token to locate the stored record
         String hash = TokenHasher.sha256hex(rawRefreshToken);
 
