@@ -7,6 +7,7 @@ public record AdminUserResponse(
         UUID uuid,
         String username,
         String role,
+        String status,
         boolean active,
         int failedAttempts,
         Instant lockedUntil,

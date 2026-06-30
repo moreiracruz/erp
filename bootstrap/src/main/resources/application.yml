@@ -18,6 +18,8 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    ignore-migration-patterns:
+      - "*:missing"
     baseline-on-migrate: false
 server:
   port: 8080
@@ -61,3 +63,10 @@ app:
       thumbnail: 200
       card: 400
       full: 800
+
+bootstrap:
+  super-admin:
+    email: ${BOOTSTRAP_SUPER_ADMIN_EMAIL:admin@empresa.com}
+    activation-token-ttl-minutes: ${BOOTSTRAP_SUPER_ADMIN_TOKEN_TTL_MINUTES:30}
+    activation-base-url: ${BOOTSTRAP_SUPER_ADMIN_ACTIVATION_URL:http://localhost:4200/auth/activate}
+    print-activation-link: ${BOOTSTRAP_PRINT_ACTIVATION_LINK:true}

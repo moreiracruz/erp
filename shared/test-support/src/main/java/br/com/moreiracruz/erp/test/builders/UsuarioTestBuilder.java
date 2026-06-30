@@ -2,6 +2,7 @@ package br.com.moreiracruz.erp.test.builders;
 
 import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
 import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
+import br.com.moreiracruz.erp.modules.auth.domain.model.UsuarioStatus;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -56,6 +57,7 @@ public class UsuarioTestBuilder {
     /** Build domain object (in-memory, no persistence). */
     public Usuario build() {
         return Usuario.reconstruct(null, uuid, username, passwordHash, role, active,
+                active ? UsuarioStatus.ACTIVE : UsuarioStatus.INACTIVE,
                 failedAttempts, lockedUntil, Instant.now());
     }
 }

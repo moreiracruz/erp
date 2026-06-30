@@ -52,6 +52,12 @@ export class AuthService {
     return this.authPort.recoverPassword(email);
   }
 
+  activate(token: string, password: string): Observable<void> {
+    return this.authPort.activate(token, password).pipe(
+      catchError((err: HttpErrorResponse) => throwError(() => this.mapActivationError(err))),
+    );
+  }
+
   initFromStorage(): void {
     const token = this.tokenStorage.getAccessToken();
     if (token) {
@@ -69,6 +75,8 @@ export class AuthService {
     switch (role) {
       case 'ROLE_USER':
         return '/';
+      case 'ROLE_SUPER_ADMIN':
+        return '/dashboard';
       case 'ROLE_MANAGER':
         return '/dashboard';
       case 'ROLE_CASHIER':
@@ -181,6 +189,16 @@ export class AuthService {
     const backendMessage = String(err.error?.message ?? '').toLowerCase();
     if (err.status === 409 || (err.status === 422 && backendMessage.includes('cadastrado'))) {
       return 'Este e-mail já está cadastrado.';
+    }
+    return 'Ocorreu um erro inesperado. Tente novamente.';
+  }
+
+  private mapActivationError(err: HttpErrorResponse): string {
+    if (err.status === 0) {
+      return 'Erro de conexão. Verifique sua internet e tente novamente.';
+    }
+    if (err.status === 401 || err.status === 422) {
+      return 'Token inválido, expirado ou senha inválida.';
     }
     return 'Ocorreu um erro inesperado. Tente novamente.';
   }

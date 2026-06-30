@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -46,8 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UUID userUuid = UUID.fromString(claims.getSubject());
                 String role = claims.get("role", String.class);
 
+                List<GrantedAuthority> authorities = authoritiesFor(role);
+
                 var auth = new UsernamePasswordAuthenticationToken(
-                        userUuid, null, List.of(new SimpleGrantedAuthority(role)));
+                        userUuid, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (JwtException | IllegalArgumentException e) {
                 SecurityContextHolder.clearContext();
@@ -59,5 +62,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private List<GrantedAuthority> authoritiesFor(String role) {
+        if ("ROLE_SUPER_ADMIN".equals(role)) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_MANAGER"),
+                    new SimpleGrantedAuthority("ROLE_CASHIER"),
+                    new SimpleGrantedAuthority("ROLE_STOCK"),
+                    new SimpleGrantedAuthority("ROLE_FINANCE"));
+        }
+        return List.of(new SimpleGrantedAuthority(role));
     }
 }

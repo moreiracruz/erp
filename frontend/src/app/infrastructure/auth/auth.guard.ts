@@ -25,7 +25,11 @@ export const roleGuard = (...allowedRoles: string[]): CanActivateFn => {
     const router = inject(Router);
     const role = tokenStorage.getUserRole();
 
-    if (role && allowedRoles.includes(role)) {
+    const effectiveRoles = role === 'ROLE_SUPER_ADMIN'
+      ? ['ROLE_SUPER_ADMIN', 'ROLE_MANAGER', 'ROLE_CASHIER', 'ROLE_STOCK', 'ROLE_FINANCE']
+      : role ? [role] : [];
+
+    if (effectiveRoles.some(effectiveRole => allowedRoles.includes(effectiveRole))) {
       return true;
     }
 

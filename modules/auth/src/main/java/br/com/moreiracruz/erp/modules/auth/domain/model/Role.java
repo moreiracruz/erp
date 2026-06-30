@@ -12,6 +12,9 @@ public enum Role {
     /** Authenticated storefront customer. */
     ROLE_USER,
 
+    /** Global system owner role for security bootstrap and user administration. */
+    ROLE_SUPER_ADMIN,
+
     /** Full administrative access to all modules. */
     ROLE_MANAGER,
 

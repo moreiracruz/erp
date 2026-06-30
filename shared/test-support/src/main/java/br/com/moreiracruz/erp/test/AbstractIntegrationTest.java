@@ -38,7 +38,7 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
         registry.add("spring.flyway.enabled", () -> "true");
-        registry.add("spring.flyway.locations", () -> "classpath:db/migration");
+        registry.add("spring.flyway.locations", () -> "filesystem:${user.dir}/src/main/resources/db/migration,classpath:db/testdata");
         registry.add("spring.flyway.clean-disabled", () -> "false");
     }
 

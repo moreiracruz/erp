@@ -5,7 +5,7 @@ export interface User {
   active: boolean;
 }
 
-export type UserRole = 'ROLE_USER' | 'ROLE_MANAGER' | 'ROLE_CASHIER' | 'ROLE_STOCK' | 'ROLE_FINANCE';
+export type UserRole = 'ROLE_USER' | 'ROLE_SUPER_ADMIN' | 'ROLE_MANAGER' | 'ROLE_CASHIER' | 'ROLE_STOCK' | 'ROLE_FINANCE';
 
 export interface TokenPair {
   accessToken: string;

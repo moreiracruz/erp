@@ -2,6 +2,7 @@ package br.com.moreiracruz.erp.infrastructure.security;
 
 import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
 import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
+import br.com.moreiracruz.erp.modules.auth.domain.model.UsuarioStatus;
 import br.com.moreiracruz.erp.modules.auth.domain.port.out.UsuarioRepository;
 import org.springframework.stereotype.Repository;
 
@@ -41,6 +42,16 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
     }
 
     @Override
+    public boolean existsByRoleIn(List<Role> roles) {
+        return jpaRepository.existsByRoleIn(roles.stream().map(Role::name).toList());
+    }
+
+    @Override
+    public long countByRoleAndStatus(Role role, UsuarioStatus status) {
+        return jpaRepository.countByRoleAndStatus(role.name(), status.name());
+    }
+
+    @Override
     public Usuario save(Usuario usuario) {
         UsuarioJpaEntity entity = toEntity(usuario);
         UsuarioJpaEntity saved = jpaRepository.save(entity);
@@ -59,6 +70,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
                 e.getPasswordHash(),
                 Role.valueOf(e.getRole()),
                 e.isActive(),
+                e.getStatus() != null ? UsuarioStatus.valueOf(e.getStatus()) : null,
                 e.getFailedAttempts(),
                 e.getLockedUntil(),
                 e.getCreatedAt());
@@ -72,6 +84,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
         e.setPasswordHash(u.getPasswordHash());
         e.setRole(u.getRole().name());
         e.setActive(u.isActive());
+        e.setStatus(u.getStatus().name());
         e.setFailedAttempts(u.getFailedAttempts());
         e.setLockedUntil(u.getLockedUntil());
         e.setCreatedAt(u.getCreatedAt());

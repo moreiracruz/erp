@@ -62,6 +62,7 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
     static Stream<RbacTestCase> rbacTestCases() {
         return Stream.of(
                 // Products - ROLE_MANAGER allowed
+                RbacTestCase.allowed("POST", "/api/v1/products", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("POST", "/api/v1/products", "ROLE_MANAGER"),
                 RbacTestCase.forbidden("POST", "/api/v1/products", "ROLE_USER"),
                 RbacTestCase.forbidden("POST", "/api/v1/products", "ROLE_CASHIER"),
@@ -69,6 +70,7 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
                 RbacTestCase.forbidden("POST", "/api/v1/products", "ROLE_FINANCE"),
 
                 // Inventory - ROLE_MANAGER and ROLE_STOCK allowed
+                RbacTestCase.allowed("GET", "/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("GET", "/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock", "ROLE_MANAGER"),
                 RbacTestCase.allowed("GET", "/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock", "ROLE_STOCK"),
                 RbacTestCase.forbidden("GET", "/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock", "ROLE_USER"),
@@ -76,6 +78,7 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
                 RbacTestCase.forbidden("GET", "/api/v1/inventory/variants/" + UUID.randomUUID() + "/stock", "ROLE_FINANCE"),
 
                 // Sales - ROLE_MANAGER and ROLE_CASHIER allowed
+                RbacTestCase.allowed("POST", "/api/v1/sales", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("POST", "/api/v1/sales", "ROLE_MANAGER"),
                 RbacTestCase.allowed("POST", "/api/v1/sales", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("POST", "/api/v1/sales", "ROLE_USER"),
@@ -83,6 +86,7 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
                 RbacTestCase.forbidden("POST", "/api/v1/sales", "ROLE_FINANCE"),
 
                 // Customers - ROLE_MANAGER and ROLE_CASHIER allowed
+                RbacTestCase.allowed("POST", "/api/v1/customers", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("POST", "/api/v1/customers", "ROLE_MANAGER"),
                 RbacTestCase.allowed("POST", "/api/v1/customers", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("POST", "/api/v1/customers", "ROLE_USER"),
@@ -90,33 +94,39 @@ class RbacEnforcementE2ETest extends AbstractIntegrationTest {
                 RbacTestCase.forbidden("POST", "/api/v1/customers", "ROLE_FINANCE"),
 
                 // Consignments - ROLE_MANAGER and ROLE_STOCK can consult; manager controls consignors
+                RbacTestCase.allowed("GET", "/api/v1/consignments/contracts", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("GET", "/api/v1/consignments/contracts", "ROLE_MANAGER"),
                 RbacTestCase.allowed("GET", "/api/v1/consignments/contracts", "ROLE_STOCK"),
                 RbacTestCase.forbidden("GET", "/api/v1/consignments/contracts", "ROLE_USER"),
                 RbacTestCase.forbidden("GET", "/api/v1/consignments/contracts", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("GET", "/api/v1/consignments/contracts", "ROLE_FINANCE"),
+                RbacTestCase.allowed("POST", "/api/v1/consignments/consignors", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("POST", "/api/v1/consignments/consignors", "ROLE_MANAGER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/consignors", "ROLE_USER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/consignors", "ROLE_STOCK"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/consignors", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/consignors", "ROLE_FINANCE"),
+                RbacTestCase.allowed("GET", "/api/v1/consignments/sent/contracts", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("GET", "/api/v1/consignments/sent/contracts", "ROLE_MANAGER"),
                 RbacTestCase.allowed("GET", "/api/v1/consignments/sent/contracts", "ROLE_STOCK"),
                 RbacTestCase.forbidden("GET", "/api/v1/consignments/sent/contracts", "ROLE_USER"),
                 RbacTestCase.forbidden("GET", "/api/v1/consignments/sent/contracts", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("GET", "/api/v1/consignments/sent/contracts", "ROLE_FINANCE"),
+                RbacTestCase.allowed("POST", "/api/v1/consignments/sent/consignees", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("POST", "/api/v1/consignments/sent/consignees", "ROLE_MANAGER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/sent/consignees", "ROLE_USER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/sent/consignees", "ROLE_STOCK"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/sent/consignees", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("POST", "/api/v1/consignments/sent/consignees", "ROLE_FINANCE"),
 
-                // System administration - ROLE_MANAGER only
+                // System administration - ROLE_SUPER_ADMIN and ROLE_MANAGER
+                RbacTestCase.allowed("GET", "/api/v1/system/users", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("GET", "/api/v1/system/users", "ROLE_MANAGER"),
                 RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_USER"),
                 RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_STOCK"),
                 RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_CASHIER"),
                 RbacTestCase.forbidden("GET", "/api/v1/system/users", "ROLE_FINANCE"),
+                RbacTestCase.allowed("POST", "/api/v1/system/users", "ROLE_SUPER_ADMIN"),
                 RbacTestCase.allowed("POST", "/api/v1/system/users", "ROLE_MANAGER"),
                 RbacTestCase.forbidden("POST", "/api/v1/system/users", "ROLE_USER"),
                 RbacTestCase.forbidden("POST", "/api/v1/system/users", "ROLE_STOCK"),

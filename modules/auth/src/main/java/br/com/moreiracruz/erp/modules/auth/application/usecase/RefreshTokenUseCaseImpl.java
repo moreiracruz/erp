@@ -57,6 +57,9 @@ public class RefreshTokenUseCaseImpl implements RefreshTokenUseCase {
         // 4. Load the owning user
         Usuario usuario = usuarioRepository.findByUuid(token.getUsuarioUuid())
                 .orElseThrow(() -> new AuthenticationException("Credenciais inválidas"));
+        if (!usuario.isActive()) {
+            throw new AuthenticationException("Credenciais inválidas");
+        }
 
         // 5. Issue new JWT
         String jwt = jwtPort.generateToken(usuario.getUuid(), usuario.getRole().name());

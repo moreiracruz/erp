@@ -2,6 +2,8 @@ package br.com.moreiracruz.erp.modules.auth.adapter.in.web;
 
 import br.com.moreiracruz.erp.modules.auth.domain.model.Credentials;
 import br.com.moreiracruz.erp.modules.auth.domain.model.TokenPair;
+import br.com.moreiracruz.erp.modules.auth.domain.port.in.ActivateUserCommand;
+import br.com.moreiracruz.erp.modules.auth.domain.port.in.ActivateUserUseCase;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.LoginUseCase;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.LogoutUseCase;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.RegisterUserCommand;
@@ -27,16 +29,19 @@ public class AuthController {
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final LogoutUseCase logoutUseCase;
     private final RegisterUserUseCase registerUserUseCase;
+    private final ActivateUserUseCase activateUserUseCase;
 
     public AuthController(
             LoginUseCase loginUseCase,
             RefreshTokenUseCase refreshTokenUseCase,
             LogoutUseCase logoutUseCase,
-            RegisterUserUseCase registerUserUseCase) {
+            RegisterUserUseCase registerUserUseCase,
+            ActivateUserUseCase activateUserUseCase) {
         this.loginUseCase = loginUseCase;
         this.refreshTokenUseCase = refreshTokenUseCase;
         this.logoutUseCase = logoutUseCase;
         this.registerUserUseCase = registerUserUseCase;
+        this.activateUserUseCase = activateUserUseCase;
     }
 
     /**
@@ -61,6 +66,12 @@ public class AuthController {
                 request.phone(),
                 request.cpf()));
         return ResponseEntity.ok(toResponse(tokenPair));
+    }
+
+    @PostMapping("/activation")
+    public ResponseEntity<Void> activate(@RequestBody ActivationRequest request) {
+        activateUserUseCase.activate(new ActivateUserCommand(request.token(), request.password()));
+        return ResponseEntity.noContent().build();
     }
 
     /**

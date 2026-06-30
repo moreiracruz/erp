@@ -2,6 +2,7 @@ package br.com.moreiracruz.erp.modules.auth.application.usecase;
 
 import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
 import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
+import br.com.moreiracruz.erp.modules.auth.domain.model.UsuarioStatus;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.AdminUserResponse;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.CreateUserCommand;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.ResetUserPasswordCommand;
@@ -40,10 +41,11 @@ public class SystemUserAdminService {
                 .toList();
     }
 
-    public AdminUserResponse createUser(CreateUserCommand command) {
+    public AdminUserResponse createUser(CreateUserCommand command, Role actorRole) {
         String username = normalizeUsername(command.username());
         validatePassword(command.password());
         Role role = parseRole(command.role());
+        assertCanAssignRole(role, actorRole);
         if (usuarioRepository.findByUsername(username).isPresent()) {
             throw new ValidationException("Usuário já cadastrado");
         }
@@ -51,36 +53,47 @@ public class SystemUserAdminService {
         return toResponse(usuarioRepository.save(usuario));
     }
 
-    public AdminUserResponse updateRole(UUID uuid, UpdateUserRoleCommand command) {
+    public AdminUserResponse updateRole(UUID uuid, UpdateUserRoleCommand command, Role actorRole) {
         Usuario usuario = findUser(uuid);
-        usuario.changeRole(parseRole(command.role()));
+        assertCanManageUser(usuario, actorRole);
+        Role newRole = parseRole(command.role());
+        assertCanAssignRole(newRole, actorRole);
+        usuario.changeRole(newRole);
         return toResponse(usuarioRepository.save(usuario));
     }
 
-    public AdminUserResponse resetPassword(UUID uuid, ResetUserPasswordCommand command) {
+    public AdminUserResponse resetPassword(UUID uuid, ResetUserPasswordCommand command, Role actorRole) {
         validatePassword(command.password());
         Usuario usuario = findUser(uuid);
+        assertCanManageUser(usuario, actorRole);
         usuario.changePasswordHash(passwordEncoder.encode(command.password()));
         return toResponse(usuarioRepository.save(usuario));
     }
 
-    public AdminUserResponse activate(UUID uuid) {
+    public AdminUserResponse activate(UUID uuid, Role actorRole) {
         Usuario usuario = findUser(uuid);
+        assertCanManageUser(usuario, actorRole);
         usuario.setActive(true);
         return toResponse(usuarioRepository.save(usuario));
     }
 
-    public AdminUserResponse deactivate(UUID uuid, UUID actorUuid) {
+    public AdminUserResponse deactivate(UUID uuid, UUID actorUuid, Role actorRole) {
         if (uuid.equals(actorUuid)) {
             throw new ValidationException("Usuário não pode desativar a própria conta");
         }
         Usuario usuario = findUser(uuid);
+        assertCanManageUser(usuario, actorRole);
+        if (usuario.getRole() == Role.ROLE_SUPER_ADMIN
+                && usuarioRepository.countByRoleAndStatus(Role.ROLE_SUPER_ADMIN, UsuarioStatus.ACTIVE) <= 1) {
+            throw new ValidationException("Último super admin ativo não pode ser desativado");
+        }
         usuario.setActive(false);
         return toResponse(usuarioRepository.save(usuario));
     }
 
-    public AdminUserResponse unlock(UUID uuid) {
+    public AdminUserResponse unlock(UUID uuid, Role actorRole) {
         Usuario usuario = findUser(uuid);
+        assertCanManageUser(usuario, actorRole);
         usuario.resetLockout();
         return toResponse(usuarioRepository.save(usuario));
     }
@@ -114,11 +127,24 @@ public class SystemUserAdminService {
         }
     }
 
+    private void assertCanAssignRole(Role role, Role actorRole) {
+        if (role == Role.ROLE_SUPER_ADMIN && actorRole != Role.ROLE_SUPER_ADMIN) {
+            throw new ValidationException("Apenas super admin pode atribuir ROLE_SUPER_ADMIN");
+        }
+    }
+
+    private void assertCanManageUser(Usuario usuario, Role actorRole) {
+        if (usuario.getRole() == Role.ROLE_SUPER_ADMIN && actorRole != Role.ROLE_SUPER_ADMIN) {
+            throw new ValidationException("Apenas super admin pode alterar outro super admin");
+        }
+    }
+
     private AdminUserResponse toResponse(Usuario usuario) {
         return new AdminUserResponse(
                 usuario.getUuid(),
                 usuario.getUsername(),
                 usuario.getRole().name(),
+                usuario.getStatus().name(),
                 usuario.isActive(),
                 usuario.getFailedAttempts(),
                 usuario.getLockedUntil(),

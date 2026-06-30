@@ -8,6 +8,7 @@ export interface AdminUser {
   uuid: string;
   username: string;
   role: UserRole;
+  status: string;
   active: boolean;
   failedAttempts: number;
   lockedUntil: string | null;

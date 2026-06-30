@@ -1,6 +1,7 @@
 package br.com.moreiracruz.erp.modules.auth.adapter.in.web;
 
 import br.com.moreiracruz.erp.modules.auth.application.usecase.SystemUserAdminService;
+import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.AdminUserResponse;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.CreateUserCommand;
 import br.com.moreiracruz.erp.modules.auth.domain.port.in.ResetUserPasswordCommand;
@@ -39,37 +40,43 @@ public class SystemUserAdminController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public AdminUserResponse createUser(@RequestBody CreateUserCommand command) {
-        return service.createUser(command);
+    public AdminUserResponse createUser(@RequestBody CreateUserCommand command, Authentication authentication) {
+        return service.createUser(command, actorRole(authentication));
     }
 
     @PutMapping("/{uuid}/role")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public AdminUserResponse updateRole(@PathVariable UUID uuid, @RequestBody UpdateUserRoleCommand command) {
-        return service.updateRole(uuid, command);
+    public AdminUserResponse updateRole(@PathVariable UUID uuid, @RequestBody UpdateUserRoleCommand command, Authentication authentication) {
+        return service.updateRole(uuid, command, actorRole(authentication));
     }
 
     @PutMapping("/{uuid}/password")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public AdminUserResponse resetPassword(@PathVariable UUID uuid, @RequestBody ResetUserPasswordCommand command) {
-        return service.resetPassword(uuid, command);
+    public AdminUserResponse resetPassword(@PathVariable UUID uuid, @RequestBody ResetUserPasswordCommand command, Authentication authentication) {
+        return service.resetPassword(uuid, command, actorRole(authentication));
     }
 
     @PostMapping("/{uuid}/activate")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public AdminUserResponse activate(@PathVariable UUID uuid) {
-        return service.activate(uuid);
+    public AdminUserResponse activate(@PathVariable UUID uuid, Authentication authentication) {
+        return service.activate(uuid, actorRole(authentication));
     }
 
     @PostMapping("/{uuid}/deactivate")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public AdminUserResponse deactivate(@PathVariable UUID uuid, Authentication authentication) {
-        return service.deactivate(uuid, (UUID) authentication.getPrincipal());
+        return service.deactivate(uuid, (UUID) authentication.getPrincipal(), actorRole(authentication));
     }
 
     @PostMapping("/{uuid}/unlock")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public AdminUserResponse unlock(@PathVariable UUID uuid) {
-        return service.unlock(uuid);
+    public AdminUserResponse unlock(@PathVariable UUID uuid, Authentication authentication) {
+        return service.unlock(uuid, actorRole(authentication));
+    }
+
+    private Role actorRole(Authentication authentication) {
+        boolean superAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
+        return superAdmin ? Role.ROLE_SUPER_ADMIN : Role.ROLE_MANAGER;
     }
 }

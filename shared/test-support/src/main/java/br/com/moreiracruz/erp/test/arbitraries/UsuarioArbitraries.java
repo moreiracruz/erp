@@ -2,6 +2,7 @@ package br.com.moreiracruz.erp.test.arbitraries;
 
 import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
 import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
+import br.com.moreiracruz.erp.modules.auth.domain.model.UsuarioStatus;
 import net.jqwik.api.Arbitraries;
 import net.jqwik.api.Arbitrary;
 import net.jqwik.api.Combinators;
@@ -22,7 +23,7 @@ public class UsuarioArbitraries {
         ).as((uuid, username, role) ->
                 Usuario.reconstruct(null, uuid, username,
                         "$2a$10$dummyHash0000000000000000000000000000000000000000",
-                        role, true, 0, null, Instant.now())
+                        role, true, UsuarioStatus.ACTIVE, 0, null, Instant.now())
         );
     }
 

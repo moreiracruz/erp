@@ -25,6 +25,10 @@ export class AuthHttpAdapter extends AuthPort {
     return this.http.post<TokenPair>(`${this.baseUrl}/register`, data);
   }
 
+  activate(token: string, password: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/activation`, { token, password });
+  }
+
   refresh(refreshToken: string): Observable<TokenPair> {
     return this.http.post<TokenPair>(`${this.baseUrl}/refresh`, { refreshToken });
   }

@@ -31,6 +31,7 @@ public class Usuario extends AggregateRoot {
     private String passwordHash;
     private Role role;
     private boolean active;
+    private UsuarioStatus status;
     private int failedAttempts;
     private Instant lockedUntil;
     private Instant createdAt;
@@ -62,6 +63,26 @@ public class Usuario extends AggregateRoot {
         u.passwordHash = passwordHash;
         u.role = role;
         u.active = true;
+        u.status = UsuarioStatus.ACTIVE;
+        u.failedAttempts = 0;
+        u.lockedUntil = null;
+        u.createdAt = Instant.now();
+        return u;
+    }
+
+    public static Usuario createPendingActivation(String username, String unusablePasswordHash, Role role) {
+        validateUsername(username);
+        validatePasswordHash(unusablePasswordHash);
+        if (role == null) {
+            throw new ValidationException("Perfil do usuário é obrigatório");
+        }
+        Usuario u = new Usuario();
+        u.uuid = UUID.randomUUID();
+        u.username = username.trim().toLowerCase();
+        u.passwordHash = unusablePasswordHash;
+        u.role = role;
+        u.active = false;
+        u.status = UsuarioStatus.PENDING_ACTIVATION;
         u.failedAttempts = 0;
         u.lockedUntil = null;
         u.createdAt = Instant.now();
@@ -84,7 +105,7 @@ public class Usuario extends AggregateRoot {
      * @return a fully populated {@code Usuario}
      */
     public static Usuario reconstruct(Long id, UUID uuid, String username, String passwordHash,
-                                      Role role, boolean active, int failedAttempts,
+                                      Role role, boolean active, UsuarioStatus status, int failedAttempts,
                                       Instant lockedUntil, Instant createdAt) {
         Usuario u = new Usuario();
         u.id = id;
@@ -93,6 +114,7 @@ public class Usuario extends AggregateRoot {
         u.passwordHash = passwordHash;
         u.role = role;
         u.active = active;
+        u.status = status != null ? status : (active ? UsuarioStatus.ACTIVE : UsuarioStatus.INACTIVE);
         u.failedAttempts = failedAttempts;
         u.lockedUntil = lockedUntil;
         u.createdAt = createdAt;
@@ -139,6 +161,12 @@ public class Usuario extends AggregateRoot {
         resetAttempts();
     }
 
+    public void activateWithPasswordHash(String passwordHash) {
+        changePasswordHash(passwordHash);
+        this.active = true;
+        this.status = UsuarioStatus.ACTIVE;
+    }
+
     public void resetLockout() {
         resetAttempts();
     }
@@ -168,7 +196,11 @@ public class Usuario extends AggregateRoot {
     }
 
     public boolean isActive() {
-        return active;
+        return active && status == UsuarioStatus.ACTIVE;
+    }
+
+    public UsuarioStatus getStatus() {
+        return status;
     }
 
     public int getFailedAttempts() {
@@ -185,6 +217,7 @@ public class Usuario extends AggregateRoot {
 
     public void setActive(boolean active) {
         this.active = active;
+        this.status = active ? UsuarioStatus.ACTIVE : UsuarioStatus.INACTIVE;
     }
 
     private static void validateUsername(String username) {

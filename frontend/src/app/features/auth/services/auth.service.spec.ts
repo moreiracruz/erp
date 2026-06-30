@@ -17,6 +17,7 @@ describe('AuthService — Token refresh success and failure', () => {
   let authService: AuthService;
   let authPortMock: {
     login: ReturnType<typeof vi.fn>;
+    activate: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
     refresh: ReturnType<typeof vi.fn>;
   };
@@ -52,6 +53,7 @@ describe('AuthService — Token refresh success and failure', () => {
 
     authPortMock = {
       login: vi.fn(),
+      activate: vi.fn(),
       logout: vi.fn().mockReturnValue(of(void 0)),
       refresh: vi.fn(),
     };

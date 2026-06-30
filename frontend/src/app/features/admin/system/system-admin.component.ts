@@ -14,7 +14,7 @@ import { UserRole } from '../../../core/models/user.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SystemAdminComponent implements OnInit {
-  readonly roles: UserRole[] = ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_CASHIER', 'ROLE_STOCK', 'ROLE_FINANCE'];
+  readonly roles: UserRole[] = ['ROLE_USER', 'ROLE_SUPER_ADMIN', 'ROLE_MANAGER', 'ROLE_CASHIER', 'ROLE_STOCK', 'ROLE_FINANCE'];
   readonly users = signal<AdminUser[]>([]);
   readonly searchQuery = signal('');
   readonly loading = signal(false);

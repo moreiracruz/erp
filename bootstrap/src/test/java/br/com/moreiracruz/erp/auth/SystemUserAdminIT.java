@@ -61,6 +61,7 @@ class SystemUserAdminIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.uuid").isNotEmpty())
                 .andExpect(jsonPath("$.username").value("new-cashier@example.com"))
                 .andExpect(jsonPath("$.role").value("ROLE_CASHIER"))
+                .andExpect(jsonPath("$.status").value("ACTIVE"))
                 .andExpect(jsonPath("$.active").value(true))
                 .andExpect(jsonPath("$.passwordHash").doesNotExist());
 
@@ -112,5 +113,37 @@ class SystemUserAdminIT extends AbstractIntegrationTest {
 
         Usuario persisted = usuarioRepository.findByUuid(manager.getUuid()).orElseThrow();
         assertThat(persisted.isActive()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Manager cannot create super admin but super admin can")
+    void onlySuperAdminCanCreateSuperAdmin() throws Exception {
+        String managerToken = TestJwtGenerator.generateToken(UUID.randomUUID(), "ROLE_MANAGER");
+        String superAdminToken = TestJwtGenerator.generateToken(UUID.randomUUID(), "ROLE_SUPER_ADMIN");
+
+        mockMvc.perform(post("/api/v1/system/users")
+                        .header("Authorization", "Bearer " + managerToken)
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "username": "blocked-super@example.com",
+                                  "password": "CorrectPass123!",
+                                  "role": "ROLE_SUPER_ADMIN"
+                                }
+                                """))
+                .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(post("/api/v1/system/users")
+                        .header("Authorization", "Bearer " + superAdminToken)
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "username": "allowed-super@example.com",
+                                  "password": "CorrectPass123!",
+                                  "role": "ROLE_SUPER_ADMIN"
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.role").value("ROLE_SUPER_ADMIN"));
     }
 }

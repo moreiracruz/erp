@@ -39,6 +39,9 @@ public class UsuarioJpaEntity {
     @Column(nullable = false)
     private boolean active;
 
+    @Column(nullable = false, length = 40)
+    private String status;
+
     @Column(name = "failed_attempts", nullable = false)
     private int failedAttempts;
 
@@ -72,6 +75,9 @@ public class UsuarioJpaEntity {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public int getFailedAttempts() { return failedAttempts; }
     public void setFailedAttempts(int failedAttempts) { this.failedAttempts = failedAttempts; }

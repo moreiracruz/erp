@@ -12,6 +12,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   if (token
     && !req.url.includes('/auth/login')
     && !req.url.includes('/auth/register')
+    && !req.url.includes('/auth/activation')
     && !req.url.includes('/auth/refresh')) {
     req = req.clone({
       setHeaders: {

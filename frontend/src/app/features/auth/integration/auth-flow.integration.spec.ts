@@ -28,6 +28,7 @@ describe('Auth Flow Integration — Full Login', () => {
   let authPortMock: {
     login: ReturnType<typeof vi.fn>;
     register: ReturnType<typeof vi.fn>;
+    activate: ReturnType<typeof vi.fn>;
     refresh: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
     getCurrentUser: ReturnType<typeof vi.fn>;
@@ -66,6 +67,7 @@ describe('Auth Flow Integration — Full Login', () => {
     authPortMock = {
       login: vi.fn().mockReturnValue(of(fakeTokenPair)),
       register: vi.fn(),
+      activate: vi.fn(),
       refresh: vi.fn(),
       logout: vi.fn().mockReturnValue(of(void 0)),
       getCurrentUser: vi.fn(),
@@ -283,6 +285,7 @@ describe('Integration: Token Refresh Cycle', () => {
   let authPortMock: {
     login: ReturnType<typeof vi.fn>;
     register: ReturnType<typeof vi.fn>;
+    activate: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
     refresh: ReturnType<typeof vi.fn>;
     getCurrentUser: ReturnType<typeof vi.fn>;
@@ -320,6 +323,7 @@ describe('Integration: Token Refresh Cycle', () => {
     authPortMock = {
       login: vi.fn(),
       register: vi.fn(),
+      activate: vi.fn(),
       logout: vi.fn().mockReturnValue(of(void 0)),
       refresh: vi.fn(),
       getCurrentUser: vi.fn(),

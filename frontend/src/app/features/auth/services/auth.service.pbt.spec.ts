@@ -121,6 +121,7 @@ describe('AuthService — Property 8: JWT decode round trip', () => {
   let authService: AuthService;
   let authPortMock: {
     login: ReturnType<typeof vi.fn>;
+    activate: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
   };
   let tokenStorageMock: {
@@ -136,6 +137,7 @@ describe('AuthService — Property 8: JWT decode round trip', () => {
   beforeEach(() => {
     authPortMock = {
       login: vi.fn(),
+      activate: vi.fn(),
       logout: vi.fn().mockReturnValue(of(void 0)),
     };
 
@@ -235,6 +237,7 @@ describe('AuthService — Property 9: Token refresh scheduled at 80% of expiry',
   let authService: AuthService;
   let authPortMock: {
     login: ReturnType<typeof vi.fn>;
+    activate: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
   };
   let tokenStorageMock: {
@@ -258,6 +261,7 @@ describe('AuthService — Property 9: Token refresh scheduled at 80% of expiry',
   beforeEach(() => {
     authPortMock = {
       login: vi.fn(),
+      activate: vi.fn(),
       logout: vi.fn(),
     };
 
