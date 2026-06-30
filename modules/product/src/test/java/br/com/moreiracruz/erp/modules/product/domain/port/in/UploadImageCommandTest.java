@@ -27,4 +27,24 @@ class UploadImageCommandTest {
         assertThat(command.content()).containsExactly(1, 2, 3);
         assertThat(command.toString()).contains("contentLength=3");
     }
+
+    @Test
+    void nullContentIsSupported() {
+        UploadImageCommand command = new UploadImageCommand("front.jpg", "image/jpeg", 0, null);
+
+        assertThat(command.content()).isNull();
+        assertThat(command.toString()).contains("contentLength=0");
+    }
+
+    @Test
+    void equalityRejectsDifferentValues() {
+        UploadImageCommand command = new UploadImageCommand("front.jpg", "image/jpeg", 3, new byte[]{1, 2, 3});
+
+        assertThat(command).isEqualTo(command);
+        assertThat(command).isNotEqualTo("not-a-command");
+        assertThat(command).isNotEqualTo(new UploadImageCommand("other.jpg", "image/jpeg", 3, new byte[]{1, 2, 3}));
+        assertThat(command).isNotEqualTo(new UploadImageCommand("front.jpg", "image/png", 3, new byte[]{1, 2, 3}));
+        assertThat(command).isNotEqualTo(new UploadImageCommand("front.jpg", "image/jpeg", 4, new byte[]{1, 2, 3}));
+        assertThat(command).isNotEqualTo(new UploadImageCommand("front.jpg", "image/jpeg", 3, new byte[]{1, 2, 4}));
+    }
 }
