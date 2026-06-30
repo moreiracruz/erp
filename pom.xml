@@ -46,7 +46,7 @@
         <flyway.version>10.19.0</flyway.version>
         <jjwt.version>0.12.6</jjwt.version>
         <springdoc.version>2.6.0</springdoc.version>
-        <opentelemetry.version>2.11.0</opentelemetry.version>
+        <opentelemetry.version>2.29.0</opentelemetry.version>
         <logstash-logback.version>7.4</logstash-logback.version>
         <thumbnailator.version>0.4.20</thumbnailator.version>
     </properties>
