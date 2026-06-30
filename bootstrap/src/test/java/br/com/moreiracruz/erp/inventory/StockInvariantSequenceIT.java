@@ -46,8 +46,8 @@ class StockInvariantSequenceIT extends AbstractDatabasePropertyTest {
         Long produtoId = jdbcTemplate.queryForObject(
                 "INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES (?, 'P', 'B', 'C', true, NOW()) RETURNING id",
                 Long.class, produtoUuid);
-        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, 'M', 'X', ?, 10.00, 5.00, true)",
-                varianteUuid, produtoId, "SKU-" + varianteUuid.toString().substring(0, 8), "BAR-" + varianteUuid.toString().substring(0, 13));
+        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, produto_uuid, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, ?, 'M', 'X', ?, 10.00, 5.00, true)",
+                varianteUuid, produtoId, produtoUuid, "SKU-" + varianteUuid.toString().substring(0, 8), "BAR-" + varianteUuid.toString().substring(0, 13));
 
         // Apply entry
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, entryQty, actorUuid));
@@ -98,8 +98,8 @@ class StockInvariantSequenceIT extends AbstractDatabasePropertyTest {
         Long produtoId = jdbcTemplate.queryForObject(
                 "INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES (?, 'P', 'B', 'C', true, NOW()) RETURNING id",
                 Long.class, produtoUuid);
-        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, 'M', 'X', ?, 10.00, 5.00, true)",
-                varianteUuid, produtoId, "SKU-" + varianteUuid.toString().substring(0, 8), "BAR-" + varianteUuid.toString().substring(0, 13));
+        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, produto_uuid, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, ?, 'M', 'X', ?, 10.00, 5.00, true)",
+                varianteUuid, produtoId, produtoUuid, "SKU-" + varianteUuid.toString().substring(0, 8), "BAR-" + varianteUuid.toString().substring(0, 13));
 
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, entry1, actorUuid));
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, entry2, actorUuid));

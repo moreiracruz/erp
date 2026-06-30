@@ -16,8 +16,10 @@ import java.util.UUID;
  */
 public class TestJwtGenerator {
 
-    private static final String TEST_SECRET =
+    private static final String DEFAULT_TEST_SECRET =
             "test-secret-key-that-is-at-least-256-bits-long-for-hs256-signing";
+    private static final String TEST_SECRET =
+            System.getenv().getOrDefault("JWT_SECRET", DEFAULT_TEST_SECRET);
     private static final SecretKey KEY =
             Keys.hmacShaKeyFor(TEST_SECRET.getBytes(StandardCharsets.UTF_8));
     private static final long EXPIRY_MINUTES = 15;

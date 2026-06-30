@@ -43,8 +43,8 @@ class ConcurrentStockReservationIT extends AbstractIntegrationTest {
         Long produtoId = jdbcTemplate.queryForObject(
                 "INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES (?, 'Test', 'Brand', 'CAT', true, NOW()) RETURNING id",
                 Long.class, produtoUuid);
-        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES (?, ?, 'SKU-001', 'M', 'Blue', '1234567890123', 99.90, 50.00, true)",
-                varianteUuid, produtoId);
+        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, produto_uuid, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, 'SKU-001', 'M', 'Blue', '1234567890123', 99.90, 50.00, true)",
+                varianteUuid, produtoId, produtoUuid);
 
         // Insert stock with physical_stock = 10
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, 10, actorUuid));
@@ -90,8 +90,8 @@ class ConcurrentStockReservationIT extends AbstractIntegrationTest {
         Long produtoId = jdbcTemplate.queryForObject(
                 "INSERT INTO produtos (uuid, name, brand, category, active, created_at) VALUES (?, 'Test2', 'Brand', 'CAT', true, NOW()) RETURNING id",
                 Long.class, produtoUuid);
-        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, sku, size, color, barcode, price, cost, active) VALUES (?, ?, 'SKU-002', 'L', 'Red', '1234567890124', 79.90, 40.00, true)",
-                varianteUuid, produtoId);
+        jdbcTemplate.update("INSERT INTO variantes (uuid, produto_id, produto_uuid, sku, size, color, barcode, price, cost, active) VALUES (?, ?, ?, 'SKU-002', 'L', 'Red', '1234567890124', 79.90, 40.00, true)",
+                varianteUuid, produtoId, produtoUuid);
 
         // Insert stock with physical_stock = 5
         registerEntryUseCase.registerEntry(new StockEntryCommand(varianteUuid, 5, actorUuid));
