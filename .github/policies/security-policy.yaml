@@ -1,0 +1,9 @@
+security_rules:
+  - Nunca confiar em input do cliente.
+  - Toda autorização crítica deve estar no backend.
+  - Tokens devem ter expiração.
+  - Senhas com BCrypt, Argon2 ou mecanismo aprovado.
+  - Secrets via variável de ambiente ou secret manager.
+  - Logs não devem conter credenciais.
+  - CORS deve ser restrito.
+  - Endpoints administrativos devem exigir papel apropriado.

@@ -1,0 +1,146 @@
+<div class="system-admin">
+  <header class="page-header">
+    <div>
+      <h1>Administração do Sistema</h1>
+      <p>Usuários operacionais, perfis de acesso, status e bloqueios de autenticação.</p>
+    </div>
+    <button class="btn-primary" type="button" (click)="openCreateForm()">Novo usuário</button>
+  </header>
+
+  <nav class="admin-tabs" aria-label="Administração">
+    <a routerLink="/admin/products">Produtos</a>
+    <a routerLink="/admin/system" class="active">Sistema</a>
+  </nav>
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      placeholder="Buscar por usuário ou perfil..."
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    />
+    <span>{{ filteredUsers().length }} usuários</span>
+    <button type="button" (click)="loadUsers()" [disabled]="loading()">Atualizar</button>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="loading">Carregando...</p>
+  }
+
+  <section class="content-grid">
+    <div class="table-panel">
+      <table>
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Perfil</th>
+            <th>Status</th>
+            <th>Falhas</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filteredUsers(); track user.uuid) {
+            <tr [class.inactive]="!user.active" [class.selected]="selectedUser()?.uuid === user.uuid">
+              <td>
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.uuid }}</small>
+              </td>
+              <td>
+                <select [ngModel]="user.role" (ngModelChange)="updateRole(user, $event)" [disabled]="loading()">
+                  @for (role of roles; track role) {
+                    <option [value]="role">{{ roleLabel(role) }}</option>
+                  }
+                </select>
+              </td>
+              <td>
+                <span class="status" [class.active]="user.active" [class.locked]="isLocked(user)">
+                  {{ isLocked(user) ? 'Bloqueado' : (user.active ? 'Ativo' : 'Inativo') }}
+                </span>
+              </td>
+              <td>{{ user.failedAttempts }}</td>
+              <td class="actions">
+                <button type="button" (click)="selectUser(user)">Detalhes</button>
+                <button type="button" (click)="toggleActive(user)" [disabled]="loading()">
+                  {{ user.active ? 'Desativar' : 'Ativar' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (filteredUsers().length === 0 && !loading()) {
+        <p class="empty">Nenhum usuário encontrado.</p>
+      }
+    </div>
+
+    <aside class="detail-panel" *ngIf="selectedUser() as user">
+      <header>
+        <div>
+          <h2>{{ user.username }}</h2>
+          <p>{{ roleLabel(user.role) }}</p>
+        </div>
+        <button type="button" (click)="closeDetails()">Fechar</button>
+      </header>
+
+      <dl>
+        <div><dt>Criado em</dt><dd>{{ user.createdAt | date:'short' }}</dd></div>
+        <div><dt>Falhas</dt><dd>{{ user.failedAttempts }}</dd></div>
+        <div><dt>Bloqueado até</dt><dd>{{ user.lockedUntil ? (user.lockedUntil | date:'short') : '-' }}</dd></div>
+      </dl>
+
+      <button type="button" (click)="unlock(user)" [disabled]="loading() || !user.lockedUntil">Desbloquear</button>
+
+      <div class="password-box">
+        <label>Nova senha
+          <input
+            type="password"
+            minlength="8"
+            [ngModel]="passwordReset()"
+            (ngModelChange)="passwordReset.set($event)"
+            placeholder="mínimo 8 caracteres"
+          />
+        </label>
+        <button type="button" (click)="resetPassword(user)" [disabled]="loading() || passwordReset().length < 8">
+          Redefinir senha
+        </button>
+      </div>
+    </aside>
+  </section>
+
+  @if (showCreateForm()) {
+    <div class="modal-overlay" (click)="closeCreateForm()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <header>
+          <h2>Novo usuário</h2>
+          <button type="button" (click)="closeCreateForm()">Fechar</button>
+        </header>
+
+        <label>Usuário
+          <input [(ngModel)]="createForm().username" placeholder="email ou login" />
+        </label>
+        <label>Senha inicial
+          <input type="password" minlength="8" [(ngModel)]="createForm().password" />
+        </label>
+        <label>Perfil
+          <select [(ngModel)]="createForm().role">
+            @for (role of roles; track role) {
+              <option [value]="role">{{ roleLabel(role) }}</option>
+            }
+          </select>
+        </label>
+
+        <footer>
+          <button type="button" (click)="closeCreateForm()">Cancelar</button>
+          <button type="button" class="btn-primary" (click)="createUser()" [disabled]="loading() || createForm().password.length < 8">
+            Criar usuário
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+</div>

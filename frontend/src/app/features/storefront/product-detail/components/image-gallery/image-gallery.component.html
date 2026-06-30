@@ -13,15 +13,21 @@
     @if (images().length) {
       <img
         class="image-gallery__primary-img"
-        [src]="images()[activeIndex]"
+        [src]="images()[activeIndex].fullUrl"
         [alt]="getAltText(activeIndex)"
+      />
+    } @else {
+      <img
+        class="image-gallery__primary-img image-gallery__primary-img--placeholder"
+        [src]="placeholderUrl"
+        alt="Imagem do produto indisponível"
       />
     }
   </div>
 
   @if (images().length > 1) {
     <div class="image-gallery__thumbnails" role="list" aria-label="Miniaturas">
-      @for (img of images(); track img; let i = $index) {
+      @for (img of images(); track img.id; let i = $index) {
         <button
           class="image-gallery__thumbnail"
           [class.image-gallery__thumbnail--active]="i === activeIndex"
@@ -30,7 +36,7 @@
           [attr.aria-label]="getAltText(i)"
           [attr.aria-current]="i === activeIndex ? 'true' : null"
         >
-          <img [src]="img" [alt]="getAltText(i)" />
+          <img [src]="img.thumbnailUrl" [alt]="getAltText(i)" />
         </button>
       }
     </div>

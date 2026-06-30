@@ -2,6 +2,7 @@
 // Reino & Flor — Mixins
 // ============================================================================
 @use 'variables' as *;
+@use 'sass:color';
 
 // --- Responsive ---
 @mixin sm { @media (min-width: $breakpoint-sm) { @content; } }
@@ -105,7 +106,7 @@
   transition: all $transition-base;
 
   &:hover {
-    background: darken($gold, 8%);
+    background: color.adjust($gold, $lightness: -8%);
     box-shadow: $shadow-md;
   }
 

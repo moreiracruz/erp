@@ -1,0 +1,8 @@
+testing_rules:
+  - Toda regra de domínio deve ter teste unitário.
+  - Todo bug corrigido deve gerar teste de regressão.
+  - Persistência deve ser testada com Testcontainers quando possível.
+  - APIs críticas devem ter teste de fachada.
+  - Invariantes fortes devem ter property-based tests.
+  - Não testar apenas getters e setters.
+  - Cobertura é métrica auxiliar, não prova de qualidade.

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard, roleGuard } from '../../infrastructure/auth/auth.guard';
 
 export const CHECKOUT_ROUTES: Routes = [
   {
@@ -8,6 +9,7 @@ export const CHECKOUT_ROUTES: Routes = [
   },
   {
     path: '',
+    canActivate: [authGuard, roleGuard('ROLE_USER')],
     loadComponent: () =>
       import('./checkout-page/checkout-page.component').then((m) => m.CheckoutPageComponent),
   },

@@ -1,4 +1,5 @@
 @use '../../../../styles/variables' as *;
+@use 'sass:color';
 
 .checkout-page {
   max-width: 960px;
@@ -251,7 +252,7 @@
       font-weight: $font-weight-semibold;
 
       &:hover:not(:disabled) {
-        background: darken($gold, 8%);
+        background: color.adjust($gold, $lightness: -8%);
       }
 
       &:disabled {

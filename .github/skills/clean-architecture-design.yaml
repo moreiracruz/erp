@@ -1,0 +1,19 @@
+id: clean-architecture-design
+description: >
+  Define módulos, camadas, portas, adaptadores e dependências.
+rules:
+  - Domínio não depende de framework.
+  - Casos de uso orquestram regras.
+  - Adaptadores implementam detalhes técnicos.
+  - Controllers não contêm regra de negócio.
+  - Repositories são portas do domínio/aplicação.
+example_output:
+  layers:
+    domain:
+      contains: [entities, value-objects, domain-services, domain-events]
+    application:
+      contains: [use-cases, ports, commands, queries]
+    infrastructure:
+      contains: [persistence, messaging, security, external-clients]
+    interfaces:
+      contains: [rest-controllers, request-response-dtos]

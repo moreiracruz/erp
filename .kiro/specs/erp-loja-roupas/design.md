@@ -53,7 +53,7 @@ Key drivers:
 Each business module follows the same internal layout:
 
 ```
-com.erp.modules.<module>
+br.com.moreiracruz.erp.modules.<module>
 ├── domain
 │   ├── model          ← Entities, Aggregates, Value Objects
 │   ├── port
@@ -77,7 +77,7 @@ Module boundaries are enforced by ArchUnit rules in CI: no module may import fro
 ## Module Structure and Package Layout
 
 ```
-com.erp
+br.com.moreiracruz.erp
 ├── bootstrap                         ← Spring Boot main class, app config
 ├── infrastructure
 │   ├── config                        ← SecurityConfig, JpaConfig, ObservabilityConfig
@@ -423,7 +423,7 @@ Cupom (Aggregate Root)
 
 #### Auth
 ```java
-// com.erp.modules.auth.domain.port.in
+// br.com.moreiracruz.erp.modules.auth.domain.port.in
 interface LoginUseCase        { TokenPair login(Credentials credentials); }
 interface RefreshTokenUseCase { TokenPair refresh(String rawRefreshToken); }
 interface LogoutUseCase       { void logout(String rawRefreshToken); }
@@ -981,7 +981,7 @@ All endpoints are prefixed with `/api/v1`. Authentication is via `Authorization:
 ### Event Envelope
 
 ```java
-// com.erp.shared.events.EventEnvelope
+// br.com.moreiracruz.erp.shared.events.EventEnvelope
 public record EventEnvelope<T>(
     UUID     eventId,        // UUIDv4 — idempotency key
     String   eventType,      // e.g. "SaleCompleted"

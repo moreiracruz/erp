@@ -1,0 +1,9 @@
+id: database-design
+description: >
+  Modela banco relacional, migrations, constraints e índices.
+rules:
+  - Toda tabela deve ter propósito claro.
+  - Usar constraints para integridade.
+  - Índices devem ter consulta-alvo.
+  - Avaliar concorrência em fluxos críticos.
+  - Migrations devem ser versionadas e reversíveis quando possível.

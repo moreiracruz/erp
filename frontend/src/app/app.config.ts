@@ -6,8 +6,9 @@ import localePt from '@angular/common/locales/pt';
 
 import { routes } from './app.routes';
 import { jwtInterceptor } from './infrastructure/auth/jwt.interceptor';
-import { AuthPort, ProductPort } from './core/ports';
+import { AuthPort, ImagePort, ProductPort } from './core/ports';
 import { AuthHttpAdapter } from './infrastructure/http/auth-http.adapter';
+import { ImageHttpAdapter } from './infrastructure/http/image-http.adapter';
 import { ProductHttpAdapter } from './infrastructure/http/product-http.adapter';
 
 registerLocaleData(localePt);
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
 
     // Hexagonal: bind ports to adapters
     { provide: AuthPort, useClass: AuthHttpAdapter },
+    { provide: ImagePort, useClass: ImageHttpAdapter },
     { provide: ProductPort, useClass: ProductHttpAdapter },
   ],
 };

@@ -1,0 +1,58 @@
+@use '../../../../../../styles/variables' as *;
+
+.product-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  position: relative;
+
+  &__toast {
+    position: fixed;
+    bottom: $space-6;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-3 $space-5;
+    background: $error;
+    color: $white;
+    border-radius: $radius-md;
+    box-shadow: $shadow-lg;
+    z-index: $z-toast;
+    animation: toastSlideUp 200ms ease;
+  }
+
+  &__toast-message {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+
+  &__toast-dismiss {
+    background: none;
+    border: none;
+    color: $white;
+    font-size: $font-size-base;
+    cursor: pointer;
+    padding: $space-1;
+    border-radius: $radius-sm;
+    opacity: 0.8;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes toastSlideUp {
+  from {
+    transform: translateX(-50%) translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}

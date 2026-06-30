@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal, computed, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SalesHttpAdapter, SaleResponse, PosPaymentMethod } from '../../../infrastructure/http/sales-http.adapter';
 
 interface PosItem {
   id: string;
@@ -28,6 +29,9 @@ export class TerminalComponent implements OnInit, OnDestroy {
   readonly items = signal<PosItem[]>([]);
   readonly discount = signal(0);
   readonly selectedPayment = signal<PaymentMethod>('Dinheiro');
+  readonly saleUuid = signal<string | null>(null);
+  readonly loading = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly subtotal = computed(() =>
     this.items().reduce((sum, item) => sum + item.price * item.qty, 0),
@@ -36,6 +40,8 @@ export class TerminalComponent implements OnInit, OnDestroy {
   readonly total = computed(() => this.subtotal() - this.discount());
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
+
+  constructor(private readonly salesAdapter: SalesHttpAdapter) {}
 
   ngOnInit(): void {
     this.updateTime();
@@ -66,41 +72,27 @@ export class TerminalComponent implements OnInit, OnDestroy {
     const query = this.searchQuery().trim();
     if (!query) return;
 
-    // Mock: simulate finding a product by barcode or name
-    const mockProduct: PosItem = {
-      id: crypto.randomUUID(),
-      name: query.length > 8 ? 'Produto ' + query.slice(0, 6) : query,
-      barcode: query.length > 8 ? query : '',
-      price: +(Math.random() * 200 + 20).toFixed(2),
-      qty: 1,
-    };
+    this.loading.set(true);
+    this.errorMessage.set(null);
 
-    const current = this.items();
-    const existing = current.find(
-      (i) => i.barcode === query || i.name.toLowerCase() === query.toLowerCase(),
-    );
-
-    if (existing) {
-      this.items.set(
-        current.map((i) => (i.id === existing.id ? { ...i, qty: i.qty + 1 } : i)),
-      );
-    } else {
-      this.items.set([...current, mockProduct]);
-    }
-
-    this.searchQuery.set('');
+    this.ensureOpenSale((saleUuid) => {
+      this.salesAdapter.addItem(saleUuid, query, 1).subscribe({
+        next: (sale) => {
+          this.applySale(sale);
+          this.searchQuery.set('');
+          this.loading.set(false);
+        },
+        error: () => this.handleError('Produto não encontrado ou estoque insuficiente.'),
+      });
+    });
   }
 
   removeItem(id: string): void {
-    this.items.set(this.items().filter((i) => i.id !== id));
+    this.errorMessage.set('Remoção de item ainda não está disponível no backend.');
   }
 
   updateQty(id: string, qty: number): void {
-    if (qty < 1) {
-      this.removeItem(id);
-      return;
-    }
-    this.items.set(this.items().map((i) => (i.id === id ? { ...i, qty } : i)));
+    this.errorMessage.set('Altere quantidade lendo o produto novamente no PDV.');
   }
 
   selectPayment(method: PaymentMethod): void {
@@ -109,21 +101,94 @@ export class TerminalComponent implements OnInit, OnDestroy {
 
   finalizeSale(): void {
     if (this.items().length === 0) return;
-    // In production, this would call a sale service
-    alert(`Venda finalizada!\nTotal: R$ ${this.total().toFixed(2)}\nPagamento: ${this.selectedPayment()}`);
-    this.items.set([]);
-    this.discount.set(0);
+    const saleUuid = this.saleUuid();
+    if (!saleUuid) return;
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    const total = this.total();
+    this.salesAdapter.finalizeSale(saleUuid, this.toApiPayment(this.selectedPayment()), total, total).subscribe({
+      next: () => {
+        this.items.set([]);
+        this.discount.set(0);
+        this.saleUuid.set(null);
+        this.loading.set(false);
+      },
+      error: () => this.handleError('Não foi possível finalizar a venda.'),
+    });
   }
 
   cancelSale(): void {
-    this.items.set([]);
-    this.discount.set(0);
-    this.searchQuery.set('');
+    const saleUuid = this.saleUuid();
+    if (!saleUuid) {
+      this.resetSale();
+      return;
+    }
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.salesAdapter.cancelSale(saleUuid, 'Cancelada no PDV').subscribe({
+      next: () => {
+        this.resetSale();
+        this.loading.set(false);
+      },
+      error: () => this.handleError('Não foi possível cancelar a venda.'),
+    });
   }
 
   private updateTime(): void {
     this.currentTime.set(
       new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
     );
+  }
+
+  private ensureOpenSale(next: (saleUuid: string) => void): void {
+    const existingSaleUuid = this.saleUuid();
+    if (existingSaleUuid) {
+      next(existingSaleUuid);
+      return;
+    }
+
+    this.salesAdapter.openSale(this.terminalId()).subscribe({
+      next: (sale) => {
+        this.saleUuid.set(sale.uuid);
+        next(sale.uuid);
+      },
+      error: () => this.handleError('Não foi possível abrir a venda.'),
+    });
+  }
+
+  private applySale(sale: SaleResponse): void {
+    this.saleUuid.set(sale.uuid);
+    this.discount.set(this.toNumber(sale.discountAmount));
+    this.items.set(sale.items.map((item) => ({
+      id: item.varianteUuid,
+      name: item.sku,
+      barcode: '',
+      price: this.toNumber(item.unitPrice),
+      qty: item.quantity,
+    })));
+  }
+
+  private resetSale(): void {
+    this.items.set([]);
+    this.discount.set(0);
+    this.searchQuery.set('');
+    this.saleUuid.set(null);
+  }
+
+  private handleError(message: string): void {
+    this.errorMessage.set(message);
+    this.loading.set(false);
+  }
+
+  private toApiPayment(method: PaymentMethod): PosPaymentMethod {
+    if (method === 'PIX') return 'PIX';
+    if (method === 'Cartão') return 'CREDITO';
+    return 'DINHEIRO';
+  }
+
+  private toNumber(value: number | string): number {
+    return typeof value === 'number' ? value : Number(value);
   }
 }

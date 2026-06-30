@@ -1,0 +1,20 @@
+id: testing-strategy
+description: >
+  Define e implementa testes por nível e risco.
+rules:
+  - Regras de domínio devem ter teste unitário.
+  - Persistência deve ter teste com Testcontainers.
+  - APIs críticas devem ter teste de fachada.
+  - Bugs corrigidos devem virar testes de regressão.
+  - Invariantes devem usar property-based testing quando fizer sentido.
+test_types:
+  unit:
+    tools: [JUnit 5, AssertJ, Mockito]
+  integration:
+    tools: [Testcontainers, Spring Boot Test]
+  facade:
+    tools: [RestAssured, MockMvc]
+  property_based:
+    tools: [jqwik]
+  contract:
+    tools: [WireMock, Spring Cloud Contract]

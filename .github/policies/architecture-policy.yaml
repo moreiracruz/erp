@@ -1,0 +1,8 @@
+architecture_rules:
+  - Preferir monólito modular quando o domínio ainda não exige deploy independente.
+  - Usar arquitetura hexagonal por módulo.
+  - Domínio não deve depender de Spring, JPA, HTTP ou banco.
+  - Casos de uso devem expressar intenção de negócio.
+  - Controllers apenas recebem requisição, validam entrada e delegam.
+  - Domain events internos são preferíveis antes de mensageria externa.
+  - CQRS só deve ser usado quando houver diferença real entre leitura e escrita.

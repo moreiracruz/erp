@@ -27,6 +27,12 @@
     object-fit: cover;
     border-radius: $radius-lg;
     transition: opacity $transition-fast;
+
+    &--placeholder {
+      object-fit: contain;
+      padding: $space-4;
+      opacity: 0.6;
+    }
   }
 
   &__thumbnails {

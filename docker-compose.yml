@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   frontend:
     image: moreiracruz/erp-frontend:latest
@@ -24,7 +23,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health/readiness"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8080/actuator/health/readiness"]
       interval: 15s
       timeout: 5s
       retries: 5

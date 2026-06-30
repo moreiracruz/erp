@@ -92,7 +92,7 @@ Key design goals:
 ### Package Structure
 
 ```
-shared/test-support/src/main/java/com/erp/test/
+shared/test-support/src/main/java/br/com/moreiracruz/erp/test/
 ├── AbstractIntegrationTest.java
 ├── AbstractDatabasePropertyTest.java
 ├── DatabaseCleaner.java
@@ -136,7 +136,7 @@ shared/test-support/src/main/java/com/erp/test/
 Base class for all integration, component, and E2E tests. Manages the Testcontainers singleton.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -188,7 +188,7 @@ public abstract class AbstractIntegrationTest {
 Base class for jqwik property tests that need a real PostgreSQL database.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import net.jqwik.api.lifecycle.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -239,7 +239,7 @@ public abstract class AbstractDatabasePropertyTest implements AroundTryHook {
 Utility that truncates all application tables while preserving Flyway history.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -299,7 +299,7 @@ public class DatabaseCleaner {
 JUnit 5 Extension that invokes `DatabaseCleaner` after each test method.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import org.junit.jupiter.api.extension.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -334,7 +334,7 @@ public class DatabaseCleanerExtension implements AfterEachCallback {
 Generates JWT tokens for test authentication against all roles.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -413,7 +413,7 @@ public class TestJwtGenerator {
 Utility for executing concurrent operations and collecting results.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -485,7 +485,7 @@ public class ConcurrentTestRunner {
 ```
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import java.util.List;
 
@@ -507,7 +507,7 @@ public record ConcurrentTestResult(
 Data structure for parameterized RBAC testing.
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 public record RbacTestCase(
         String httpMethod,
@@ -535,10 +535,10 @@ public record RbacTestCase(
 Each builder follows the same pattern. Example for `UsuarioTestBuilder`:
 
 ```java
-package com.erp.test.builders;
+package br.com.moreiracruz.erp.test.builders;
 
-import com.erp.modules.auth.domain.model.Role;
-import com.erp.modules.auth.domain.model.Usuario;
+import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
+import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -606,10 +606,10 @@ All other builders (`ProdutoTestBuilder`, `VarianteTestBuilder`, `EstoqueItemTes
 ### Jqwik Arbitrary Providers
 
 ```java
-package com.erp.test.arbitraries;
+package br.com.moreiracruz.erp.test.arbitraries;
 
-import com.erp.modules.auth.domain.model.Role;
-import com.erp.modules.auth.domain.model.Usuario;
+import br.com.moreiracruz.erp.modules.auth.domain.model.Role;
+import br.com.moreiracruz.erp.modules.auth.domain.model.Usuario;
 import net.jqwik.api.*;
 
 import java.util.UUID;
@@ -651,7 +651,7 @@ public class UsuarioArbitraries {
 ```
 
 ```java
-package com.erp.test.arbitraries;
+package br.com.moreiracruz.erp.test.arbitraries;
 
 import net.jqwik.api.*;
 import java.math.BigDecimal;
@@ -682,7 +682,7 @@ public class VendaArbitraries {
 ```
 
 ```java
-package com.erp.test.arbitraries;
+package br.com.moreiracruz.erp.test.arbitraries;
 
 import net.jqwik.api.*;
 import java.util.*;
@@ -728,7 +728,7 @@ public class InventoryArbitraries {
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.erp</groupId>
+        <groupId>br.com.moreiracruz.erp</groupId>
         <artifactId>erp-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
@@ -741,43 +741,43 @@ public class InventoryArbitraries {
     <dependencies>
         <!-- Internal modules (compile scope — builders need domain models) -->
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>shared-kernel</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>shared-events</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>shared-exceptions</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-auth</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-product</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-inventory</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-sales</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-customer</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-finance</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.erp</groupId>
+            <groupId>br.com.moreiracruz.erp</groupId>
             <artifactId>module-pricing</artifactId>
         </dependency>
 
@@ -856,7 +856,7 @@ Add to parent `pom.xml` modules list:
 Add to `<dependencyManagement>`:
 ```xml
 <dependency>
-    <groupId>com.erp</groupId>
+    <groupId>br.com.moreiracruz.erp</groupId>
     <artifactId>test-support</artifactId>
     <version>${project.version}</version>
     <scope>test</scope>
@@ -916,7 +916,7 @@ Add to `<dependencyManagement>`:
             <version>0.8.12</version>
             <configuration>
                 <excludes>
-                    <exclude>com/erp/test/**</exclude>
+                    <exclude>br/com/moreiracruz/erp/test/**</exclude>
                     <exclude>**/builders/**</exclude>
                     <exclude>**/arbitraries/**</exclude>
                     <exclude>**/*TestBuilder*</exclude>
@@ -1170,7 +1170,7 @@ app:
 ### Docker Availability Condition
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
@@ -1269,7 +1269,7 @@ Integration tests focus on:
 ### ArchUnit Rules
 
 ```java
-package com.erp.test;
+package br.com.moreiracruz.erp.test;
 
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -1277,7 +1277,7 @@ import com.tngtech.archunit.lang.ArchRule;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
-@AnalyzeClasses(packages = "com.erp")
+@AnalyzeClasses(packages = "br.com.moreiracruz.erp")
 public class TestLayerArchRules {
 
     @ArchTest

@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@a
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 
-import { Product, ProductSummary } from '../../../core/models';
+import { Product, ProductImage, ProductSummary } from '../../../core/models';
+import { ImagePort } from '../../../core/ports';
 import { CatalogService } from '../catalog/services/catalog.service';
 import { CartService } from '../services/cart.service';
 import { BreadcrumbSegment, CartItem, SelectedVariant } from '../catalog/models';
@@ -54,13 +55,7 @@ export class ProductDetailPageComponent implements OnInit {
     return getVariantPrice(prod.variants, sel.size, sel.color);
   });
 
-  readonly productImages = computed<string[]>(() => {
-    // Use placeholder images based on product variants
-    const prod = this.product();
-    if (!prod) return [];
-    // Generate placeholder image URLs from product data
-    return [`/assets/images/products/${prod.uuid}/main.jpg`];
-  });
+  readonly productImages = signal<ProductImage[]>([]);
 
   readonly addToCartDisabled = computed(() => {
     const sel = this.selectedVariant();
@@ -70,6 +65,7 @@ export class ProductDetailPageComponent implements OnInit {
   constructor(
     private readonly catalogService: CatalogService,
     private readonly cartService: CartService,
+    private readonly imagePort: ImagePort,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
   ) {}
@@ -100,6 +96,9 @@ export class ProductDetailPageComponent implements OnInit {
 
     this.addingToCart.set(true);
 
+    const imgs = this.productImages();
+    const imageUrl = imgs.length > 0 ? imgs[0].thumbnailUrl : 'assets/images/product-placeholder.webp';
+
     const cartItem: CartItem = {
       productUuid: prod.uuid,
       variantUuid: sel.variant.uuid,
@@ -108,7 +107,7 @@ export class ProductDetailPageComponent implements OnInit {
       color: sel.variant.color,
       price: sel.variant.price,
       quantity: 1,
-      imageUrl: this.productImages()[0],
+      imageUrl,
     };
 
     this.cartService.addItem(cartItem);
@@ -137,6 +136,7 @@ export class ProductDetailPageComponent implements OnInit {
         this.selectedVariant.set(getDefaultVariant(product.variants));
         this.loading.set(false);
         this.loadRelatedProducts(product);
+        this.loadProductImages(uuid);
       },
       error: (err) => {
         if (err.status === 404) {
@@ -145,6 +145,30 @@ export class ProductDetailPageComponent implements OnInit {
           this.error.set('Ocorreu um erro ao carregar o produto. Tente novamente.');
         }
         this.loading.set(false);
+      },
+    });
+  }
+
+  private loadProductImages(uuid: string): void {
+    this.imagePort.listByProduct(uuid).subscribe({
+      next: (images) => {
+        // Sort by sortOrder, main image first
+        const sorted = [...images].sort((a, b) => {
+          if (a.main && !b.main) return -1;
+          if (!a.main && b.main) return 1;
+          return a.sortOrder - b.sortOrder;
+        });
+        this.productImages.set(sorted);
+
+        // Set current index to main image
+        const mainIndex = sorted.findIndex((img) => img.main);
+        if (mainIndex >= 0) {
+          this.currentImageIndex.set(mainIndex);
+        }
+      },
+      error: () => {
+        // On error, leave productImages empty — gallery shows placeholder
+        this.productImages.set([]);
       },
     });
   }

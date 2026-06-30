@@ -1,59 +1,221 @@
 # Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.14.
+Frontend Angular do ERP Reino & Flor.
 
-## Development server
+Este projeto usa Angular 21, TypeScript strict, SCSS, Vitest e build multi-stage com Docker/Nginx.
 
-To start a local development server, run:
+## Pre-requisitos
 
-```bash
-ng serve
-```
+- Node.js 20+
+- npm 10.8.2+
+- Docker 20+ e Docker Compose 2+, para subir via containers
+- Backend disponivel em `http://localhost:8080` quando rodar o frontend em modo dev local
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+As versoes esperadas pelo projeto estao em `package.json` e `package-lock.json`.
 
-## Code scaffolding
+## Instalar Dependencias
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Dentro da pasta `frontend`:
 
 ```bash
-ng generate --help
+npm ci
 ```
 
-## Building
+Use `npm ci` para reproduzir exatamente as dependencias travadas no `package-lock.json`.
 
-To build the project run:
+## Subir em Desenvolvimento
+
+Para rodar o Angular dev server:
 
 ```bash
-ng build
+cd frontend
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Depois acesse:
 
-## Running unit tests
+```text
+http://localhost:4200
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Em desenvolvimento, o frontend chama a API configurada em `src/environments/environment.ts`:
+
+```text
+http://localhost:8080
+```
+
+Se precisar da API local, suba pelo Maven ou Docker a partir da raiz do repositorio. Um fluxo comum e:
 
 ```bash
-ng test
+docker compose up -d postgres
+./mvnw spring-boot:run -pl bootstrap
 ```
 
-## Running end-to-end tests
+## Subir com Docker
 
-For end-to-end (e2e) testing, run:
+Na raiz do repositorio, para subir a stack completa:
 
 ```bash
-ng e2e
+docker compose up -d
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Servicos principais:
 
-## Additional Resources
+- Frontend: `http://localhost`
+- API: `http://localhost:8080`
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+O frontend em Docker e servido por Nginx. Em producao, `src/environments/environment.prod.ts` usa `apiUrl: ''`; as chamadas para `/api/` sao encaminhadas pelo Nginx para o servico `app:8080`.
+
+Para reconstruir apenas a imagem do frontend:
+
+```bash
+docker compose build frontend
+```
+
+Para subir apenas o container do frontend, sem esperar o backend:
+
+```bash
+docker compose up -d --no-deps frontend
+```
+
+Nesse modo, a interface sobe, mas chamadas para `/api/` so funcionam quando o backend estiver disponivel na rede do Compose.
+
+## Build
+
+Build de producao:
+
+```bash
+cd frontend
+npm run build
+```
+
+Build de desenvolvimento com watch:
+
+```bash
+cd frontend
+npm run watch
+```
+
+Os artefatos ficam em:
+
+```text
+frontend/dist/frontend
+```
+
+## Testes
+
+Executar os testes unitarios com Vitest pelo builder do Angular:
+
+```bash
+cd frontend
+npm test
+```
+
+Para rodar um subconjunto, use filtros do Angular/Vitest quando aplicavel:
+
+```bash
+cd frontend
+npx ng test --include "src/app/features/auth/**/*.spec.ts"
+```
+
+O projeto tambem possui testes property-based com `fast-check`, identificados principalmente por arquivos `*.pbt.spec.ts`.
+
+### E2E Frontend + Backend
+
+Para validar a integracao real entre frontend servido por Nginx e backend Spring Boot via Docker Compose, rode a partir da raiz do repositorio:
+
+```bash
+./scripts/e2e-frontend-backend.sh
+```
+
+Esse smoke test sobe `postgres`, `app` e `frontend`, depois verifica:
+
+- readiness do backend em `/actuator/health/readiness`
+- HTML do frontend em `http://localhost`
+- proxy do frontend para o backend em `/api/v1/products`
+- seguranca basica: `POST /api/v1/products` sem token deve retornar `401`
+
+## Comandos Uteis
+
+```bash
+# Angular CLI local
+npm run ng -- version
+
+# Servidor dev
+npm start
+
+# Build de producao
+npm run build
+
+# Build em watch/development
+npm run watch
+
+# Testes
+npm test
+
+# E2E frontend + backend via Docker Compose
+../scripts/e2e-frontend-backend.sh
+
+# Docker: build da imagem do frontend
+docker compose build frontend
+
+# Docker: subir apenas o frontend
+docker compose up -d --no-deps frontend
+
+# Docker: logs do frontend
+docker compose logs -f frontend
+```
+
+## Estrutura
+
+- `src/app/core`: modelos e ports do frontend
+- `src/app/infrastructure`: adapters HTTP, auth/interceptors e storage
+- `src/app/features`: telas e fluxos por area funcional
+- `src/app/shared`: componentes e layout compartilhados
+- `src/environments`: configuracao por ambiente
+- `public`: assets estaticos copiados para o build
+
+## Troubleshooting
+
+### `npm: command not found`
+
+Instale Node.js 20+ e npm, ou use o fluxo Docker:
+
+```bash
+docker compose build frontend
+docker compose up -d --no-deps frontend
+```
+
+### Frontend sobe, mas API nao responde
+
+Em dev local, confirme que a API esta em:
+
+```text
+http://localhost:8080
+```
+
+Em Docker, confirme os containers:
+
+```bash
+docker compose ps
+docker compose logs -f app
+```
+
+### Warnings de Sass `darken()` / `lighten()`
+
+O build atual pode emitir avisos de deprecacao do Sass para funcoes como `darken()` e `lighten()`. Eles nao impedem o build, mas devem ser migrados gradualmente para `color.adjust` ou `color.scale`.
+
+### Warnings de budget de SCSS
+
+Alguns componentes podem exceder o limite de warning de `4kB` configurado em `angular.json`. Isso nao quebra o build enquanto ficar abaixo do `maximumError`, mas indica pontos bons para enxugar estilos.
+
+### Porta 80 ja em uso
+
+Se `docker compose up` falhar por porta ocupada, pare o servico local que usa a porta 80 ou altere temporariamente o mapeamento no `docker-compose.yml`, por exemplo:
+
+```yaml
+ports:
+  - "8081:80"
+```

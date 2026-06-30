@@ -1,4 +1,5 @@
 @use '../../../../styles/variables' as *;
+@use 'sass:color';
 
 .admin-products {
   padding: $space-6;
@@ -33,7 +34,27 @@
     transition: background $transition-fast;
 
     &:hover {
-      background: darken($gold, 8%);
+      background: color.adjust($gold, $lightness: -8%);
+    }
+  }
+}
+
+.admin-tabs {
+  display: flex;
+  gap: $space-2;
+  margin-bottom: $space-5;
+  border-bottom: 1px solid $border-default;
+
+  a {
+    padding: $space-2 $space-4;
+    color: $text-secondary;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    font-weight: $font-weight-semibold;
+
+    &.active {
+      color: $brown-dark;
+      border-color: $gold;
     }
   }
 }
@@ -132,7 +153,7 @@
   display: inline-block;
   padding: $space-1 $space-2;
   background: rgba($gold, 0.1);
-  color: darken($gold, 15%);
+  color: color.adjust($gold, $lightness: -15%);
   border-radius: $radius-full;
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
@@ -282,6 +303,18 @@
   }
 }
 
+.modal-section {
+  padding: $space-6;
+  border-top: 1px solid $border-subtle;
+
+  h3 {
+    font-family: $font-display;
+    font-size: $font-size-lg;
+    color: $brown-dark;
+    margin: 0 0 $space-4;
+  }
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -318,7 +351,7 @@
     transition: background $transition-fast;
 
     &:hover {
-      background: darken($gold, 8%);
+      background: color.adjust($gold, $lightness: -8%);
     }
   }
 }

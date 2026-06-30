@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
 
 import { Variant } from '../../../../../core/models';
 import { SelectedVariant } from '../../../catalog/models';
@@ -14,7 +13,6 @@ import {
 @Component({
   selector: 'app-variant-selector',
   standalone: true,
-  imports: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './variant-selector.component.html',
   styleUrls: ['./variant-selector.component.scss'],

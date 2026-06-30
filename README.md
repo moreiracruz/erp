@@ -222,6 +222,15 @@ curl http://localhost:8080/api/v1/products \
   -H "Authorization: Bearer eyJ..."
 ```
 
+### Swagger / OpenAPI
+
+Com a aplicação em execução, a documentação interativa da API fica disponível em:
+
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+Para testar endpoints protegidos no Swagger UI, clique em **Authorize** e informe o JWT no esquema `bearerAuth`.
+
 ### Roles e Permissões
 
 | Role | Acesso |

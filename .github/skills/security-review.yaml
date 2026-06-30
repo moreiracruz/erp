@@ -1,0 +1,29 @@
+id: security-review
+description: >
+  Revisa autenticação, autorização, exposição de dados e vulnerabilidades comuns.
+checklist:
+  - Autenticação implementada corretamente?
+  - Autorização está no backend?
+  - Endpoints administrativos protegidos?
+  - Dados sensíveis mascarados?
+  - Logs seguros?
+  - Dependências vulneráveis?
+  - CORS restrito?
+  - CSRF avaliado?
+  - Rate limit considerado?
+  - Secrets fora do código?
+example_prompt: |
+  Faça uma revisão de segurança do módulo abaixo.
+
+  Avalie:
+  - OWASP Top 10
+  - autenticação
+  - autorização
+  - exposição de dados
+  - logs
+  - validação de entrada
+  - dependências
+  - riscos residuais
+
+  Código/spec:
+  {{input}}

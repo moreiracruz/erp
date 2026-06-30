@@ -1,0 +1,24 @@
+id: java-backend-generation
+description: >
+  Gera código backend em Java 21 com Spring Boot 3.
+rules:
+  - Usar records para DTOs imutáveis quando adequado.
+  - Usar classes de domínio expressivas.
+  - Evitar setters públicos indiscriminados.
+  - Usar BigDecimal para valores monetários.
+  - Usar UUID ou Long conforme decisão arquitetural.
+  - Usar transações nos casos de uso críticos.
+  - Criar testes junto com o código.
+example_prompt: |
+  Gere a implementação backend para o caso de uso abaixo.
+
+  Restrições:
+  - Java 21
+  - Spring Boot 3
+  - Arquitetura Hexagonal
+  - Domínio sem dependência do Spring
+  - Testes unitários obrigatórios
+  - Testes de integração quando houver banco
+
+  Caso de uso:
+  {{use_case}}

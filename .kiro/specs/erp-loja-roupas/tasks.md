@@ -26,29 +26,29 @@ The plan is organized into four sprints:
     - _Requirements: 9.1, 12.1_
 
   - [x] 1.2 Implement `shared-kernel` module
-    - Create `com.erp.shared.kernel.AggregateRoot` base class with `id` and `uuid` fields
-    - Create `com.erp.shared.kernel.DomainEvent` marker interface
-    - Create `com.erp.shared.kernel.Identifiable` interface
-    - Create `com.erp.shared.utils.MoneyUtils` (BigDecimal rounding utilities)
+    - Create `br.com.moreiracruz.erp.shared.kernel.AggregateRoot` base class with `id` and `uuid` fields
+    - Create `br.com.moreiracruz.erp.shared.kernel.DomainEvent` marker interface
+    - Create `br.com.moreiracruz.erp.shared.kernel.Identifiable` interface
+    - Create `br.com.moreiracruz.erp.shared.utils.MoneyUtils` (BigDecimal rounding utilities)
     - _Requirements: 9.5_
 
   - [x] 1.3 Implement `shared-exceptions` module
-    - Create `com.erp.shared.exceptions.BusinessException` (base runtime exception)
-    - Create `com.erp.shared.exceptions.ValidationException` (maps to HTTP 422)
-    - Create `com.erp.shared.exceptions.NotFoundException` (maps to HTTP 404)
-    - Create `com.erp.shared.exceptions.ConflictException` (maps to HTTP 422 for campaign overlap)
-    - Create `com.erp.shared.exceptions.DateRangeException` (maps to HTTP 400)
+    - Create `br.com.moreiracruz.erp.shared.exceptions.BusinessException` (base runtime exception)
+    - Create `br.com.moreiracruz.erp.shared.exceptions.ValidationException` (maps to HTTP 422)
+    - Create `br.com.moreiracruz.erp.shared.exceptions.NotFoundException` (maps to HTTP 404)
+    - Create `br.com.moreiracruz.erp.shared.exceptions.ConflictException` (maps to HTTP 422 for campaign overlap)
+    - Create `br.com.moreiracruz.erp.shared.exceptions.DateRangeException` (maps to HTTP 400)
     - _Requirements: 3.5, 4.5, 7.6_
 
   - [x] 1.4 Implement `shared-events` module
-    - Create `com.erp.shared.events.EventEnvelope<T>` record with `eventId`, `eventType`, `occurredAt`, `payload`
-    - Create `com.erp.shared.events.SaleCompletedPayload` record
-    - Create `com.erp.shared.events.StockReservedPayload` record
-    - Create `com.erp.shared.events.PaymentApprovedPayload` record
+    - Create `br.com.moreiracruz.erp.shared.events.EventEnvelope<T>` record with `eventId`, `eventType`, `occurredAt`, `payload`
+    - Create `br.com.moreiracruz.erp.shared.events.SaleCompletedPayload` record
+    - Create `br.com.moreiracruz.erp.shared.events.StockReservedPayload` record
+    - Create `br.com.moreiracruz.erp.shared.events.PaymentApprovedPayload` record
     - _Requirements: 11.1, 11.2, 11.3_
 
   - [x] 1.5 Set up `infrastructure` module: Flyway, JPA, error handling, ArchUnit
-    - Configure `FlywayConfig` in `com.erp.infrastructure.persistence`
+    - Configure `FlywayConfig` in `br.com.moreiracruz.erp.infrastructure.persistence`
     - Configure `JpaConfig` with `@EnableJpaRepositories` and `@EnableTransactionManagement`
     - Create global `@RestControllerAdvice` (`GlobalExceptionHandler`) mapping all shared exceptions to their HTTP status codes and the uniform error envelope JSON
     - Add ArchUnit dependency and create `ModuleBoundaryTest` to enforce no lateral cross-module domain imports
@@ -61,7 +61,7 @@ The plan is organized into four sprints:
     - _Requirements: 9.1, 9.5, 9.6_
 
   - [x] 1.7 Set up `bootstrap` module and `application.yml`
-    - Create `com.erp.bootstrap.ErpApplication` main class with `@SpringBootApplication`
+    - Create `br.com.moreiracruz.erp.bootstrap.ErpApplication` main class with `@SpringBootApplication`
     - Create `src/main/resources/application.yml` sourcing all secrets from environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`, `INVENTORY_EXPIRY_TTL_MINUTES`)
     - _Requirements: 12.1, 12.2_
 
@@ -72,8 +72,8 @@ The plan is organized into four sprints:
 
 - [ ] 3. Implement Auth module
   - [x] 3.1 Implement Auth domain model and value objects
-    - Create `com.erp.modules.auth.domain.model.Usuario` aggregate root with all fields from design
-    - Create `com.erp.modules.auth.domain.model.RefreshToken` entity
+    - Create `br.com.moreiracruz.erp.modules.auth.domain.model.Usuario` aggregate root with all fields from design
+    - Create `br.com.moreiracruz.erp.modules.auth.domain.model.RefreshToken` entity
     - Create `Role` enum: `ROLE_MANAGER`, `ROLE_CASHIER`, `ROLE_STOCK`, `ROLE_FINANCE`
     - Implement brute-force lockout logic inside `Usuario.recordFailedAttempt()` and `Usuario.resetAttempts()`
     - _Requirements: 1.1, 1.5, 1.7, 1.8_
@@ -86,7 +86,7 @@ The plan is organized into four sprints:
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8_
 
   - [x] 3.3 Implement JWT infrastructure (`infrastructure` module)
-    - Create `JwtTokenProvider` in `com.erp.infrastructure.security`: sign HS256 JWT with `sub` (UUID), `role`, `exp` (now + 900s) using secret from ENV
+    - Create `JwtTokenProvider` in `br.com.moreiracruz.erp.infrastructure.security`: sign HS256 JWT with `sub` (UUID), `role`, `exp` (now + 900s) using secret from ENV
     - Create `JwtAuthenticationFilter` (`OncePerRequestFilter`, order -100): extract Bearer token, validate signature and `exp`, populate `SecurityContextHolder`
     - Create `RefreshTokenRepository` JPA implementation backed by `refresh_tokens` table (store SHA-256 hash of raw token)
     - Configure `SecurityConfig`: disable CSRF for API, configure stateless session, register `JwtAuthenticationFilter`, configure `AccessDeniedHandler` to return `{error: "Acesso negado", requiredRoles: [...]}`
@@ -98,34 +98,34 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize` rules per endpoint; `logout` requires any authenticated role
     - _Requirements: 1.1, 1.3, 1.6, 2.1_
 
-  - [ ]* 3.5 Write property test: JWT claims are always well-formed (Property 1)
+  - [ ] 3.5 Write property test: JWT claims are always well-formed (Property 1)
     - **Property 1: JWT claims are always well-formed after successful login**
     - Generate arbitrary valid `Credentials` using jqwik `@ForAll`; for each: invoke `LoginUseCase`, parse the returned JWT, assert `sub` == user UUID, `role` ∈ valid set, `exp` == now + 900 ± 2s, refresh token expiry == now + 604800s
     - **Validates: Requirements 1.1, 1.5**
 
-  - [ ]* 3.6 Write property test: Refresh token is single-use (Property 2)
+  - [ ] 3.6 Write property test: Refresh token is single-use (Property 2)
     - **Property 2: Refresh token is a single-use credential**
     - For any active token, call `/refresh` once (succeeds), then attempt to use the same raw token again — assert HTTP 401 on second use regardless of remaining validity
     - **Validates: Requirements 1.3, 1.6**
 
-  - [ ]* 3.7 Write property test: Invalid credentials never reveal the failing field (Property 3)
+  - [ ] 3.7 Write property test: Invalid credentials never reveal the failing field (Property 3)
     - **Property 3: Invalid credentials never reveal the failing field**
     - For any `(username, password)` pair where either username is unknown or password is wrong, assert response is always HTTP 401 with body `{"message": "Credenciais inválidas"}` and no other fields
     - **Validates: Requirements 1.2**
 
-  - [ ]* 3.8 Write property test: Account lockout activates after 5 consecutive failures (Property 4)
+  - [ ] 3.8 Write property test: Account lockout activates after 5 consecutive failures (Property 4)
     - **Property 4: Account lockout activates after 5 consecutive failures**
     - Submit ≥ 5 consecutive wrong-password requests for any username, then submit the correct password — assert HTTP 401 is returned
     - **Validates: Requirements 1.7**
 
-  - [ ]* 3.9 Write property test: Unknown/invalid roles in a JWT are always rejected (Property 5)
+  - [ ] 3.9 Write property test: Unknown/invalid roles in a JWT are always rejected (Property 5)
     - **Property 5: Unknown or invalid roles in a JWT are always rejected**
     - Generate JWTs with arbitrary role values outside `{ROLE_MANAGER, ROLE_CASHIER, ROLE_STOCK, ROLE_FINANCE}`, assert every protected endpoint returns HTTP 403
     - **Validates: Requirements 2.4**
 
 - [ ] 4. Implement Product module
   - [x] 4.1 Implement Product domain model and value objects
-    - Create `com.erp.modules.product.domain.model.Produto` aggregate root
+    - Create `br.com.moreiracruz.erp.modules.product.domain.model.Produto` aggregate root
     - Create `VarianteProduto` entity owned by `Produto`
     - Create value objects `Sku(value)` (1–50 chars), `Barcode(value)` (8–14 digits), `Money(amount)` (0.01–999999.99)
     - Implement `Produto.deactivate()`: sets `active = false` on self and all `VarianteProduto` children
@@ -150,14 +150,14 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize` per endpoint: write endpoints = `MANAGER`, read endpoints = `MANAGER or STOCK`, search by SKU/barcode = `MANAGER or CASHIER or STOCK`
     - _Requirements: 2.5, 2.7, 3.3–3.9_
 
-  - [x]* 4.5 Write property test: Product deactivation cascades atomically (Property 11)
+  - [x] 4.5 Write property test: Product deactivation cascades atomically (Property 11)
     - **Property 11: Product deactivation cascades to all variants atomically**
     - For any `Produto` with `N ≥ 0` generated variants, after calling `DeactivateProductUseCase`, assert all `N` variants have `active = false` in the database (Testcontainers)
     - **Validates: Requirements 3.6**
 
 - [ ] 5. Implement Inventory module
   - [x] 5.1 Implement Inventory domain model
-    - Create `com.erp.modules.inventory.domain.model.EstoqueItem` aggregate root with `physicalStock`, `reservedStock`, `version`
+    - Create `br.com.moreiracruz.erp.modules.inventory.domain.model.EstoqueItem` aggregate root with `physicalStock`, `reservedStock`, `version`
     - Add computed method `availableStock()`: returns `physicalStock - reservedStock`
     - Add `incrementPhysical(int qty)`, `decrementPhysical(int qty)`, `incrementReserved(int qty)`, `decrementReserved(int qty)` — each must guard `≥ 0` invariant; throw `ValidationException` on violation
     - Create `MovimentoEstoque` entity and `OperationType` enum: `ENTRADA`, `SAÍDA`, `RESERVA`, `LIBERAÇÃO_RESERVA`
@@ -180,7 +180,7 @@ The plan is organized into four sprints:
     - _Requirements: 4.2, 4.6, 9.6_
 
   - [x] 5.4 Implement Reservation Expiry Scheduler
-    - Create `ReservationExpiryScheduler` in `com.erp.modules.inventory.application` with `@Scheduled(fixedDelayString = "${inventory.expiry.check-interval-ms:60000}")`
+    - Create `ReservationExpiryScheduler` in `br.com.moreiracruz.erp.modules.inventory.application` with `@Scheduled(fixedDelayString = "${inventory.expiry.check-interval-ms:60000}")`
     - Query `reservas_estoque` where `status = 'ACTIVE'` and `expires_at <= NOW()`, release each via `ReleaseReserveUseCase`
     - _Requirements: 4.8_
 
@@ -189,22 +189,22 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: read = `MANAGER or STOCK`, entry/withdrawal = `MANAGER or STOCK`
     - _Requirements: 2.5, 2.7, 4.3, 4.4_
 
-  - [x]* 5.6 Write property test: Stock counter invariant after any operation (Property 6)
+  - [x] 5.6 Write property test: Stock counter invariant after any operation (Property 6)
     - **Property 6: Stock counter invariant holds after every operation**
     - Generate arbitrary sequences of `StockOp` (ENTRADA qty, SAÍDA qty, RESERVA qty, LIBERAÇÃO qty) using jqwik `@ForAll`; for each sequence apply operations to an `EstoqueItem` in-memory; assert `availableStock == physicalStock - reservedStock ≥ 0` after every step; invalid ops (would go negative) should throw and leave counters unchanged
     - **Validates: Requirements 4.1, 4.2**
 
-  - [x]* 5.7 Write property test: Reserve-then-release round trip (Property 7)
+  - [x] 5.7 Write property test: Reserve-then-release round trip (Property 7)
     - **Property 7: Reserve-then-release restores original stock state**
     - For any `EstoqueItem` with `availableStock ≥ Q`, reserve Q then release — assert final `physicalStock`, `reservedStock`, `availableStock` are identical to pre-reservation values
     - **Validates: Requirements 4.6, 4.8**
 
-  - [x]* 5.8 Write property test: Withdrawals that would create negative stock are always rejected (Property 8)
+  - [x] 5.8 Write property test: Withdrawals that would create negative stock are always rejected (Property 8)
     - **Property 8: Withdrawals that would create negative physicalStock are always rejected**
     - For any `Q > physicalStock`, assert `RegisterWithdrawalUseCase` returns HTTP 422 with current `physicalStock`, counters unchanged
     - **Validates: Requirements 4.5**
 
-  - [x]* 5.9 Write property test: Quantity out of [1, 100000] is always rejected (Property 19)
+  - [x] 5.9 Write property test: Quantity out of [1, 100000] is always rejected (Property 19)
     - **Property 19: Quantidade fora do intervalo [1, 100.000] é sempre rejeitada**
     - For any `Q < 1` or `Q > 100000`, assert entry and withdrawal endpoints return HTTP 422 with allowed range message, counters unchanged
     - **Validates: Requirements 4.10**
@@ -254,12 +254,12 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: campaign/coupon management = `MANAGER`; `POST /calculate` = `CASHIER or MANAGER`; `POST /coupons/{code}/confirm` = `CASHIER or MANAGER`
     - _Requirements: 2.5, 2.6, 8.1–8.8_
 
-  - [x]* 8.5 Write property test: Combined discount never exceeds sale total (Property 13)
+  - [x] 8.5 Write property test: Combined discount never exceeds sale total (Property 13)
     - **Property 13: Combined discount never exceeds sale total**
     - For any sale total `T` and any combination of applicable discount rules generated by jqwik, assert `0 ≤ D ≤ T` and `T - D ≥ 0`
     - **Validates: Requirements 8.8**
 
-  - [x]* 8.6 Write property test: Coupon usage count never exceeds maximum limit (Property 14)
+  - [x] 8.6 Write property test: Coupon usage count never exceeds maximum limit (Property 14)
     - **Property 14: Coupon usage count never exceeds its maximum limit**
     - Simulate concurrent confirmation attempts using jqwik (repeated calls) for a coupon with `maxUsages = N`; assert `usageCount ≤ N` after all attempts; confirm HTTP 422 is returned on the attempt that would exceed `N`
     - **Validates: Requirements 8.7**
@@ -302,12 +302,12 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: write (open/add item/finalize/cancel) = `CASHIER or MANAGER`; read = `MANAGER or FINANCE`
     - _Requirements: 2.5, 2.6, 5.1–5.13_
 
-  - [x]* 9.5 Write property test: Sale total computed on backend, never trusted from client (Property 9)
+  - [x] 9.5 Write property test: Sale total computed on backend, never trusted from client (Property 9)
     - **Property 9: Sale total is always computed on the backend (never trusted from client)**
     - For any sale with any set of items and discount, generate arbitrary `expectedTotal` values that differ from backend total by any amount ≥ 0.01; assert HTTP 422 with `"Valor de total inválido"` for all mismatches
     - **Validates: Requirements 5.5, 5.6**
 
-  - [x]* 9.6 Write property test: Cash payment change calculation is exact (Property 10)
+  - [x] 9.6 Write property test: Cash payment change calculation is exact (Property 10)
     - **Property 10: Cash payment change calculation is exact**
     - For any `amountPaid ≥ total`, assert `changeAmount == amountPaid - total` with no rounding errors; for any `amountPaid < total`, assert HTTP 422 with exact total due
     - **Validates: Requirements 5.7, 5.8**
@@ -360,12 +360,12 @@ The plan is organized into four sprints:
     - Enforce `Sales_Service` rejection of inactive customer association (validate in `AddItemUseCase` / `OpenSaleUseCase` when `clienteUuid` is present)
     - _Requirements: 2.5, 6.1–6.7_
 
-  - [x]* 12.5 Write property test: CPF validation is deterministic and algorithm-correct (Property 17)
+  - [x] 12.5 Write property test: CPF validation is deterministic and algorithm-correct (Property 17)
     - **Property 17: CPF validation is deterministic and algorithm-correct**
     - For any string of exactly 11 digits generated by jqwik `@ForAll`, assert `Cpf.isValid(input)` returns the same result as an independent reference implementation of the Brazilian check-digit algorithm; verify the function is pure (same input → same output always)
     - **Validates: Requirements 6.2**
 
-  - [ ]* 12.6 Write property test: Duplicate CPF registration never exposes existing customer data (Property 18)
+  - [ ] 12.6 Write property test: Duplicate CPF registration never exposes existing customer data (Property 18)
     - **Property 18: Duplicate CPF registration never exposes existing customer data**
     - For any registration attempt with an already-existing CPF, assert HTTP 422 response body contains only `{"message": "CPF já cadastrado"}` and no UUID, name, email, phone, or birthDate fields from the existing record
     - **Validates: Requirements 6.3**
@@ -402,19 +402,19 @@ The plan is organized into four sprints:
     - Apply `@PreAuthorize`: all endpoints = `MANAGER or FINANCE`
     - _Requirements: 2.5, 2.8, 7.1–7.9_
 
-  - [x]* 13.6 Write property test: SaleCompletedEvent idempotency — exactly one RECEITA entry (Property 12)
+  - [x] 13.6 Write property test: SaleCompletedEvent idempotency — exactly one RECEITA entry (Property 12)
     - **Property 12: SaleCompletedEvent idempotency — exactly one RECEITA entry**
     - For any `SaleCompletedEvent` with a given `saleUuid`, deliver the same event `N ≥ 1` times (Testcontainers); assert exactly one `LancamentoFinanceiro` of type `RECEITA` with that `saleUuid` exists in the database
     - **Validates: Requirements 7.2, 11.6**
 
-  - [x]* 13.7 Write property test: Cash flow net balance arithmetic (Property 16)
+  - [x] 13.7 Write property test: Cash flow net balance arithmetic (Property 16)
     - **Property 16: Cash flow net balance equals sum of receitas minus sum of despesas**
     - For any date range `[from, to]` (from ≤ to, ≤ 366 days) generated by jqwik, with arbitrary RECEITA and DESPESA entries inserted, assert `netBalance == sum(RECEITA) - sum(DESPESA)` exactly using `BigDecimal` arithmetic
     - **Validates: Requirements 7.5, 7.8**
 
 - [x] 14. Implement Domain Event Bus infrastructure
   - [x] 14.1 Implement `InProcessEventBus` and `EventHandlerRegistry`
-    - Create `com.erp.infrastructure.eventbus.InProcessEventBus` Spring `@Component`
+    - Create `br.com.moreiracruz.erp.infrastructure.eventbus.InProcessEventBus` Spring `@Component`
     - Implement `EventHandlerRegistry`: scan for all `@EventHandler`-annotated methods at startup, register in `Map<eventType, List<Handler>>`
     - Dispatch is synchronous within the same transaction by default; catch handler exceptions, persist event to `domain_events` with `status=FAILED`, schedule retry
     - Implement `DeadLetterStore`: persist events to `domain_events` with `status=DLQ` after 3 failed retries
@@ -437,7 +437,7 @@ The plan is organized into four sprints:
     - Apply idempotency guard from task 14.3
     - _Requirements: 5.10, 11.6_
 
-  - [x]* 14.5 Write property test: Domain event envelope is always structurally valid (Property 15)
+  - [x] 14.5 Write property test: Domain event envelope is always structurally valid (Property 15)
     - **Property 15: Domain event envelope is always structurally valid**
     - For any triggering business operation (`SaleCompleted`, `StockReserved`, `PaymentApproved`) exercised by jqwik, assert the emitted `EventEnvelope` always has: non-null `eventId` (valid UUIDv4), correct `eventType` string, non-null `occurredAt` (ISO 8601), non-null `payload` with all required fields present and non-null
     - **Validates: Requirements 11.1, 11.2, 11.3**
@@ -453,7 +453,7 @@ The plan is organized into four sprints:
 - [x] 16. Implement Observability
   - [x] 16.1 Configure OpenTelemetry auto-instrumentation
     - Add `opentelemetry-spring-boot-starter` dependency to `infrastructure` module
-    - Configure `OtelConfig` in `com.erp.infrastructure.observability`: set OTLP exporter endpoint from `OTEL_EXPORTER_OTLP_ENDPOINT` env var
+    - Configure `OtelConfig` in `br.com.moreiracruz.erp.infrastructure.observability`: set OTLP exporter endpoint from `OTEL_EXPORTER_OTLP_ENDPOINT` env var
     - Ensure `traceId` and `spanId` are populated in MDC for every inbound HTTP request
     - Configure W3C `traceparent` header propagation for all outgoing calls
     - _Requirements: 10.1_
@@ -500,7 +500,7 @@ The plan is organized into four sprints:
 - [x] 18. Implement ArchUnit module boundary enforcement
   - [x] 18.1 Create and run ArchUnit boundary tests
     - Add `archunit-junit5` to `bootstrap` test scope
-    - Implement `ModuleBoundaryTest`: assert no class in `com.erp.modules.auth` imports from `com.erp.modules.product`, etc. (all lateral cross-module domain/application imports forbidden)
+    - Implement `ModuleBoundaryTest`: assert no class in `br.com.moreiracruz.erp.modules.auth` imports from `br.com.moreiracruz.erp.modules.product`, etc. (all lateral cross-module domain/application imports forbidden)
     - Assert all cross-module calls go through `shared-kernel` port interfaces or in-process events
     - _Requirements: 9.1 (architectural integrity)_
 

@@ -1,0 +1,67 @@
+<div class="image-grid" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="onDrop($event)">
+  @for (image of images(); track image.id) {
+    <div class="image-grid__item" cdkDrag>
+      <div class="image-grid__drag-placeholder" *cdkDragPlaceholder></div>
+
+      <img
+        class="image-grid__thumbnail"
+        [src]="image.thumbnailUrl"
+        [alt]="image.originalName"
+      />
+
+      <div class="image-grid__actions">
+        <button
+          class="image-grid__btn image-grid__btn--main"
+          type="button"
+          [class.image-grid__btn--active]="image.main"
+          [attr.aria-label]="image.main ? 'Imagem principal' : 'Definir como principal'"
+          (click)="onSetMain(image.id)"
+        >
+          @if (image.main) {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          }
+        </button>
+
+        <button
+          class="image-grid__btn image-grid__btn--delete"
+          type="button"
+          aria-label="Excluir imagem"
+          (click)="onDeleteClick(image.id)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (confirmingDeleteId() === image.id) {
+        <div class="image-grid__confirm-overlay">
+          <p class="image-grid__confirm-text">Excluir?</p>
+          <div class="image-grid__confirm-actions">
+            <button
+              class="image-grid__confirm-btn image-grid__confirm-btn--yes"
+              type="button"
+              (click)="confirmDelete(image.id)"
+            >
+              Sim
+            </button>
+            <button
+              class="image-grid__confirm-btn image-grid__confirm-btn--no"
+              type="button"
+              (click)="cancelDelete()"
+            >
+              Não
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

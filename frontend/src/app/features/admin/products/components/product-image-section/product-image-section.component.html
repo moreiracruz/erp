@@ -1,0 +1,29 @@
+<div class="product-image-section">
+  <app-upload-zone
+    [uploading]="uploading()"
+    [uploadProgress]="uploadProgress()"
+    (filesSelected)="onFilesSelected($event)"
+  />
+
+  @if (images().length > 0) {
+    <app-image-grid
+      [images]="images()"
+      (reorder)="onReorder($event)"
+      (setMain)="onSetMain($event)"
+      (delete)="onDelete($event)"
+    />
+  }
+
+  @if (toastMessage()) {
+    <div class="product-image-section__toast" role="alert" aria-live="assertive">
+      <span class="product-image-section__toast-message">{{ toastMessage() }}</span>
+      <button
+        class="product-image-section__toast-dismiss"
+        (click)="dismissToast()"
+        aria-label="Fechar notificação"
+      >
+        ✕
+      </button>
+    </div>
+  }
+</div>

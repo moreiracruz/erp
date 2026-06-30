@@ -1,8 +1,12 @@
 spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/erp}
     username: ${SPRING_DATASOURCE_USERNAME:erp_user}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,6 +18,8 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    ignore-migration-patterns:
+      - "*:missing"
     baseline-on-migrate: false
 server:
   port: 8080
@@ -39,6 +45,28 @@ inventory:
     reservation-ttl-minutes: ${INVENTORY_EXPIRY_TTL_MINUTES:30}
     check-interval-ms: 60000
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:local-dev-secret-key-that-is-at-least-256-bits-long-for-hs256-signing}
   expiration-seconds: 900
   refresh-expiration-days: 7
+
+app:
+  images:
+    base-path: ${APP_IMAGES_BASE_PATH:./uploads/products}
+    max-file-size: 5242880
+    max-images-per-product: 10
+    max-storage-per-product: 52428800
+    allowed-types:
+      - image/jpeg
+      - image/png
+      - image/webp
+    sizes:
+      thumbnail: 200
+      card: 400
+      full: 800
+
+bootstrap:
+  super-admin:
+    email: ${BOOTSTRAP_SUPER_ADMIN_EMAIL:admin@empresa.com}
+    activation-token-ttl-minutes: ${BOOTSTRAP_SUPER_ADMIN_TOKEN_TTL_MINUTES:30}
+    activation-base-url: ${BOOTSTRAP_SUPER_ADMIN_ACTIVATION_URL:http://localhost:4200/auth/activate}
+    print-activation-link: ${BOOTSTRAP_PRINT_ACTIVATION_LINK:true}

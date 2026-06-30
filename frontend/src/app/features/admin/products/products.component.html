@@ -5,6 +5,11 @@
     <button class="btn-new" (click)="openNewForm()">+ Novo Produto</button>
   </header>
 
+  <nav class="admin-tabs" aria-label="Administração">
+    <a routerLink="/admin/products" class="active">Produtos</a>
+    <a routerLink="/admin/system">Sistema</a>
+  </nav>
+
   <!-- Search/Filter Bar -->
   <div class="filter-bar">
     <input
@@ -16,6 +21,14 @@
     />
     <span class="results-count">{{ filteredProducts().length }} produtos</span>
   </div>
+
+  @if (errorMessage()) {
+    <p class="form-error">{{ errorMessage() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="loading-state">Carregando...</p>
+  }
 
   <!-- Products Table -->
   <div class="table-container">
@@ -46,6 +59,7 @@
                 class="toggle-btn"
                 [class.active]="product.active"
                 (click)="toggleActive(product)"
+                [disabled]="loading() || !product.active"
                 [attr.aria-label]="product.active ? 'Desativar produto' : 'Ativar produto'"
               >
                 <span class="toggle-track">
@@ -132,9 +146,16 @@
           </div>
         </div>
 
+        @if (editingProduct()) {
+          <section class="modal-section">
+            <h3>Imagens</h3>
+            <app-product-image-section [productUuid]="editingProduct()!.id" />
+          </section>
+        }
+
         <footer class="modal-footer">
           <button class="btn-cancel" (click)="closeForm()">Cancelar</button>
-          <button class="btn-save" (click)="saveProduct()">Salvar</button>
+          <button class="btn-save" (click)="saveProduct()" [disabled]="loading()">Salvar</button>
         </footer>
       </div>
     </div>
