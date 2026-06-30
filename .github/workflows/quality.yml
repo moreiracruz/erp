@@ -54,7 +54,7 @@ jobs:
             -Dsonar.organization=moreiracruz \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.java.coveragePlugin=jacoco \
-            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
+            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml,**/target/site/jacoco-aggregate/jacoco.xml \
             -Dsonar.java.spotbugs.reportPaths=**/target/spotbugsXml.xml \
             -Dsonar.java.pmd.reportPaths=**/target/pmd.xml \
             -Dsonar.java.checkstyle.reportPaths=**/target/checkstyle-result.xml \

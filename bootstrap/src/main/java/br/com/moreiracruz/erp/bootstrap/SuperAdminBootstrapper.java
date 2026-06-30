@@ -26,7 +26,7 @@ import java.util.List;
 public class SuperAdminBootstrapper implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SuperAdminBootstrapper.class);
-    private static final String UNUSABLE_PASSWORD_HASH = "{bootstrap-pending-activation}";
+    private static final String PENDING_ACTIVATION_CREDENTIAL_MARKER = "{bootstrap-pending-activation}";
 
     private final UsuarioRepository usuarioRepository;
     private final ActivationTokenRepository activationTokenRepository;
@@ -59,7 +59,7 @@ public class SuperAdminBootstrapper implements ApplicationRunner {
 
         Usuario superAdmin = Usuario.createPendingActivation(
                 bootstrapEmail,
-                UNUSABLE_PASSWORD_HASH,
+                PENDING_ACTIVATION_CREDENTIAL_MARKER,
                 Role.ROLE_SUPER_ADMIN);
         superAdmin = usuarioRepository.save(superAdmin);
 
