@@ -49,6 +49,10 @@
         <opentelemetry.version>2.11.0</opentelemetry.version>
         <logstash-logback.version>7.4</logstash-logback.version>
         <thumbnailator.version>0.4.20</thumbnailator.version>
+
+        <sonar.coverage.jacoco.xmlReportPaths>**/target/site/jacoco/jacoco.xml,**/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.exclusions>**/target/**,shared/test-support/**,**/*Test*.java,**/*IT.java</sonar.exclusions>
+        <sonar.coverage.exclusions>shared/test-support/**,**/adapter/in/web/*Request.java,**/adapter/in/web/*Response.java,**/adapter/out/persistence/**/*JpaEntity.java,**/adapter/out/persistence/**/*JpaRepository.java,**/*Config.java,**/*Configuration.java</sonar.coverage.exclusions>
     </properties>
 
     <dependencyManagement>

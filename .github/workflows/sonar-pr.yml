@@ -46,8 +46,11 @@ jobs:
       - name: Get PR number
         id: pr
         run: |
-          PR_NUMBER=$(gh pr list --head "${{ github.event.workflow_run.head_branch }}" --json number -q '.[0].number')
+          PR_DATA=$(gh pr list --head "${{ github.event.workflow_run.head_branch }}" --json number,baseRefName -q '.[0]')
+          PR_NUMBER=$(echo "$PR_DATA" | jq -r '.number')
+          PR_BASE=$(echo "$PR_DATA" | jq -r '.baseRefName')
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "base=$PR_BASE" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -62,9 +65,9 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.pullrequest.key=${{ steps.pr.outputs.number }} \
             -Dsonar.pullrequest.branch=${{ github.event.workflow_run.head_branch }} \
-            -Dsonar.pullrequest.base=${{ github.event.workflow_run.head_branch }} \
+            -Dsonar.pullrequest.base=${{ steps.pr.outputs.base }} \
             -Dsonar.java.coveragePlugin=jacoco \
-            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
+            -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml,**/target/site/jacoco-aggregate/jacoco.xml \
             -B
 
       - name: Upload coverage to Codecov
