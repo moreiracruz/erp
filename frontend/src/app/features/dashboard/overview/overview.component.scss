@@ -318,3 +318,11 @@
     color: $error;
   }
 }
+
+.empty-state {
+  margin: 0;
+  padding: $space-4;
+  color: $text-muted;
+  font-size: $font-size-sm;
+  text-align: center;
+}

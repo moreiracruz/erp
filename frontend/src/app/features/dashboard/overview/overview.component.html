@@ -58,7 +58,10 @@
     <section class="alerts-section">
       <h2>Estoque Baixo</h2>
       <div class="alerts-list">
-        @for (alert of lowStockAlerts(); track alert.name) {
+        @if (lowStockAlerts().length === 0) {
+          <p class="empty-state">Nenhum alerta de estoque baixo.</p>
+        } @else {
+          @for (alert of lowStockAlerts(); track alert.name) {
           <div class="alert-item" [class.critical]="alert.currentStock === 0">
             <div class="alert-info">
               <span class="alert-name">{{ alert.name }}</span>
@@ -71,6 +74,7 @@
               ></div>
             </div>
           </div>
+          }
         }
       </div>
     </section>
@@ -90,7 +94,12 @@
         </tr>
       </thead>
       <tbody>
-        @for (sale of recentSales(); track sale.id) {
+        @if (recentSales().length === 0) {
+          <tr>
+            <td colspan="5" class="empty-state">Nenhuma venda registrada.</td>
+          </tr>
+        } @else {
+          @for (sale of recentSales(); track sale.id) {
           <tr>
             <td class="sale-id">{{ sale.id }}</td>
             <td>{{ sale.customer }}</td>
@@ -100,6 +109,7 @@
             </td>
             <td class="sale-date">{{ sale.date }}</td>
           </tr>
+          }
         }
       </tbody>
     </table>

@@ -76,9 +76,9 @@ export class AuthService {
       case 'ROLE_USER':
         return '/';
       case 'ROLE_SUPER_ADMIN':
-        return '/dashboard';
+        return '/admin/dashboard';
       case 'ROLE_MANAGER':
-        return '/dashboard';
+        return '/admin/dashboard';
       case 'ROLE_CASHIER':
         return '/pos';
       case 'ROLE_STOCK':
