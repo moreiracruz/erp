@@ -36,36 +36,25 @@ export class OverviewComponent {
   readonly selectedRange = signal<DateRange>('today');
 
   readonly kpis = signal<KpiCard[]>([
-    { label: 'Vendas Hoje', value: 'R$ 4.850,00', icon: '💰', trend: '+12%' },
-    { label: 'Pedidos Hoje', value: '23', icon: '📦', trend: '+5%' },
-    { label: 'Ticket Médio', value: 'R$ 210,87', icon: '🎫', trend: '+3%' },
-    { label: 'Produtos em Estoque', value: '1.247', icon: '📊' },
+    { label: 'Vendas Hoje', value: 'R$ 0,00', icon: '💰' },
+    { label: 'Pedidos Hoje', value: '0', icon: '📦' },
+    { label: 'Ticket Médio', value: 'R$ 0,00', icon: '🎫' },
+    { label: 'Produtos em Estoque', value: '0', icon: '📊' },
   ]);
 
   readonly chartData = signal([
-    { label: 'Seg', value: 65 },
-    { label: 'Ter', value: 80 },
-    { label: 'Qua', value: 45 },
-    { label: 'Qui', value: 90 },
-    { label: 'Sex', value: 100 },
-    { label: 'Sáb', value: 75 },
-    { label: 'Dom', value: 30 },
+    { label: 'Seg', value: 0 },
+    { label: 'Ter', value: 0 },
+    { label: 'Qua', value: 0 },
+    { label: 'Qui', value: 0 },
+    { label: 'Sex', value: 0 },
+    { label: 'Sáb', value: 0 },
+    { label: 'Dom', value: 0 },
   ]);
 
-  readonly recentSales = signal<RecentSale[]>([
-    { id: 'V-001', customer: 'Maria Silva', total: 459.90, status: 'Finalizada', date: '2024-01-15 14:30' },
-    { id: 'V-002', customer: 'João Santos', total: 189.00, status: 'Finalizada', date: '2024-01-15 13:45' },
-    { id: 'V-003', customer: 'Ana Oliveira', total: 720.50, status: 'Pendente', date: '2024-01-15 12:20' },
-    { id: 'V-004', customer: 'Carlos Lima', total: 95.00, status: 'Finalizada', date: '2024-01-15 11:10' },
-    { id: 'V-005', customer: 'Fernanda Costa', total: 310.00, status: 'Cancelada', date: '2024-01-15 10:05' },
-  ]);
+  readonly recentSales = signal<RecentSale[]>([]);
 
-  readonly lowStockAlerts = signal<LowStockAlert[]>([
-    { name: 'Vestido Floral P', currentStock: 2, threshold: 5 },
-    { name: 'Blusa Renda M', currentStock: 1, threshold: 3 },
-    { name: 'Saia Midi G', currentStock: 3, threshold: 5 },
-    { name: 'Calça Linho PP', currentStock: 0, threshold: 3 },
-  ]);
+  readonly lowStockAlerts = signal<LowStockAlert[]>([]);
 
   selectRange(range: DateRange): void {
     this.selectedRange.set(range);

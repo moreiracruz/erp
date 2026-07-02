@@ -154,7 +154,7 @@ describe('Auth Flow Integration — Full Login', () => {
       expect(authService.userRole()).toBe('ROLE_MANAGER');
 
       // 4. Verify navigation to default route for role
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/dashboard');
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/admin/dashboard');
     });
 
     it('should navigate to returnUrl when present after successful login', () => {

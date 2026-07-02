@@ -1,0 +1,59 @@
+<div class="admin-shell">
+  <aside class="admin-sidebar" aria-label="Navegacao administrativa">
+    <a class="admin-brand" routerLink="/admin/dashboard" aria-label="Ir para o dashboard administrativo">
+      <span class="admin-brand__mark">ERP</span>
+      <span>
+        <strong>Administracao</strong>
+        <small>Backoffice</small>
+      </span>
+    </a>
+
+    <nav class="admin-nav" aria-label="Administracao">
+      <p class="admin-nav__label">Gestao</p>
+      @for (item of primaryNavItems; track item.route) {
+        <a
+          class="admin-nav__link"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.route === '/admin/dashboard' }"
+        >
+          <span>{{ item.label }}</span>
+          <small>{{ item.description }}</small>
+        </a>
+      }
+    </nav>
+
+    <nav class="admin-nav" aria-label="Operacao">
+      <p class="admin-nav__label">Operacao</p>
+      @for (item of operationNavItems; track item.route) {
+        <a class="admin-nav__link" [routerLink]="item.route" routerLinkActive="active">
+          <span>{{ item.label }}</span>
+          <small>{{ item.description }}</small>
+        </a>
+      }
+    </nav>
+
+    <a class="admin-store-link" routerLink="/">Ir para loja</a>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <div>
+        <p class="admin-topbar__eyebrow">Area administrativa</p>
+        <h1>Console do ERP</h1>
+      </div>
+
+      <div class="admin-user">
+        <div class="admin-user__text">
+          <strong>{{ userDisplayName() }}</strong>
+          <span>{{ userRoleLabel() }}</span>
+        </div>
+        <button type="button" class="admin-user__logout" (click)="logout()">Sair</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -300,6 +300,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
+                        <argLine>@{argLine} -Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -XX:+EnableDynamicAgentLoading</argLine>
                         <includes>
                             <include>**/*Test.java</include>
                             <include>**/*Tests.java</include>
@@ -317,6 +318,7 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.5.1</version>
                     <configuration>
+                        <argLine>@{argLine} -Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -XX:+EnableDynamicAgentLoading</argLine>
                         <includes>
                             <include>**/*IT.java</include>
                             <include>**/*CT.java</include>

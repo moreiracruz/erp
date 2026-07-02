@@ -22,14 +22,30 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Cache OWASP Dependency Check data
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: ${{ runner.os }}-dependency-check-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-dependency-check-
+
       - name: Check for dependency updates
         run: ./mvnw versions:display-dependency-updates -B 2>&1 | grep -E "\->" | head -30 || true
 
       - name: OWASP Dependency Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          ./mvnw org.owasp:dependency-check-maven:check \
+          NVD_ARGS=()
+          if [ -n "${NVD_API_KEY:-}" ]; then
+            NVD_ARGS+=("-DnvdApiKey=${NVD_API_KEY}")
+          fi
+
+          timeout 20m ./mvnw org.owasp:dependency-check-maven:check \
             -DfailBuildOnCVSS=7 \
             -DsuppressionFile=.github/owasp-suppressions.xml \
+            "${NVD_ARGS[@]}" \
             -B || true
 
       - name: Upload OWASP report
@@ -54,7 +70,7 @@ jobs:
           FOUND=0
           
           # Check for private keys
-          if git grep -l "BEGIN.*PRIVATE KEY" -- ':(exclude)*.md' 2>/dev/null; then
+          if git grep -l "BEGIN.*PRIVATE KEY" -- . ':(exclude)*.md' ':(exclude).github/workflows/security.yml' 2>/dev/null; then
             echo "❌ Private key found!"
             FOUND=1
           fi
@@ -66,7 +82,7 @@ jobs:
           fi
           
           # Check for hardcoded passwords in Java
-          if git grep -n --include="*.java" -E 'password\s*=\s*"[^"]{8,}"' -- ':(exclude)*Test*' ':(exclude)*test*' 2>/dev/null; then
+          if git grep -n -E 'password\s*=\s*"[^"]{8,}"' -- '*.java' ':(exclude)*Test*' ':(exclude)*test*' 2>/dev/null; then
             echo "❌ Hardcoded password in Java source!"
             FOUND=1
           fi
